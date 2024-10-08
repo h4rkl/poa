@@ -15,7 +15,7 @@ import {
 } from '@solana/spl-token';
 import { Airdrop } from '../target/types/airdrop';
 
-const AIRDROP_PROTOCOL = 'airdrop_protocol';
+const MEMEOOR_PROTOCOL = 'memeoor_protocol';
 
 // Configure the provider to use the local cluster
 const provider = anchor.AnchorProvider.env();
@@ -86,13 +86,13 @@ describe('Airdrop Program', () => {
 
     // Calculate the PDA for the pool
     [poolPDA] = PublicKey.findProgramAddressSync(
-      [mint.toBuffer(), Buffer.from(AIRDROP_PROTOCOL)],
+      [mint.toBuffer(), Buffer.from(MEMEOOR_PROTOCOL)],
       program.programId
     );
 
     // Get the associated token address for the pool PDA
     [poolTokenAccount] = PublicKey.findProgramAddressSync(
-      [poolPDA.toBuffer(), mint.toBuffer(), Buffer.from(AIRDROP_PROTOCOL)],
+      [poolPDA.toBuffer(), mint.toBuffer(), Buffer.from(MEMEOOR_PROTOCOL)],
       program.programId
     );
 
@@ -100,7 +100,7 @@ describe('Airdrop Program', () => {
       [
         userAccount.publicKey.toBuffer(),
         poolPDA.toBuffer(),
-        Buffer.from(AIRDROP_PROTOCOL),
+        Buffer.from(MEMEOOR_PROTOCOL),
       ],
       program.programId
     );

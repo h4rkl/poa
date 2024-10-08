@@ -12,14 +12,14 @@ pub struct AirdropPool {
 pub struct InitializePool<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
-    #[account(init, payer = authority, space = 8 + 32, seeds = [mint.key().as_ref(), AIRDROP_PROTOCOL], bump)]
+    #[account(init, payer = authority, space = 8 + 32, seeds = [mint.key().as_ref(), MEMEOOR_PROTOCOL], bump)]
     pub pool_authority: Account<'info, AirdropPool>,
     #[account(mut)]
     pub from: Account<'info, TokenAccount>,
     #[account(
         init_if_needed,
         payer = authority,
-        seeds = [pool_authority.key().as_ref(), mint.key().as_ref(), AIRDROP_PROTOCOL],
+        seeds = [pool_authority.key().as_ref(), mint.key().as_ref(), MEMEOOR_PROTOCOL],
         bump,
         token::mint = mint,
         token::authority = pool_authority,

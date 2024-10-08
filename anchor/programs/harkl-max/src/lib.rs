@@ -49,7 +49,7 @@ pub mod airdrop {
         let cpi_program = ctx.accounts.token_program.to_account_info();
         let seeds = &[
             mint.as_ref(),
-            AIRDROP_PROTOCOL.as_ref(),
+            MEMEOOR_PROTOCOL.as_ref(),
             &[ctx.bumps.pool_authority],
         ];
         let signer = &[&seeds[..]];

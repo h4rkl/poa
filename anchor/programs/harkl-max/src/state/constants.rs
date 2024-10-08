@@ -1,1 +1,1 @@
-pub const AIRDROP_PROTOCOL: &[u8] = b"airdrop_protocol";
+pub const MEMEOOR_PROTOCOL: &[u8] = b"memeoor_protocol";

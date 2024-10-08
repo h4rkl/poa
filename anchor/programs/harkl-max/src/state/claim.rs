@@ -12,7 +12,7 @@ pub struct UserClaim {
 
 #[derive(Accounts)]
 pub struct ClaimTokens<'info> {
-    #[account(seeds = [mint.key().as_ref(), AIRDROP_PROTOCOL], bump)]
+    #[account(seeds = [mint.key().as_ref(), MEMEOOR_PROTOCOL], bump)]
     pub pool_authority: Account<'info, AirdropPool>,
     #[account(mut)]
     pub user_token_account: Account<'info, TokenAccount>,
@@ -20,7 +20,7 @@ pub struct ClaimTokens<'info> {
     pub user: Signer<'info>,
     #[account(
         mut,
-        seeds = [pool_authority.key().as_ref(), mint.key().as_ref(), AIRDROP_PROTOCOL],
+        seeds = [pool_authority.key().as_ref(), mint.key().as_ref(), MEMEOOR_PROTOCOL],
         bump,
     )]
     pub pool_token_account: Account<'info, TokenAccount>,
@@ -28,7 +28,7 @@ pub struct ClaimTokens<'info> {
         init_if_needed,
         payer = user,
         space = 8 + std::mem::size_of::<UserClaim>(),
-        seeds = [user.key().as_ref(), pool_authority.key().as_ref(), AIRDROP_PROTOCOL],
+        seeds = [user.key().as_ref(), pool_authority.key().as_ref(), MEMEOOR_PROTOCOL],
         bump,
     )]
     pub user_claim: Account<'info, UserClaim>,
