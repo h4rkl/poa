@@ -10,10 +10,10 @@ pub mod state;
 declare_id!("HQ9qykbDvtGPm5LtLzCyn25ntRwi9DePTevwA6o9mXAZ");
 
 #[program]
-pub mod airdrop {
+pub mod memeoor {
     use super::*;
 
-    // Initialize the airdrop pool account with a certain amount of tokens
+    // Initialize the memeoor pool account with a certain amount of tokens
     pub fn initialize_pool(ctx: Context<InitializePool>, amount: u64) -> Result<()> {
         ctx.accounts.pool_authority.authority = *ctx.accounts.authority.key;
 

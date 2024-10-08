@@ -1,12 +1,12 @@
 [package]
-name = "harkl-max"
+name = "memeoor"
 version = "0.1.0"
-description = "Created with Anchor"
+description = "Launch and mine meme tokens on Solana"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "harkl_max"
+name = "memeoor"
 
 [features]
 no-entrypoint = []

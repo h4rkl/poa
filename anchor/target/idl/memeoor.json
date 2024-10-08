@@ -1,20 +1,14 @@
-/**
- * Program IDL in camelCase format in order to be used in JS/TS.
- *
- * Note that this is only a type helper and is not the actual IDL. The original
- * IDL can be found at `target/idl/airdrop.json`.
- */
-export type Airdrop = {
+{
   "address": "HQ9qykbDvtGPm5LtLzCyn25ntRwi9DePTevwA6o9mXAZ",
   "metadata": {
-    "name": "airdrop",
+    "name": "memeoor",
     "version": "0.1.0",
     "spec": "0.1.0",
-    "description": "Created with Anchor"
+    "description": "Launch and mine meme tokens on Solana"
   },
   "instructions": [
     {
-      "name": "claimTokens",
+      "name": "claim_tokens",
       "discriminator": [
         108,
         216,
@@ -27,7 +21,7 @@ export type Airdrop = {
       ],
       "accounts": [
         {
-          "name": "poolAuthority",
+          "name": "pool_authority",
           "pda": {
             "seeds": [
               {
@@ -37,13 +31,13 @@ export type Airdrop = {
               {
                 "kind": "const",
                 "value": [
-                  97,
-                  105,
-                  114,
-                  100,
-                  114,
+                  109,
+                  101,
+                  109,
+                  101,
                   111,
-                  112,
+                  111,
+                  114,
                   95,
                   112,
                   114,
@@ -59,7 +53,7 @@ export type Airdrop = {
           }
         },
         {
-          "name": "userTokenAccount",
+          "name": "user_token_account",
           "writable": true
         },
         {
@@ -68,13 +62,13 @@ export type Airdrop = {
           "signer": true
         },
         {
-          "name": "poolTokenAccount",
+          "name": "pool_token_account",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "account",
-                "path": "poolAuthority"
+                "path": "pool_authority"
               },
               {
                 "kind": "account",
@@ -83,13 +77,13 @@ export type Airdrop = {
               {
                 "kind": "const",
                 "value": [
-                  97,
-                  105,
-                  114,
-                  100,
-                  114,
+                  109,
+                  101,
+                  109,
+                  101,
                   111,
-                  112,
+                  111,
+                  114,
                   95,
                   112,
                   114,
@@ -105,7 +99,7 @@ export type Airdrop = {
           }
         },
         {
-          "name": "userClaim",
+          "name": "user_claim",
           "writable": true,
           "pda": {
             "seeds": [
@@ -115,18 +109,18 @@ export type Airdrop = {
               },
               {
                 "kind": "account",
-                "path": "poolAuthority"
+                "path": "pool_authority"
               },
               {
                 "kind": "const",
                 "value": [
-                  97,
-                  105,
-                  114,
-                  100,
-                  114,
+                  109,
+                  101,
+                  109,
+                  101,
                   111,
-                  112,
+                  111,
+                  114,
                   95,
                   112,
                   114,
@@ -145,11 +139,11 @@ export type Airdrop = {
           "name": "mint"
         },
         {
-          "name": "tokenProgram",
+          "name": "token_program",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -161,7 +155,7 @@ export type Airdrop = {
       ]
     },
     {
-      "name": "initializePool",
+      "name": "initialize_pool",
       "discriminator": [
         95,
         180,
@@ -179,7 +173,7 @@ export type Airdrop = {
           "signer": true
         },
         {
-          "name": "poolAuthority",
+          "name": "pool_authority",
           "writable": true,
           "pda": {
             "seeds": [
@@ -190,13 +184,13 @@ export type Airdrop = {
               {
                 "kind": "const",
                 "value": [
-                  97,
-                  105,
-                  114,
-                  100,
-                  114,
+                  109,
+                  101,
+                  109,
+                  101,
                   111,
-                  112,
+                  111,
+                  114,
                   95,
                   112,
                   114,
@@ -216,13 +210,13 @@ export type Airdrop = {
           "writable": true
         },
         {
-          "name": "poolTokenAccount",
+          "name": "pool_token_account",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "account",
-                "path": "poolAuthority"
+                "path": "pool_authority"
               },
               {
                 "kind": "account",
@@ -231,13 +225,13 @@ export type Airdrop = {
               {
                 "kind": "const",
                 "value": [
-                  97,
-                  105,
-                  114,
-                  100,
-                  114,
+                  109,
+                  101,
+                  109,
+                  101,
                   111,
-                  112,
+                  111,
+                  114,
                   95,
                   112,
                   114,
@@ -256,11 +250,11 @@ export type Airdrop = {
           "name": "mint"
         },
         {
-          "name": "tokenProgram",
+          "name": "token_program",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -274,7 +268,7 @@ export type Airdrop = {
   ],
   "accounts": [
     {
-      "name": "airdropPool",
+      "name": "AirdropPool",
       "discriminator": [
         196,
         25,
@@ -287,7 +281,7 @@ export type Airdrop = {
       ]
     },
     {
-      "name": "userClaim",
+      "name": "UserClaim",
       "discriminator": [
         228,
         142,
@@ -303,28 +297,28 @@ export type Airdrop = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidTokenPoolAccount",
+      "name": "InvalidTokenPoolAccount",
       "msg": "Invalid pool token account."
     },
     {
       "code": 6001,
-      "name": "invalidPoolAddress",
+      "name": "InvalidPoolAddress",
       "msg": "Invalid pool address."
     },
     {
       "code": 6002,
-      "name": "alreadyClaimed",
+      "name": "AlreadyClaimed",
       "msg": "User has already claimed their tokens."
     },
     {
       "code": 6003,
-      "name": "invalidAmount",
+      "name": "InvalidAmount",
       "msg": "Invalid amount."
     }
   ],
   "types": [
     {
-      "name": "airdropPool",
+      "name": "AirdropPool",
       "type": {
         "kind": "struct",
         "fields": [
@@ -336,7 +330,7 @@ export type Airdrop = {
       }
     },
     {
-      "name": "userClaim",
+      "name": "UserClaim",
       "type": {
         "kind": "struct",
         "fields": [
@@ -345,11 +339,11 @@ export type Airdrop = {
             "type": "pubkey"
           },
           {
-            "name": "hasClaimed",
+            "name": "has_claimed",
             "type": "bool"
           }
         ]
       }
     }
   ]
-};
+}

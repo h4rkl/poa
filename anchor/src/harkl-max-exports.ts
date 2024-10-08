@@ -1,14 +1,14 @@
 // Here we export some useful types and functions for interacting with the Anchor program.
 import { AnchorProvider, Program } from '@coral-xyz/anchor';
 import { Cluster, PublicKey } from '@solana/web3.js';
-import HarklMaxIDL from '../target/idl/harkl_max.json';
-import type { HarklMax } from '../target/types/harkl_max';
+import HarklMaxIDL from '../target/idl/memeoor.json';
+import type { HarklMax } from '../target/types/memeoor';
 
 // Re-export the generated IDL and type
 export { HarklMax, HarklMaxIDL };
 
 // The programId is imported from the program IDL.
-export const HARKL_MAX_PROGRAM_ID = new PublicKey(HarklMaxIDL.address);
+export const MEMEOOR_PROGRAM_ID = new PublicKey(HarklMaxIDL.address);
 
 // This is a helper function to get the HarklMax Anchor program.
 export function getHarklMaxProgram(provider: AnchorProvider) {
@@ -22,6 +22,6 @@ export function getHarklMaxProgramId(cluster: Cluster) {
     case 'testnet':
     case 'mainnet-beta':
     default:
-      return HARKL_MAX_PROGRAM_ID;
+      return MEMEOOR_PROGRAM_ID;
   }
 }

@@ -1,14 +1,20 @@
-{
+/**
+ * Program IDL in camelCase format in order to be used in JS/TS.
+ *
+ * Note that this is only a type helper and is not the actual IDL. The original
+ * IDL can be found at `target/idl/memeoor.json`.
+ */
+export type Memeoor = {
   "address": "HQ9qykbDvtGPm5LtLzCyn25ntRwi9DePTevwA6o9mXAZ",
   "metadata": {
-    "name": "airdrop",
+    "name": "memeoor",
     "version": "0.1.0",
     "spec": "0.1.0",
-    "description": "Created with Anchor"
+    "description": "Launch and mine meme tokens on Solana"
   },
   "instructions": [
     {
-      "name": "claim_tokens",
+      "name": "claimTokens",
       "discriminator": [
         108,
         216,
@@ -21,7 +27,7 @@
       ],
       "accounts": [
         {
-          "name": "pool_authority",
+          "name": "poolAuthority",
           "pda": {
             "seeds": [
               {
@@ -31,13 +37,13 @@
               {
                 "kind": "const",
                 "value": [
-                  97,
-                  105,
-                  114,
-                  100,
-                  114,
+                  109,
+                  101,
+                  109,
+                  101,
                   111,
-                  112,
+                  111,
+                  114,
                   95,
                   112,
                   114,
@@ -53,7 +59,7 @@
           }
         },
         {
-          "name": "user_token_account",
+          "name": "userTokenAccount",
           "writable": true
         },
         {
@@ -62,13 +68,13 @@
           "signer": true
         },
         {
-          "name": "pool_token_account",
+          "name": "poolTokenAccount",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "account",
-                "path": "pool_authority"
+                "path": "poolAuthority"
               },
               {
                 "kind": "account",
@@ -77,13 +83,13 @@
               {
                 "kind": "const",
                 "value": [
-                  97,
-                  105,
-                  114,
-                  100,
-                  114,
+                  109,
+                  101,
+                  109,
+                  101,
                   111,
-                  112,
+                  111,
+                  114,
                   95,
                   112,
                   114,
@@ -99,7 +105,7 @@
           }
         },
         {
-          "name": "user_claim",
+          "name": "userClaim",
           "writable": true,
           "pda": {
             "seeds": [
@@ -109,18 +115,18 @@
               },
               {
                 "kind": "account",
-                "path": "pool_authority"
+                "path": "poolAuthority"
               },
               {
                 "kind": "const",
                 "value": [
-                  97,
-                  105,
-                  114,
-                  100,
-                  114,
+                  109,
+                  101,
+                  109,
+                  101,
                   111,
-                  112,
+                  111,
+                  114,
                   95,
                   112,
                   114,
@@ -139,11 +145,11 @@
           "name": "mint"
         },
         {
-          "name": "token_program",
+          "name": "tokenProgram",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -155,7 +161,7 @@
       ]
     },
     {
-      "name": "initialize_pool",
+      "name": "initializePool",
       "discriminator": [
         95,
         180,
@@ -173,7 +179,7 @@
           "signer": true
         },
         {
-          "name": "pool_authority",
+          "name": "poolAuthority",
           "writable": true,
           "pda": {
             "seeds": [
@@ -184,13 +190,13 @@
               {
                 "kind": "const",
                 "value": [
-                  97,
-                  105,
-                  114,
-                  100,
-                  114,
+                  109,
+                  101,
+                  109,
+                  101,
                   111,
-                  112,
+                  111,
+                  114,
                   95,
                   112,
                   114,
@@ -210,13 +216,13 @@
           "writable": true
         },
         {
-          "name": "pool_token_account",
+          "name": "poolTokenAccount",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "account",
-                "path": "pool_authority"
+                "path": "poolAuthority"
               },
               {
                 "kind": "account",
@@ -225,13 +231,13 @@
               {
                 "kind": "const",
                 "value": [
-                  97,
-                  105,
-                  114,
-                  100,
-                  114,
+                  109,
+                  101,
+                  109,
+                  101,
                   111,
-                  112,
+                  111,
+                  114,
                   95,
                   112,
                   114,
@@ -250,11 +256,11 @@
           "name": "mint"
         },
         {
-          "name": "token_program",
+          "name": "tokenProgram",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -268,7 +274,7 @@
   ],
   "accounts": [
     {
-      "name": "AirdropPool",
+      "name": "airdropPool",
       "discriminator": [
         196,
         25,
@@ -281,7 +287,7 @@
       ]
     },
     {
-      "name": "UserClaim",
+      "name": "userClaim",
       "discriminator": [
         228,
         142,
@@ -297,28 +303,28 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidTokenPoolAccount",
+      "name": "invalidTokenPoolAccount",
       "msg": "Invalid pool token account."
     },
     {
       "code": 6001,
-      "name": "InvalidPoolAddress",
+      "name": "invalidPoolAddress",
       "msg": "Invalid pool address."
     },
     {
       "code": 6002,
-      "name": "AlreadyClaimed",
+      "name": "alreadyClaimed",
       "msg": "User has already claimed their tokens."
     },
     {
       "code": 6003,
-      "name": "InvalidAmount",
+      "name": "invalidAmount",
       "msg": "Invalid amount."
     }
   ],
   "types": [
     {
-      "name": "AirdropPool",
+      "name": "airdropPool",
       "type": {
         "kind": "struct",
         "fields": [
@@ -330,7 +336,7 @@
       }
     },
     {
-      "name": "UserClaim",
+      "name": "userClaim",
       "type": {
         "kind": "struct",
         "fields": [
@@ -339,11 +345,11 @@
             "type": "pubkey"
           },
           {
-            "name": "has_claimed",
+            "name": "hasClaimed",
             "type": "bool"
           }
         ]
       }
     }
   ]
-}
+};
