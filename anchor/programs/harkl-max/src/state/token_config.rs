@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Token, TokenAccount, Mint};
 
-pub const TOKEN_MINING_PROTOCOL: &[u8] = b"TOKEN_MINING_PROTOCOL";
+use crate::constants::*;
 
 #[derive(Accounts)]
 pub struct InitializeTokenMining<'info> {
@@ -11,8 +11,19 @@ pub struct InitializeTokenMining<'info> {
     #[account(
         init,
         payer = authority,
-        space = 8 + 32 + 32 + 8 + 8 + 8 + 8 + 8 + 8 + 32 + 8 + 32,
-        seeds = [b"config", mint.key().as_ref(), TOKEN_MINING_PROTOCOL],
+        space = 8 + // discriminator
+                32 + // mint_address: Pubkey
+                32 + // creator: Pubkey
+                8 + // initial_cost: u64
+                8 + // step_interval: u64
+                8 + // step_factor: u64
+                8 + // max_mining_cost: Option<u64>
+                8 + // total_supply: u64
+                8 + // mined_tokens: u64
+                32 + // mining_fee_vault: Pubkey
+                8 + // liquidity_threshold: u64
+                32, // liquidity_pool_address: Pubkey
+        seeds = [CONFIG_SEED, mint.key().as_ref(), MEMEOOR_PROTOCOL],
         bump
     )]
     pub token_mining_config: Account<'info, TokenMiningConfig>,
@@ -23,7 +34,7 @@ pub struct InitializeTokenMining<'info> {
     #[account(
         init_if_needed,
         payer = authority,
-        seeds = [b"token_vault", token_mining_config.key().as_ref(), TOKEN_MINING_PROTOCOL],
+        seeds = [TOKEN_VAULT_SEED, token_mining_config.key().as_ref(), MEMEOOR_PROTOCOL],
         bump,
         token::mint = mint,
         token::authority = token_mining_config,
@@ -34,7 +45,7 @@ pub struct InitializeTokenMining<'info> {
         init,
         payer = authority,
         space = 8 + 8 + 32,
-        seeds = [b"fee_vault", token_mining_config.key().as_ref(), TOKEN_MINING_PROTOCOL],
+        seeds = [FEE_VAULT_SEED, token_mining_config.key().as_ref(), MEMEOOR_PROTOCOL],
         bump
     )]
     pub fee_vault: Account<'info, FeeVault>,
