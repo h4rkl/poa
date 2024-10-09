@@ -22,12 +22,11 @@ pub struct InitializeTokenPool<'info> {
                 8 + // total_supply: u64
                 8 + // mined_tokens: u64
                 32 + // pool_fee_vault: Pubkey
-                8 + // liquidity_threshold: u64
                 32, // liquidity_pool_address: Pubkey
         seeds = [mint.key().as_ref(), CONFIG_SEED],
         bump
     )]
-    pub token_pool: Account<'info, TokenPool>,
+    pub token_pool_acc: Account<'info, TokenPoolAcc>,
 
     #[account(mut)]
     pub creator: Signer<'info>,
@@ -35,10 +34,10 @@ pub struct InitializeTokenPool<'info> {
     #[account(
         init_if_needed,
         payer = authority,
-        seeds = [token_pool.key().as_ref(), TOKEN_VAULT_SEED],
+        seeds = [token_pool_acc.key().as_ref(), TOKEN_VAULT_SEED],
         bump,
         token::mint = mint,
-        token::authority = token_pool,
+        token::authority = token_pool_acc,
     )]
     pub token_pool_vault: Account<'info, TokenAccount>,
 
@@ -46,7 +45,7 @@ pub struct InitializeTokenPool<'info> {
         init,
         payer = authority,
         space = 8 + 8 + 32,
-        seeds = [token_pool.key().as_ref(), FEE_VAULT_SEED],
+        seeds = [token_pool_acc.key().as_ref(), FEE_VAULT_SEED],
         bump
     )]
     pub fee_vault: Account<'info, FeeVault>,
@@ -57,7 +56,7 @@ pub struct InitializeTokenPool<'info> {
 }
 
 #[account]
-pub struct TokenPool {
+pub struct TokenPoolAcc {
     pub mint_address: Pubkey,
     pub creator: Pubkey,
     pub initial_cost: u64,

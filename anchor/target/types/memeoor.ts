@@ -179,7 +179,7 @@ export type Memeoor = {
           "signer": true
         },
         {
-          "name": "tokenPool",
+          "name": "tokenPoolAcc",
           "writable": true,
           "pda": {
             "seeds": [
@@ -221,7 +221,7 @@ export type Memeoor = {
             "seeds": [
               {
                 "kind": "account",
-                "path": "tokenPool"
+                "path": "tokenPoolAcc"
               },
               {
                 "kind": "const",
@@ -257,7 +257,7 @@ export type Memeoor = {
             "seeds": [
               {
                 "kind": "account",
-                "path": "tokenPool"
+                "path": "tokenPoolAcc"
               },
               {
                 "kind": "const",

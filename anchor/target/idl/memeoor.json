@@ -173,7 +173,7 @@
           "signer": true
         },
         {
-          "name": "token_pool",
+          "name": "token_pool_acc",
           "writable": true,
           "pda": {
             "seeds": [
@@ -215,7 +215,7 @@
             "seeds": [
               {
                 "kind": "account",
-                "path": "token_pool"
+                "path": "token_pool_acc"
               },
               {
                 "kind": "const",
@@ -251,7 +251,7 @@
             "seeds": [
               {
                 "kind": "account",
-                "path": "token_pool"
+                "path": "token_pool_acc"
               },
               {
                 "kind": "const",

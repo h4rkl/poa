@@ -139,11 +139,11 @@ describe('Airdrop Program', () => {
         stepFactor,
         totalSupply,
       })
-      .accounts({
+      .accountsStrict({
         authority: poolOwner.publicKey,
-        tokenPool: tokenPoolAcc,
+        tokenPoolAcc: tokenPoolAcc,
         creator: poolOwner.publicKey,
-        tokenPoolVault: tokenPoolVault,
+        tokenPoolVault,
         feeVault: feeVault,
         mint: mint,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -151,13 +151,11 @@ describe('Airdrop Program', () => {
       })
       .signers([poolOwner])
       .rpc();
-    
+
     console.log('Transaction hash:', tx);
 
     // Fetch the token pool config and check that the values are set correctly
-    const fetchTPConfig = await program.account.tokenPool.fetch(
-      tokenPoolAcc
-    );
+    const fetchTPConfig = await program.account.tokenPool.fetch(tokenPoolAcc);
     expect(fetchTPConfig.creator.equals(poolOwner.publicKey)).toBe(true);
     expect(fetchTPConfig.initialCost.eq(initialCost)).toBe(true);
     expect(fetchTPConfig.stepInterval.eq(stepInterval)).toBe(true);
