@@ -173,7 +173,7 @@
           "signer": true
         },
         {
-          "name": "token_pool_config",
+          "name": "token_pool",
           "writable": true,
           "pda": {
             "seeds": [
@@ -215,7 +215,7 @@
             "seeds": [
               {
                 "kind": "account",
-                "path": "token_pool_config"
+                "path": "token_pool"
               },
               {
                 "kind": "const",
@@ -251,7 +251,7 @@
             "seeds": [
               {
                 "kind": "account",
-                "path": "token_pool_config"
+                "path": "token_pool"
               },
               {
                 "kind": "const",
@@ -330,16 +330,16 @@
       ]
     },
     {
-      "name": "TokenPoolConfig",
+      "name": "TokenPool",
       "discriminator": [
-        169,
-        171,
-        229,
-        156,
-        1,
-        72,
-        132,
-        235
+        103,
+        51,
+        150,
+        210,
+        226,
+        131,
+        104,
+        33
       ]
     },
     {
@@ -432,7 +432,7 @@
       }
     },
     {
-      "name": "TokenPoolConfig",
+      "name": "TokenPool",
       "type": {
         "kind": "struct",
         "fields": [

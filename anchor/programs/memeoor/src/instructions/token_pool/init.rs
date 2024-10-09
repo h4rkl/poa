@@ -15,12 +15,12 @@ pub fn initialize_token(
     ctx: Context<InitializeTokenPool>,
     args: InitializeTokenPoolArgs,
 ) -> Result<()> {
-    let token_config = &mut ctx.accounts.token_pool_config;
-    token_config.creator = ctx.accounts.creator.key();
-    token_config.initial_cost = args.initial_cost;
-    token_config.step_interval = args.step_interval;
-    token_config.step_factor = args.step_factor;
-    token_config.total_supply = args.total_supply;
+    let token_pool = &mut ctx.accounts.token_pool;
+    token_pool.creator = ctx.accounts.creator.key();
+    token_pool.initial_cost = args.initial_cost;
+    token_pool.step_interval = args.step_interval;
+    token_pool.step_factor = args.step_factor;
+    token_pool.total_supply = args.total_supply;
 
     // Mint the total supply to the program-controlled token account
     token::mint_to(
@@ -32,7 +32,7 @@ pub fn initialize_token(
                 authority: ctx.accounts.authority.to_account_info(),
             },
             &[&[
-                ctx.accounts.token_pool_config.key().as_ref(),
+                ctx.accounts.token_pool.key().as_ref(),
                 TOKEN_VAULT_SEED,
                 &[ctx.bumps.token_pool_vault],
             ]],

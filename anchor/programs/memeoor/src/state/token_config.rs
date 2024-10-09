@@ -1,9 +1,10 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Token, TokenAccount, Mint};
 
-use crate::constants::*;
+use crate::{constants::*, InitializeTokenPoolArgs};
 
 #[derive(Accounts)]
+#[instruction(args: InitializeTokenPoolArgs)]
 pub struct InitializeTokenPool<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -26,7 +27,7 @@ pub struct InitializeTokenPool<'info> {
         seeds = [mint.key().as_ref(), CONFIG_SEED],
         bump
     )]
-    pub token_pool_config: Account<'info, TokenPoolConfig>,
+    pub token_pool: Account<'info, TokenPool>,
 
     #[account(mut)]
     pub creator: Signer<'info>,
@@ -34,10 +35,10 @@ pub struct InitializeTokenPool<'info> {
     #[account(
         init_if_needed,
         payer = authority,
-        seeds = [token_pool_config.key().as_ref(), TOKEN_VAULT_SEED],
+        seeds = [token_pool.key().as_ref(), TOKEN_VAULT_SEED],
         bump,
         token::mint = mint,
-        token::authority = token_pool_config,
+        token::authority = token_pool,
     )]
     pub token_pool_vault: Account<'info, TokenAccount>,
 
@@ -45,7 +46,7 @@ pub struct InitializeTokenPool<'info> {
         init,
         payer = authority,
         space = 8 + 8 + 32,
-        seeds = [token_pool_config.key().as_ref(), FEE_VAULT_SEED],
+        seeds = [token_pool.key().as_ref(), FEE_VAULT_SEED],
         bump
     )]
     pub fee_vault: Account<'info, FeeVault>,
@@ -56,7 +57,7 @@ pub struct InitializeTokenPool<'info> {
 }
 
 #[account]
-pub struct TokenPoolConfig {
+pub struct TokenPool {
     pub mint_address: Pubkey,
     pub creator: Pubkey,
     pub initial_cost: u64,

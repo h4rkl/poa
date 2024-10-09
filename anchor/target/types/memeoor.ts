@@ -179,7 +179,7 @@ export type Memeoor = {
           "signer": true
         },
         {
-          "name": "tokenPoolConfig",
+          "name": "tokenPool",
           "writable": true,
           "pda": {
             "seeds": [
@@ -221,7 +221,7 @@ export type Memeoor = {
             "seeds": [
               {
                 "kind": "account",
-                "path": "tokenPoolConfig"
+                "path": "tokenPool"
               },
               {
                 "kind": "const",
@@ -257,7 +257,7 @@ export type Memeoor = {
             "seeds": [
               {
                 "kind": "account",
-                "path": "tokenPoolConfig"
+                "path": "tokenPool"
               },
               {
                 "kind": "const",
@@ -336,16 +336,16 @@ export type Memeoor = {
       ]
     },
     {
-      "name": "tokenPoolConfig",
+      "name": "tokenPool",
       "discriminator": [
-        169,
-        171,
-        229,
-        156,
-        1,
-        72,
-        132,
-        235
+        103,
+        51,
+        150,
+        210,
+        226,
+        131,
+        104,
+        33
       ]
     },
     {
@@ -438,7 +438,7 @@ export type Memeoor = {
       }
     },
     {
-      "name": "tokenPoolConfig",
+      "name": "tokenPool",
       "type": {
         "kind": "struct",
         "fields": [
