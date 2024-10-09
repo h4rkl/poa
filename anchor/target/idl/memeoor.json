@@ -1,5 +1,5 @@
 {
-  "address": "HQ9qykbDvtGPm5LtLzCyn25ntRwi9DePTevwA6o9mXAZ",
+  "address": "memev6gnPZhMteK2mQ2GXpHv6ZNtCFJsbzbhG3A3T1m",
   "metadata": {
     "name": "memeoor",
     "version": "0.1.0",
@@ -155,16 +155,16 @@
       ]
     },
     {
-      "name": "initialize_pool",
+      "name": "initialize_token",
       "discriminator": [
-        95,
-        180,
-        10,
-        172,
-        84,
-        174,
-        232,
-        40
+        38,
+        209,
+        150,
+        50,
+        190,
+        117,
+        16,
+        54
       ],
       "accounts": [
         {
@@ -173,7 +173,7 @@
           "signer": true
         },
         {
-          "name": "pool_authority",
+          "name": "token_pool_config",
           "writable": true,
           "pda": {
             "seeds": [
@@ -192,35 +192,30 @@
                   111,
                   114,
                   95,
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
                   99,
                   111,
-                  108
+                  110,
+                  102,
+                  105,
+                  103
                 ]
               }
             ]
           }
         },
         {
-          "name": "from",
-          "writable": true
+          "name": "creator",
+          "writable": true,
+          "signer": true
         },
         {
-          "name": "pool_token_account",
+          "name": "token_pool_vault",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "account",
-                "path": "pool_authority"
-              },
-              {
-                "kind": "account",
-                "path": "mint"
+                "path": "token_pool_config"
               },
               {
                 "kind": "const",
@@ -233,14 +228,51 @@
                   111,
                   114,
                   95,
-                  112,
-                  114,
-                  111,
                   116,
                   111,
-                  99,
+                  107,
+                  101,
+                  110,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "token_pool_config"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  109,
+                  101,
                   111,
-                  108
+                  111,
+                  114,
+                  95,
+                  102,
+                  101,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
                 ]
               }
             ]
@@ -260,8 +292,12 @@
       ],
       "args": [
         {
-          "name": "amount",
-          "type": "u64"
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "InitializeTokenPoolArgs"
+            }
+          }
         }
       ]
     }
@@ -278,6 +314,32 @@
         9,
         85,
         148
+      ]
+    },
+    {
+      "name": "FeeVault",
+      "discriminator": [
+        192,
+        178,
+        69,
+        232,
+        58,
+        149,
+        157,
+        132
+      ]
+    },
+    {
+      "name": "TokenPoolConfig",
+      "discriminator": [
+        169,
+        171,
+        229,
+        156,
+        1,
+        72,
+        132,
+        235
       ]
     },
     {
@@ -324,6 +386,96 @@
         "fields": [
           {
             "name": "authority",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeeVault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "total_fees_collected",
+            "type": "u64"
+          },
+          {
+            "name": "liquidity_pool_address",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeTokenPoolArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "initial_cost",
+            "type": "u64"
+          },
+          {
+            "name": "step_interval",
+            "type": "u64"
+          },
+          {
+            "name": "step_factor",
+            "type": "u64"
+          },
+          {
+            "name": "total_supply",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenPoolConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint_address",
+            "type": "pubkey"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "initial_cost",
+            "type": "u64"
+          },
+          {
+            "name": "step_interval",
+            "type": "u64"
+          },
+          {
+            "name": "step_factor",
+            "type": "u64"
+          },
+          {
+            "name": "max_pool_cost",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "total_supply",
+            "type": "u64"
+          },
+          {
+            "name": "mined_tokens",
+            "type": "u64"
+          },
+          {
+            "name": "pool_fee_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidity_pool_address",
             "type": "pubkey"
           }
         ]

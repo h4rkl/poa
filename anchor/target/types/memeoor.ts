@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/memeoor.json`.
  */
 export type Memeoor = {
-  "address": "HQ9qykbDvtGPm5LtLzCyn25ntRwi9DePTevwA6o9mXAZ",
+  "address": "memev6gnPZhMteK2mQ2GXpHv6ZNtCFJsbzbhG3A3T1m",
   "metadata": {
     "name": "memeoor",
     "version": "0.1.0",
@@ -161,16 +161,16 @@ export type Memeoor = {
       ]
     },
     {
-      "name": "initializePool",
+      "name": "initializeToken",
       "discriminator": [
-        95,
-        180,
-        10,
-        172,
-        84,
-        174,
-        232,
-        40
+        38,
+        209,
+        150,
+        50,
+        190,
+        117,
+        16,
+        54
       ],
       "accounts": [
         {
@@ -179,7 +179,7 @@ export type Memeoor = {
           "signer": true
         },
         {
-          "name": "poolAuthority",
+          "name": "tokenPoolConfig",
           "writable": true,
           "pda": {
             "seeds": [
@@ -198,35 +198,30 @@ export type Memeoor = {
                   111,
                   114,
                   95,
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
                   99,
                   111,
-                  108
+                  110,
+                  102,
+                  105,
+                  103
                 ]
               }
             ]
           }
         },
         {
-          "name": "from",
-          "writable": true
+          "name": "creator",
+          "writable": true,
+          "signer": true
         },
         {
-          "name": "poolTokenAccount",
+          "name": "tokenPoolVault",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "account",
-                "path": "poolAuthority"
-              },
-              {
-                "kind": "account",
-                "path": "mint"
+                "path": "tokenPoolConfig"
               },
               {
                 "kind": "const",
@@ -239,14 +234,51 @@ export type Memeoor = {
                   111,
                   114,
                   95,
-                  112,
-                  114,
-                  111,
                   116,
                   111,
-                  99,
+                  107,
+                  101,
+                  110,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "feeVault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "tokenPoolConfig"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  109,
+                  101,
                   111,
-                  108
+                  111,
+                  114,
+                  95,
+                  102,
+                  101,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
                 ]
               }
             ]
@@ -266,8 +298,12 @@ export type Memeoor = {
       ],
       "args": [
         {
-          "name": "amount",
-          "type": "u64"
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "initializeTokenPoolArgs"
+            }
+          }
         }
       ]
     }
@@ -284,6 +320,32 @@ export type Memeoor = {
         9,
         85,
         148
+      ]
+    },
+    {
+      "name": "feeVault",
+      "discriminator": [
+        192,
+        178,
+        69,
+        232,
+        58,
+        149,
+        157,
+        132
+      ]
+    },
+    {
+      "name": "tokenPoolConfig",
+      "discriminator": [
+        169,
+        171,
+        229,
+        156,
+        1,
+        72,
+        132,
+        235
       ]
     },
     {
@@ -330,6 +392,96 @@ export type Memeoor = {
         "fields": [
           {
             "name": "authority",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "feeVault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "totalFeesCollected",
+            "type": "u64"
+          },
+          {
+            "name": "liquidityPoolAddress",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "initializeTokenPoolArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "initialCost",
+            "type": "u64"
+          },
+          {
+            "name": "stepInterval",
+            "type": "u64"
+          },
+          {
+            "name": "stepFactor",
+            "type": "u64"
+          },
+          {
+            "name": "totalSupply",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tokenPoolConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mintAddress",
+            "type": "pubkey"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "initialCost",
+            "type": "u64"
+          },
+          {
+            "name": "stepInterval",
+            "type": "u64"
+          },
+          {
+            "name": "stepFactor",
+            "type": "u64"
+          },
+          {
+            "name": "maxPoolCost",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "totalSupply",
+            "type": "u64"
+          },
+          {
+            "name": "minedTokens",
+            "type": "u64"
+          },
+          {
+            "name": "poolFeeVault",
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidityPoolAddress",
             "type": "pubkey"
           }
         ]

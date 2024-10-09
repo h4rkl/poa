@@ -9,7 +9,7 @@ pub mod errors;
 pub mod instructions;
 pub mod state;
 
-declare_id!("HQ9qykbDvtGPm5LtLzCyn25ntRwi9DePTevwA6o9mXAZ");
+declare_id!("memev6gnPZhMteK2mQ2GXpHv6ZNtCFJsbzbhG3A3T1m");
 
 #[program]
 pub mod memeoor {
