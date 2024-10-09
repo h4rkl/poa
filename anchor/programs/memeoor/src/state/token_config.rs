@@ -26,7 +26,7 @@ pub struct InitializeTokenPool<'info> {
         seeds = [mint.key().as_ref(), CONFIG_SEED],
         bump
     )]
-    pub token_pool_acc: Account<'info, TokenPoolAcc>,
+    pub token_pool_acc: Box<Account<'info, TokenPoolAcc>>,
 
     #[account(mut)]
     pub creator: Signer<'info>,
@@ -39,7 +39,7 @@ pub struct InitializeTokenPool<'info> {
         token::mint = mint,
         token::authority = token_pool_acc,
     )]
-    pub token_pool_vault: Account<'info, TokenAccount>,
+    pub token_pool_vault: Box<Account<'info, TokenAccount>>,
 
     #[account(
         init,
@@ -48,7 +48,7 @@ pub struct InitializeTokenPool<'info> {
         seeds = [token_pool_acc.key().as_ref(), FEE_VAULT_SEED],
         bump
     )]
-    pub fee_vault: Account<'info, FeeVault>,
+    pub fee_vault: Box<Account<'info, FeeVault>>,
 
     pub mint: Account<'info, Mint>,
     pub token_program: Program<'info, Token>,
