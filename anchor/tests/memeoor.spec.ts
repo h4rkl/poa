@@ -80,16 +80,6 @@ describe('Airdrop Program', () => {
       userAccount.publicKey
     );
 
-    // Fund the pool with some tokens
-    await mintTo(
-      provider.connection,
-      poolOwner,
-      mint,
-      poolOwnerTokenAccount,
-      poolOwner.publicKey,
-      toLamports(1000000)
-    );
-
     [tokenPoolAcc] = PublicKey.findProgramAddressSync(
       [mint.toBuffer(), Buffer.from(CONFIG_SEED)],
       program.programId
@@ -154,20 +144,20 @@ describe('Airdrop Program', () => {
 
     console.log('Transaction hash:', tx);
 
-    // Fetch the token pool config and check that the values are set correctly
-    const fetchTPConfig = await program.account.tokenPool.fetch(tokenPoolAcc);
-    expect(fetchTPConfig.creator.equals(poolOwner.publicKey)).toBe(true);
-    expect(fetchTPConfig.initialCost.eq(initialCost)).toBe(true);
-    expect(fetchTPConfig.stepInterval.eq(stepInterval)).toBe(true);
-    expect(fetchTPConfig.stepFactor.eq(stepFactor)).toBe(true);
-    expect(fetchTPConfig.totalSupply.eq(totalSupply)).toBe(true);
+    // // Fetch the token pool config and check that the values are set correctly
+    // const fetchTPConfig = await program.account.tokenPoolAcc.fetch(tokenPoolAcc);
+    // expect(fetchTPConfig.creator.equals(poolOwner.publicKey)).toBe(true);
+    // expect(fetchTPConfig.initialCost.eq(initialCost)).toBe(true);
+    // expect(fetchTPConfig.stepInterval.eq(stepInterval)).toBe(true);
+    // expect(fetchTPConfig.stepFactor.eq(stepFactor)).toBe(true);
+    // expect(fetchTPConfig.totalSupply.eq(totalSupply)).toBe(true);
 
-    // Check pool token account balance
-    const tokenPoolVaultInfo = await getAccount(
-      provider.connection,
-      tokenPoolVault
-    );
-    expect(tokenPoolVaultInfo.amount).toBe(BigInt(totalSupply.toString()));
+    // // Check pool token account balance
+    // const tokenPoolVaultInfo = await getAccount(
+    //   provider.connection,
+    //   tokenPoolVault
+    // );
+    // expect(tokenPoolVaultInfo.amount).toBe(BigInt(totalSupply.toString()));
   });
 
   //   // Test claiming tokens

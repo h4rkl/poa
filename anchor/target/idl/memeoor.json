@@ -330,16 +330,16 @@
       ]
     },
     {
-      "name": "TokenPool",
+      "name": "TokenPoolAcc",
       "discriminator": [
-        103,
-        51,
-        150,
-        210,
-        226,
-        131,
-        104,
-        33
+        180,
+        83,
+        166,
+        251,
+        136,
+        98,
+        11,
+        252
       ]
     },
     {
@@ -401,7 +401,7 @@
             "type": "u64"
           },
           {
-            "name": "liquidity_pool_address",
+            "name": "token_pool_vault",
             "type": "pubkey"
           }
         ]
@@ -432,7 +432,7 @@
       }
     },
     {
-      "name": "TokenPool",
+      "name": "TokenPoolAcc",
       "type": {
         "kind": "struct",
         "fields": [
@@ -472,10 +472,6 @@
           },
           {
             "name": "pool_fee_vault",
-            "type": "pubkey"
-          },
-          {
-            "name": "liquidity_pool_address",
             "type": "pubkey"
           }
         ]

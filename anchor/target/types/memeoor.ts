@@ -336,16 +336,16 @@ export type Memeoor = {
       ]
     },
     {
-      "name": "tokenPool",
+      "name": "tokenPoolAcc",
       "discriminator": [
-        103,
-        51,
-        150,
-        210,
-        226,
-        131,
-        104,
-        33
+        180,
+        83,
+        166,
+        251,
+        136,
+        98,
+        11,
+        252
       ]
     },
     {
@@ -407,7 +407,7 @@ export type Memeoor = {
             "type": "u64"
           },
           {
-            "name": "liquidityPoolAddress",
+            "name": "tokenPoolVault",
             "type": "pubkey"
           }
         ]
@@ -438,7 +438,7 @@ export type Memeoor = {
       }
     },
     {
-      "name": "tokenPool",
+      "name": "tokenPoolAcc",
       "type": {
         "kind": "struct",
         "fields": [
@@ -478,10 +478,6 @@ export type Memeoor = {
           },
           {
             "name": "poolFeeVault",
-            "type": "pubkey"
-          },
-          {
-            "name": "liquidityPoolAddress",
             "type": "pubkey"
           }
         ]

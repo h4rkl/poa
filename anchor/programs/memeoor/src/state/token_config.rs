@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{Token, TokenAccount, Mint};
+use anchor_spl::token::{Mint, Token, TokenAccount};
 
 use crate::{constants::*, InitializeTokenPoolArgs};
 
@@ -12,17 +12,17 @@ pub struct InitializeTokenPool<'info> {
     #[account(
         init,
         payer = authority,
-        space = 8 + // discriminator
-                32 + // mint_address: Pubkey
-                32 + // creator: Pubkey
-                8 + // initial_cost: u64
-                8 + // step_interval: u64
-                8 + // step_factor: u64
-                8 + // max_pool_cost: Option<u64>
-                8 + // total_supply: u64
-                8 + // mined_tokens: u64
-                32 + // pool_fee_vault: Pubkey
-                32, // liquidity_pool_address: Pubkey
+        space = 
+            8 + // discriminator
+            32 + // mint_address: Pubkey
+            32 + // creator: Pubkey
+            8 + // initial_cost: u64
+            8 + // step_interval: u64
+            8 + // step_factor: u64
+            9 + // max_pool_cost: Option<u64>
+            8 + // total_supply: u64
+            8 + // mined_tokens: u64
+            32, // pool_fee_vault: Pubkey
         seeds = [mint.key().as_ref(), CONFIG_SEED],
         bump
     )]
@@ -66,11 +66,10 @@ pub struct TokenPoolAcc {
     pub total_supply: u64,
     pub mined_tokens: u64,
     pub pool_fee_vault: Pubkey,
-    pub liquidity_pool_address: Pubkey,
 }
 
 #[account]
 pub struct FeeVault {
     pub total_fees_collected: u64,
-    pub liquidity_pool_address: Pubkey,
+    pub token_pool_vault: Pubkey,
 }
