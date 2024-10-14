@@ -243,6 +243,10 @@
             "type": "string"
           },
           {
+            "name": "token_decimals",
+            "type": "u8"
+          },
+          {
             "name": "initial_cost",
             "type": "u64"
           },

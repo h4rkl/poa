@@ -249,6 +249,10 @@ export type Memeoor = {
             "type": "string"
           },
           {
+            "name": "tokenDecimals",
+            "type": "u8"
+          },
+          {
             "name": "initialCost",
             "type": "u64"
           },

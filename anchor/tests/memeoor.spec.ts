@@ -12,6 +12,7 @@ import {
   createAccount,
   createMint,
   getAccount,
+  getMint,
   mintTo,
   setAuthority,
 } from '@solana/spl-token';
@@ -121,10 +122,12 @@ describe('Memeoor Program', () => {
     const stepInterval = new anchor.BN(toLamports(10));
     const stepFactor = new anchor.BN(toLamports(2));
     const totalSupply = new anchor.BN(toLamports(100));
+    const tokenDecimals = 5;
 
     await program.methods
       .initializeToken({
         tokenName: memeTokenName,
+        tokenDecimals,
         initialCost,
         stepInterval,
         stepFactor,
@@ -140,7 +143,7 @@ describe('Memeoor Program', () => {
         systemProgram: SystemProgram.programId,
       })
       .signers([poolOwner])
-      .rpc().catch(e => console.error("***************", e));
+      .rpc().catch(e => console.error("***initialise token error***", e));
 
     // Fetch the token pool config and check that the values are set correctly
     const fetchTPConfig = await program.account.tokenPoolAcc.fetch(tokenPoolAcc);
@@ -150,13 +153,19 @@ describe('Memeoor Program', () => {
     expect(fetchTPConfig.stepFactor.eq(stepFactor)).toBe(true);
     expect(fetchTPConfig.poolFeeVault.equals(feeVault)).toBe(true);
 
+    // Add tests to check that token meta is correct
+    const mintInfo = await getMint(provider.connection, mint);
+    expect(mintInfo.decimals).toBe(tokenDecimals);
+    expect(mintInfo.supply.toString()).toBe(totalSupply.toString());
+    expect(mintInfo.isInitialized).toBe(true);
+    expect(mintInfo.freezeAuthority).toBeNull();
+    expect(mintInfo.mintAuthority?.equals(mint)).toBe(true);
+
     // Check pool token account balance
     const tokenPoolVaultInfo = await getAccount(
       provider.connection,
       tokenPoolVault
     );
-    console.log(JSON.stringify(tokenPoolVaultInfo));
-    
     expect(tokenPoolVaultInfo.amount).toBe(BigInt(totalSupply.toString()));
   });
 

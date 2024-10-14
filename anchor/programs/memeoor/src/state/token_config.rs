@@ -14,10 +14,10 @@ pub struct InitializeTokenPool<'info> {
         payer = authority,
         seeds = [MINT_SEED, args.token_name.as_bytes()],
         bump,
-        mint::decimals = 9,
+        mint::decimals = args.token_decimals,
         mint::authority = mint,
     )]
-    pub mint: Account<'info, Mint>,
+    pub mint: Box<Account<'info, Mint>>,
 
     #[account(
         init,

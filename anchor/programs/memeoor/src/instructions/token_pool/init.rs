@@ -5,6 +5,7 @@ use anchor_spl::token;
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct InitializeTokenPoolArgs {
     pub token_name: String,
+    pub token_decimals: u8,
     initial_cost: u64,
     step_interval: u64,
     step_factor: u64,
