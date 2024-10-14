@@ -1,6 +1,6 @@
 import * as anchor from '@coral-xyz/anchor';
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults'
-import { findMetadataPda, mplTokenMetadata, MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata'
+import { findMetadataPda, mplTokenMetadata, MPL_TOKEN_METADATA_PROGRAM_ID, findMeta, fetchDigitalAsset } from '@metaplex-foundation/mpl-token-metadata'
 import { Program } from '@coral-xyz/anchor';
 import {
   Keypair,
@@ -171,6 +171,12 @@ describe('Memeoor Program', () => {
     expect(fetchTPConfig.stepInterval.eq(stepInterval)).toBe(true);
     expect(fetchTPConfig.stepFactor.eq(stepFactor)).toBe(true);
     expect(fetchTPConfig.poolFeeVault.equals(feeVault)).toBe(true);
+
+    // make checks for metadata values
+    const metadataAccount = await fetchDigitalAsset(umi, publicKey(mint));
+    expect(metadataAccount.metadata.name).toBe(metadata.name);
+    expect(metadataAccount.metadata.symbol).toBe(metadata.symbol);
+    expect(metadataAccount.metadata.uri).toBe(metadata.uri);
 
     // Add tests to check that token meta is correct
     const mintInfo = await getMint(provider.connection, mint);

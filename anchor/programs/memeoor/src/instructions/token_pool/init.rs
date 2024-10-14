@@ -2,7 +2,9 @@ use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::{
     metadata::{
-        create_metadata_accounts_v3, mpl_token_metadata::types::DataV2, CreateMetadataAccountsV3,
+        create_metadata_accounts_v3,
+        mpl_token_metadata::types::DataV2,
+        CreateMetadataAccountsV3,
     },
     token,
 };
@@ -36,11 +38,11 @@ pub fn initialize_token(
 
     // On-chain token metadata for the mint
     let data_v2 = DataV2 {
-        name: args.token_name.clone(),
-        symbol: args.symbol,
-        uri: args.uri,
+        name: "Solana Gold".to_string(),
+        symbol: "GOLDSOL".to_string(),
+        uri: "https://raw.githubusercontent.com/solana-developers/program-examples/new-examples/tokens/tokens/.assets/spl-token.json".to_string(),
         seller_fee_basis_points: 0,
-        creators: Some(vec![]),
+        creators: None,
         collection: None,
         uses: None,
     };
