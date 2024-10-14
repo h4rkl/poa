@@ -1,10 +1,13 @@
 import * as anchor from '@coral-xyz/anchor';
+import { createUmi } from '@metaplex-foundation/umi-bundle-defaults'
+import { findMetadataPda, mplTokenMetadata, MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata'
 import { Program } from '@coral-xyz/anchor';
 import {
   Keypair,
   PublicKey,
   SystemProgram,
   LAMPORTS_PER_SOL,
+  SYSVAR_RENT_PUBKEY,
 } from '@solana/web3.js';
 import {
   AuthorityType,
@@ -24,6 +27,7 @@ import {
   toLamports,
 } from './test-helpers';
 import { Memeoor } from '../target/types/memeoor';
+import { Pda, publicKey } from '@metaplex-foundation/umi';
 
 // Configure the provider to use the local cluster
 const provider = anchor.AnchorProvider.env();
@@ -31,6 +35,7 @@ anchor.setProvider(provider);
 
 // Load the program
 const program = anchor.workspace.Memeoor as Program<Memeoor>;
+const umi = createUmi(provider.connection).use(mplTokenMetadata())
 
 // Define the Jest tests
 describe('Memeoor Program', () => {
@@ -43,7 +48,13 @@ describe('Memeoor Program', () => {
   let tokenPoolVault: PublicKey;
   let tokenPoolAcc: PublicKey;
   let feeVault: PublicKey;
-  const memeTokenName = "meme";
+  let mintMetadataPDA: Pda;
+
+  const metadata = {
+    uri: "https://raw.githubusercontent.com/solana-developers/program-examples/new-examples/tokens/tokens/.assets/spl-token.json",
+    name: "Solana Gold",
+    symbol: "GOLDSOL",
+  };
 
   // Before all tests, set up accounts and mint tokens
   beforeAll(async () => {
@@ -64,9 +75,12 @@ describe('Memeoor Program', () => {
 
     // Create a mint
     mint = PublicKey.findProgramAddressSync(
-      [Buffer.from(MINT_SEED), Buffer.from(memeTokenName)],
+      [Buffer.from(MINT_SEED), Buffer.from(metadata.name)],
       program.programId
     )[0]
+
+    // reward token mint metadata account address
+    mintMetadataPDA = findMetadataPda(umi, { mint: publicKey(mint) });
 
     // poolOwnerTokenAccount = await createAccount(
     //   provider.connection,
@@ -126,7 +140,9 @@ describe('Memeoor Program', () => {
 
     await program.methods
       .initializeToken({
-        tokenName: memeTokenName,
+        tokenName: metadata.name,
+        uri: metadata.uri,
+        symbol: metadata.symbol,
         tokenDecimals,
         initialCost,
         stepInterval,
@@ -136,11 +152,14 @@ describe('Memeoor Program', () => {
       .accountsStrict({
         authority: poolOwner.publicKey,
         mint,
+        metadataAccount: mintMetadataPDA[0],
         tokenPoolAcc,
         tokenPoolVault,
         feeVault,
+        tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
+        rent: SYSVAR_RENT_PUBKEY,
       })
       .signers([poolOwner])
       .rpc().catch(e => console.error("***initialise token error***", e));

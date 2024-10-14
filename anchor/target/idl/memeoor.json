@@ -55,6 +55,10 @@
           }
         },
         {
+          "name": "metadata_account",
+          "writable": true
+        },
+        {
           "name": "token_pool_acc",
           "writable": true,
           "pda": {
@@ -160,12 +164,20 @@
           }
         },
         {
+          "name": "token_metadata_program",
+          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+        },
+        {
           "name": "token_program",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "system_program",
           "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
         }
       ],
       "args": [
@@ -240,6 +252,14 @@
         "fields": [
           {
             "name": "token_name",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
             "type": "string"
           },
           {

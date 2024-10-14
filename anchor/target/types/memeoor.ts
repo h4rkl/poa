@@ -61,6 +61,10 @@ export type Memeoor = {
           }
         },
         {
+          "name": "metadataAccount",
+          "writable": true
+        },
+        {
           "name": "tokenPoolAcc",
           "writable": true,
           "pda": {
@@ -166,12 +170,20 @@ export type Memeoor = {
           }
         },
         {
+          "name": "tokenMetadataProgram",
+          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+        },
+        {
           "name": "tokenProgram",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
         }
       ],
       "args": [
@@ -246,6 +258,14 @@ export type Memeoor = {
         "fields": [
           {
             "name": "tokenName",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
             "type": "string"
           },
           {

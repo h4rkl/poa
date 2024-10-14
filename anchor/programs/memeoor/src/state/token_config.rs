@@ -1,5 +1,8 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{Mint, Token, TokenAccount};
+use anchor_spl::{
+    metadata::{mpl_token_metadata::accounts::Metadata as MetadataAccount, Metadata},
+    token::{Mint, Token, TokenAccount}
+};
 
 use crate::{constants::*, InitializeTokenPoolArgs};
 
@@ -18,6 +21,10 @@ pub struct InitializeTokenPool<'info> {
         mint::authority = mint,
     )]
     pub mint: Box<Account<'info, Mint>>,
+
+    ///CHECK: Using "address" constraint to validate metadata account address
+    #[account(mut, address = MetadataAccount::find_pda(&mint.key()).0)]
+    pub metadata_account: UncheckedAccount<'info>,
 
     #[account(
         init,
@@ -55,8 +62,10 @@ pub struct InitializeTokenPool<'info> {
     )]
     pub fee_vault: Box<Account<'info, FeeVault>>,
 
+    pub token_metadata_program: Program<'info, Metadata>,
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
+    pub rent: Sysvar<'info, Rent>,
 }
 
 #[account]
