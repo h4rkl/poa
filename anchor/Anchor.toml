@@ -28,3 +28,7 @@ upgradeable = false
 bind_address = "127.0.0.1"
 ledger = ".anchor/test-ledger"
 rpc_port = 8899
+
+# [[test.validator.account]]
+# address = "harkLSUe2Puud2TVQUhHW4vs45mF1YMLU3PThPCuWd8"
+# filename = "~/.config/solana/id.json"

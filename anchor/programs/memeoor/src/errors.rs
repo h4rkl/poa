@@ -6,8 +6,4 @@ pub enum CustomError {
     InvalidTokenPoolAccount,
     #[msg("Invalid pool address.")]
     InvalidPoolAddress,
-    #[msg("User has already claimed their tokens.")]
-    AlreadyClaimed,
-    #[msg("Invalid amount.")]
-    InvalidAmount,
 }

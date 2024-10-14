@@ -12,29 +12,34 @@ pub struct InitializeTokenPool<'info> {
     #[account(
         init,
         payer = authority,
+        seeds = [MINT_SEED, args.token_name.as_bytes()],
+        bump,
+        mint::decimals = 9,
+        mint::authority = mint,
+    )]
+    pub mint: Account<'info, Mint>,
+
+    #[account(
+        init,
+        payer = authority,
         space = 
             8 + // discriminator
+            32 + // authority: Pubkey
             32 + // mint_address: Pubkey
-            32 + // creator: Pubkey
+            32 + // pool_fee_vault: Pubkey
             8 + // initial_cost: u64
             8 + // step_interval: u64
             8 + // step_factor: u64
-            9 + // max_pool_cost: Option<u64>
-            8 + // total_supply: u64
-            8 + // mined_tokens: u64
-            32, // pool_fee_vault: Pubkey
-        seeds = [mint.key().as_ref(), CONFIG_SEED],
+            9, // max_pool_cost: Option<u64>
+        seeds = [CONFIG_SEED, mint.key().as_ref()],
         bump
     )]
     pub token_pool_acc: Box<Account<'info, TokenPoolAcc>>,
 
-    #[account(mut)]
-    pub creator: Signer<'info>,
-
     #[account(
         init_if_needed,
         payer = authority,
-        seeds = [token_pool_acc.key().as_ref(), TOKEN_VAULT_SEED],
+        seeds = [TOKEN_VAULT_SEED, mint.key().as_ref(), token_pool_acc.key().as_ref()],
         bump,
         token::mint = mint,
         token::authority = token_pool_acc,
@@ -44,32 +49,28 @@ pub struct InitializeTokenPool<'info> {
     #[account(
         init,
         payer = authority,
-        space = 8 + 8 + 32,
-        seeds = [token_pool_acc.key().as_ref(), FEE_VAULT_SEED],
+        space = 8 + 32,
+        seeds = [FEE_VAULT_SEED, token_pool_acc.key().as_ref()],
         bump
     )]
     pub fee_vault: Box<Account<'info, FeeVault>>,
 
-    pub mint: Account<'info, Mint>,
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
 
 #[account]
 pub struct TokenPoolAcc {
+    pub authority: Pubkey,
     pub mint_address: Pubkey,
-    pub creator: Pubkey,
+    pub pool_fee_vault: Pubkey,
     pub initial_cost: u64,
     pub step_interval: u64,
     pub step_factor: u64,
     pub max_pool_cost: Option<u64>,
-    pub total_supply: u64,
-    pub mined_tokens: u64,
-    pub pool_fee_vault: Pubkey,
 }
 
 #[account]
 pub struct FeeVault {
-    pub total_fees_collected: u64,
-    pub token_pool_vault: Pubkey,
+    pub token_pool_acc: Pubkey,
 }

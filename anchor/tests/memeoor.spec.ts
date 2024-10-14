@@ -7,16 +7,18 @@ import {
   LAMPORTS_PER_SOL,
 } from '@solana/web3.js';
 import {
+  AuthorityType,
   TOKEN_PROGRAM_ID,
   createAccount,
   createMint,
   getAccount,
   mintTo,
+  setAuthority,
 } from '@solana/spl-token';
 import {
   CONFIG_SEED,
   FEE_VAULT_SEED,
-  MEMEOOR_PROTOCOL,
+  MINT_SEED,
   TOKEN_VAULT_SEED,
   toLamports,
 } from './test-helpers';
@@ -30,7 +32,7 @@ anchor.setProvider(provider);
 const program = anchor.workspace.Memeoor as Program<Memeoor>;
 
 // Define the Jest tests
-describe('Airdrop Program', () => {
+describe('Memeoor Program', () => {
   let poolOwner: Keypair;
   let poolOwnerTokenAccount: PublicKey;
   let mint: PublicKey;
@@ -40,6 +42,7 @@ describe('Airdrop Program', () => {
   let tokenPoolVault: PublicKey;
   let tokenPoolAcc: PublicKey;
   let feeVault: PublicKey;
+  const memeTokenName = "meme";
 
   // Before all tests, set up accounts and mint tokens
   beforeAll(async () => {
@@ -59,57 +62,54 @@ describe('Airdrop Program', () => {
     );
 
     // Create a mint
-    mint = await createMint(
-      provider.connection,
-      poolOwner,
-      poolOwner.publicKey,
-      null,
-      9
-    );
-
-    poolOwnerTokenAccount = await createAccount(
-      provider.connection,
-      poolOwner,
-      mint,
-      poolOwner.publicKey
-    );
-    userTokenAccount = await createAccount(
-      provider.connection,
-      userAccount,
-      mint,
-      userAccount.publicKey
-    );
-
-    [tokenPoolAcc] = PublicKey.findProgramAddressSync(
-      [mint.toBuffer(), Buffer.from(CONFIG_SEED)],
+    mint = PublicKey.findProgramAddressSync(
+      [Buffer.from(MINT_SEED), Buffer.from(memeTokenName)],
       program.programId
-    );
+    )[0]
 
-    [tokenPoolVault] = PublicKey.findProgramAddressSync(
-      [tokenPoolAcc.toBuffer(), Buffer.from(TOKEN_VAULT_SEED)],
-      program.programId
-    );
+    // poolOwnerTokenAccount = await createAccount(
+    //   provider.connection,
+    //   poolOwner,
+    //   mint,
+    //   poolOwner.publicKey
+    // );
+    // userTokenAccount = await createAccount(
+    //   provider.connection,
+    //   userAccount,
+    //   mint,
+    //   userAccount.publicKey
+    // );
 
-    [feeVault] = PublicKey.findProgramAddressSync(
-      [tokenPoolAcc.toBuffer(), Buffer.from(FEE_VAULT_SEED)],
+    tokenPoolAcc = PublicKey.findProgramAddressSync(
+      [Buffer.from(CONFIG_SEED), mint.toBuffer()],
       program.programId
-    );
+    )[0];
 
-    [userClaim] = PublicKey.findProgramAddressSync(
-      [
-        userAccount.publicKey.toBuffer(),
-        tokenPoolAcc.toBuffer(),
-        Buffer.from(MEMEOOR_PROTOCOL),
-      ],
+    tokenPoolVault = PublicKey.findProgramAddressSync(
+      [Buffer.from(TOKEN_VAULT_SEED), mint.toBuffer(), tokenPoolAcc.toBuffer()],
       program.programId
-    );
+    )[0];
+
+    feeVault = PublicKey.findProgramAddressSync(
+      [Buffer.from(FEE_VAULT_SEED), tokenPoolAcc.toBuffer()],
+      program.programId
+    )[0];
+
+    // [userClaim] = PublicKey.findProgramAddressSync(
+    //   [
+    //     userAccount.publicKey.toBuffer(),
+    //     tokenPoolAcc.toBuffer(),
+    //     Buffer.from(MEMEOOR_PROTOCOL),
+    //   ],
+    //   program.programId
+    // );
     console.log('Accounts:');
     console.log('poolOwner public key:', poolOwner.publicKey.toBase58());
-    console.log('poolOwnerTokenAccount:', poolOwnerTokenAccount.toBase58());
+    // console.log('poolOwnerTokenAccount:', poolOwnerTokenAccount.toBase58());
     console.log('mint:', mint.toBase58());
     console.log('userAccount public key:', userAccount.publicKey.toBase58());
-    console.log('userTokenAccount:', userTokenAccount.toBase58());
-    console.log('userClaim:', userClaim.toBase58());
+    // console.log('userTokenAccount:', userTokenAccount.toBase58());
+    // console.log('userClaim:', userClaim.toBase58());
     console.log('tokenPoolVault:', tokenPoolVault.toBase58());
     console.log('tokenPoolAcc:', tokenPoolAcc.toBase58());
     console.log('feeVault:', feeVault.toBase58());
@@ -118,12 +118,13 @@ describe('Airdrop Program', () => {
   // Test initializing the token pool
   it('Initializes the token pool', async () => {
     const initialCost = new anchor.BN(toLamports(1));
-    const stepInterval = new anchor.BN(100);
-    const stepFactor = new anchor.BN(10);
-    const totalSupply = new anchor.BN(toLamports(1000000));
+    const stepInterval = new anchor.BN(toLamports(10));
+    const stepFactor = new anchor.BN(toLamports(2));
+    const totalSupply = new anchor.BN(toLamports(100));
 
-    const tx = await program.methods
+    await program.methods
       .initializeToken({
+        tokenName: memeTokenName,
         initialCost,
         stepInterval,
         stepFactor,
@@ -131,33 +132,32 @@ describe('Airdrop Program', () => {
       })
       .accountsStrict({
         authority: poolOwner.publicKey,
-        tokenPoolAcc: tokenPoolAcc,
-        creator: poolOwner.publicKey,
+        mint,
+        tokenPoolAcc,
         tokenPoolVault,
-        feeVault: feeVault,
-        mint: mint,
+        feeVault,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
       })
       .signers([poolOwner])
-      .rpc();
+      .rpc().catch(e => console.error("***************", e));
 
-    console.log('Transaction hash:', tx);
+    // Fetch the token pool config and check that the values are set correctly
+    const fetchTPConfig = await program.account.tokenPoolAcc.fetch(tokenPoolAcc);
+    expect(fetchTPConfig.authority.equals(poolOwner.publicKey)).toBe(true);
+    expect(fetchTPConfig.initialCost.eq(initialCost)).toBe(true);
+    expect(fetchTPConfig.stepInterval.eq(stepInterval)).toBe(true);
+    expect(fetchTPConfig.stepFactor.eq(stepFactor)).toBe(true);
+    expect(fetchTPConfig.poolFeeVault.equals(feeVault)).toBe(true);
 
-    // // Fetch the token pool config and check that the values are set correctly
-    // const fetchTPConfig = await program.account.tokenPoolAcc.fetch(tokenPoolAcc);
-    // expect(fetchTPConfig.creator.equals(poolOwner.publicKey)).toBe(true);
-    // expect(fetchTPConfig.initialCost.eq(initialCost)).toBe(true);
-    // expect(fetchTPConfig.stepInterval.eq(stepInterval)).toBe(true);
-    // expect(fetchTPConfig.stepFactor.eq(stepFactor)).toBe(true);
-    // expect(fetchTPConfig.totalSupply.eq(totalSupply)).toBe(true);
-
-    // // Check pool token account balance
-    // const tokenPoolVaultInfo = await getAccount(
-    //   provider.connection,
-    //   tokenPoolVault
-    // );
-    // expect(tokenPoolVaultInfo.amount).toBe(BigInt(totalSupply.toString()));
+    // Check pool token account balance
+    const tokenPoolVaultInfo = await getAccount(
+      provider.connection,
+      tokenPoolVault
+    );
+    console.log(JSON.stringify(tokenPoolVaultInfo));
+    
+    expect(tokenPoolVaultInfo.amount).toBe(BigInt(totalSupply.toString()));
   });
 
   //   // Test claiming tokens

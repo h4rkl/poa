@@ -8,153 +8,6 @@
   },
   "instructions": [
     {
-      "name": "claim_tokens",
-      "discriminator": [
-        108,
-        216,
-        210,
-        231,
-        0,
-        212,
-        42,
-        64
-      ],
-      "accounts": [
-        {
-          "name": "pool_authority",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "account",
-                "path": "mint"
-              },
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  109,
-                  101,
-                  111,
-                  111,
-                  114,
-                  95,
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "user_token_account",
-          "writable": true
-        },
-        {
-          "name": "user",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "pool_token_account",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "account",
-                "path": "pool_authority"
-              },
-              {
-                "kind": "account",
-                "path": "mint"
-              },
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  109,
-                  101,
-                  111,
-                  111,
-                  114,
-                  95,
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "user_claim",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "account",
-                "path": "user"
-              },
-              {
-                "kind": "account",
-                "path": "pool_authority"
-              },
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  109,
-                  101,
-                  111,
-                  111,
-                  114,
-                  95,
-                  112,
-                  114,
-                  111,
-                  116,
-                  111,
-                  99,
-                  111,
-                  108
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "mint"
-        },
-        {
-          "name": "token_program",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
-        },
-        {
-          "name": "system_program",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": [
-        {
-          "name": "amount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
       "name": "initialize_token",
       "discriminator": [
         38,
@@ -173,14 +26,39 @@
           "signer": true
         },
         {
-          "name": "token_pool_acc",
+          "name": "mint",
           "writable": true,
           "pda": {
             "seeds": [
               {
-                "kind": "account",
-                "path": "mint"
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  109,
+                  101,
+                  111,
+                  111,
+                  114,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
               },
+              {
+                "kind": "arg",
+                "path": "args.token_name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_pool_acc",
+          "writable": true,
+          "pda": {
+            "seeds": [
               {
                 "kind": "const",
                 "value": [
@@ -199,24 +77,19 @@
                   105,
                   103
                 ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
               }
             ]
           }
-        },
-        {
-          "name": "creator",
-          "writable": true,
-          "signer": true
         },
         {
           "name": "token_pool_vault",
           "writable": true,
           "pda": {
             "seeds": [
-              {
-                "kind": "account",
-                "path": "token_pool_acc"
-              },
               {
                 "kind": "const",
                 "value": [
@@ -240,6 +113,14 @@
                   108,
                   116
                 ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              },
+              {
+                "kind": "account",
+                "path": "token_pool_acc"
               }
             ]
           }
@@ -249,10 +130,6 @@
           "writable": true,
           "pda": {
             "seeds": [
-              {
-                "kind": "account",
-                "path": "token_pool_acc"
-              },
               {
                 "kind": "const",
                 "value": [
@@ -274,12 +151,13 @@
                   108,
                   116
                 ]
+              },
+              {
+                "kind": "account",
+                "path": "token_pool_acc"
               }
             ]
           }
-        },
-        {
-          "name": "mint"
         },
         {
           "name": "token_program",
@@ -303,19 +181,6 @@
     }
   ],
   "accounts": [
-    {
-      "name": "AirdropPool",
-      "discriminator": [
-        196,
-        25,
-        1,
-        13,
-        71,
-        9,
-        85,
-        148
-      ]
-    },
     {
       "name": "FeeVault",
       "discriminator": [
@@ -341,19 +206,6 @@
         11,
         252
       ]
-    },
-    {
-      "name": "UserClaim",
-      "discriminator": [
-        228,
-        142,
-        195,
-        181,
-        228,
-        147,
-        32,
-        209
-      ]
     }
   ],
   "errors": [
@@ -366,42 +218,16 @@
       "code": 6001,
       "name": "InvalidPoolAddress",
       "msg": "Invalid pool address."
-    },
-    {
-      "code": 6002,
-      "name": "AlreadyClaimed",
-      "msg": "User has already claimed their tokens."
-    },
-    {
-      "code": 6003,
-      "name": "InvalidAmount",
-      "msg": "Invalid amount."
     }
   ],
   "types": [
-    {
-      "name": "AirdropPool",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "authority",
-            "type": "pubkey"
-          }
-        ]
-      }
-    },
     {
       "name": "FeeVault",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "total_fees_collected",
-            "type": "u64"
-          },
-          {
-            "name": "token_pool_vault",
+            "name": "token_pool_acc",
             "type": "pubkey"
           }
         ]
@@ -412,6 +238,10 @@
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "token_name",
+            "type": "string"
+          },
           {
             "name": "initial_cost",
             "type": "u64"
@@ -437,11 +267,15 @@
         "kind": "struct",
         "fields": [
           {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
             "name": "mint_address",
             "type": "pubkey"
           },
           {
-            "name": "creator",
+            "name": "pool_fee_vault",
             "type": "pubkey"
           },
           {
@@ -461,34 +295,6 @@
             "type": {
               "option": "u64"
             }
-          },
-          {
-            "name": "total_supply",
-            "type": "u64"
-          },
-          {
-            "name": "mined_tokens",
-            "type": "u64"
-          },
-          {
-            "name": "pool_fee_vault",
-            "type": "pubkey"
-          }
-        ]
-      }
-    },
-    {
-      "name": "UserClaim",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "user",
-            "type": "pubkey"
-          },
-          {
-            "name": "has_claimed",
-            "type": "bool"
           }
         ]
       }
