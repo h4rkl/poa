@@ -257,12 +257,16 @@ export type Memeoor = {
         "kind": "struct",
         "fields": [
           {
-            "name": "tokenName",
-            "type": "string"
+            "name": "initialCost",
+            "type": "u64"
           },
           {
-            "name": "uri",
-            "type": "string"
+            "name": "stepFactor",
+            "type": "u64"
+          },
+          {
+            "name": "stepInterval",
+            "type": "u64"
           },
           {
             "name": "symbol",
@@ -273,20 +277,16 @@ export type Memeoor = {
             "type": "u8"
           },
           {
-            "name": "initialCost",
-            "type": "u64"
-          },
-          {
-            "name": "stepInterval",
-            "type": "u64"
-          },
-          {
-            "name": "stepFactor",
-            "type": "u64"
+            "name": "tokenName",
+            "type": "string"
           },
           {
             "name": "totalSupply",
             "type": "u64"
+          },
+          {
+            "name": "uri",
+            "type": "string"
           }
         ]
       }
@@ -319,12 +319,6 @@ export type Memeoor = {
           {
             "name": "stepFactor",
             "type": "u64"
-          },
-          {
-            "name": "maxPoolCost",
-            "type": {
-              "option": "u64"
-            }
           }
         ]
       }

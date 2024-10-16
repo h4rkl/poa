@@ -15,7 +15,7 @@ pub struct InitializeTokenPool<'info> {
     #[account(
         init,
         payer = authority,
-        seeds = [MINT_SEED, args.token_name.as_bytes()],
+        seeds = [MINT_SEED, &args.token_name.as_bytes()],
         bump,
         mint::decimals = args.token_decimals,
         mint::authority = mint,
@@ -36,8 +36,7 @@ pub struct InitializeTokenPool<'info> {
             32 + // pool_fee_vault: Pubkey
             8 + // initial_cost: u64
             8 + // step_interval: u64
-            8 + // step_factor: u64
-            9, // max_pool_cost: Option<u64>
+            8, // step_factor: u64
         seeds = [CONFIG_SEED, mint.key().as_ref()],
         bump
     )]
@@ -76,7 +75,6 @@ pub struct TokenPoolAcc {
     pub initial_cost: u64,
     pub step_interval: u64,
     pub step_factor: u64,
-    pub max_pool_cost: Option<u64>,
 }
 
 #[account]

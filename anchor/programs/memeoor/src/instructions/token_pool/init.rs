@@ -1,4 +1,3 @@
-use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::{
     metadata::{
@@ -9,38 +8,62 @@ use anchor_spl::{
     token,
 };
 
+use crate::state::*;
+
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct InitializeTokenPoolArgs {
-    pub token_name: String,
-    uri: String,
+    initial_cost: u64,
+    step_factor: u64,
+    step_interval: u64,
     symbol: String,
     pub token_decimals: u8,
-    initial_cost: u64,
-    step_interval: u64,
-    step_factor: u64,
+    pub token_name: String,
     total_supply: u64,
+    uri: String,
 }
 
 pub fn initialize_token(
     ctx: Context<InitializeTokenPool>,
     args: InitializeTokenPoolArgs,
 ) -> Result<()> {
+    let InitializeTokenPoolArgs {
+        initial_cost,
+        step_factor,
+        step_interval,
+        symbol,
+        token_decimals: _, 
+        token_name,
+        total_supply,
+        uri,
+    } = args;
+
     let token_pool_acc = &mut ctx.accounts.token_pool_acc;
-    token_pool_acc.authority = ctx.accounts.authority.key();
-    token_pool_acc.initial_cost = args.initial_cost;
-    token_pool_acc.step_interval = args.step_interval;
-    token_pool_acc.step_factor = args.step_factor;
-    token_pool_acc.pool_fee_vault = ctx.accounts.fee_vault.key();
+
+    // Creating token pool account
+    token_pool_acc.set_inner(TokenPoolAcc {
+        authority: ctx.accounts.authority.key(),
+        mint_address: ctx.accounts.mint.key(),
+        pool_fee_vault: ctx.accounts.fee_vault.key(),
+        initial_cost,
+        step_interval,
+        step_factor,
+    });
 
     // Mint the total supply to the token_pool authority
-    let mint_signer_seeds: &[&[&[u8]]] =
-        &[&[MINT_SEED, &args.token_name.as_ref(), &[ctx.bumps.mint]]];
+    let mint_signer_seeds: &[&[&[u8]]] = &[&[MINT_SEED, &token_name.as_ref(), &[ctx.bumps.mint]]];
+
+    // fn truncate_symbol(symbol: &str) -> String {
+    //     symbol.chars().take(200).collect::<String>()
+    // }
+    // msg!("*****************symbol: {}", truncate_symbol(&symbol));
+    // msg!("*****************uri: {}", truncate_symbol(&uri));
+    // msg!("*****************name: {}", truncate_symbol(&token_name));
 
     // On-chain token metadata for the mint
     let data_v2 = DataV2 {
-        name: "Solana Gold".to_string(),
-        symbol: "GOLDSOL".to_string(),
-        uri: "https://raw.githubusercontent.com/solana-developers/program-examples/new-examples/tokens/tokens/.assets/spl-token.json".to_string(),
+        name: token_name.clone(),
+        symbol,
+        uri,
         seller_fee_basis_points: 0,
         creators: None,
         collection: None,
@@ -74,7 +97,7 @@ pub fn initialize_token(
             },
             mint_signer_seeds,
         ),
-        args.total_supply,
+        total_supply,
     )?;
 
     Ok(())

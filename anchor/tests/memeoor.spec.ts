@@ -53,7 +53,7 @@ describe('Memeoor Program', () => {
   const metadata = {
     uri: "https://raw.githubusercontent.com/solana-developers/program-examples/new-examples/tokens/tokens/.assets/spl-token.json",
     name: "Solana Gold",
-    symbol: "GOLDSOL",
+    symbol: "GOLD",
   };
 
   // Before all tests, set up accounts and mint tokens
@@ -136,7 +136,7 @@ describe('Memeoor Program', () => {
     const stepInterval = new anchor.BN(toLamports(10));
     const stepFactor = new anchor.BN(toLamports(2));
     const totalSupply = new anchor.BN(toLamports(100));
-    const tokenDecimals = 5;
+    const tokenDecimals = 5;    
 
     await program.methods
       .initializeToken({
