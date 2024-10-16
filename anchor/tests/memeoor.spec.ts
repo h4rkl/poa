@@ -51,9 +51,9 @@ describe('Memeoor Program', () => {
   let mintMetadataPDA: Pda;
 
   const metadata = {
-    uri: "https://raw.githubusercontent.com/solana-developers/program-examples/new-examples/tokens/tokens/.assets/spl-token.json",
-    name: "Solana Gold",
-    symbol: "GOLD",
+    uri: "https://raw.githubusercontent.com/zetamarkets/brand/master/token/zex.json",
+    name: "Memeoor",
+    symbol: "MEME",
   };
 
   // Before all tests, set up accounts and mint tokens

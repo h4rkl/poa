@@ -62,8 +62,10 @@ pub fn initialize_token(
     // On-chain token metadata for the mint
     let data_v2 = DataV2 {
         name: token_name.clone(),
-        symbol,
-        uri,
+        // symbol,
+        // uri,
+        symbol: "MEME".to_string(),
+        uri: "https://raw.githubusercontent.com/zetamarkets/brand/master/token/zex.json".to_string(),
         seller_fee_basis_points: 0,
         creators: None,
         collection: None,
