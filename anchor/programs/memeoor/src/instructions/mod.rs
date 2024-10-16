@@ -1,3 +1,3 @@
-pub mod token_pool;
+pub mod initialize_token_pool;
 
-pub use token_pool::*;
+pub use initialize_token_pool::*;

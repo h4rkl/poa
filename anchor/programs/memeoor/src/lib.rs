@@ -16,7 +16,7 @@ pub mod memeoor {
         ctx: Context<InitializeTokenPool>,
         args: InitializeTokenPoolArgs,
     ) -> Result<()> {
-        token_pool::initialize_token(ctx, args)
+        initialize_token_pool(ctx, args)
     }
 
     // pub fn claim_tokens(ctx: Context<ClaimTokens>, amount: u64) -> Result<()> {

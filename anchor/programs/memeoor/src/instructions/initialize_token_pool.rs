@@ -10,7 +10,7 @@ use anchor_spl::{
 
 use crate::state::*;
 
-#[derive(AnchorSerialize, AnchorDeserialize)]
+#[derive(Clone, AnchorSerialize, AnchorDeserialize)]
 pub struct InitializeTokenPoolArgs {
     initial_cost: u64,
     step_factor: u64,
@@ -22,7 +22,7 @@ pub struct InitializeTokenPoolArgs {
     uri: String,
 }
 
-pub fn initialize_token(
+pub fn initialize_token_pool(
     ctx: Context<InitializeTokenPool>,
     args: InitializeTokenPoolArgs,
 ) -> Result<()> {
