@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/memeoor.json`.
  */
 export type Memeoor = {
-  "address": "memev6gnPZhMteK2mQ2GXpHv6ZNtCFJsbzbhG3A3T1m",
+  "address": "CLiCKaKS3DZUCr9WazTnXSM1Tky7kgrKy6tDQ2tSeZ9P",
   "metadata": {
     "name": "memeoor",
     "version": "0.1.0",

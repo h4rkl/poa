@@ -1,12 +1,11 @@
 use anchor_lang::prelude::*;
 use instructions::*;
-use state::*;
 
 pub mod errors;
 pub mod instructions;
 pub mod state;
 
-declare_id!("memev6gnPZhMteK2mQ2GXpHv6ZNtCFJsbzbhG3A3T1m");
+declare_id!("CLiCKaKS3DZUCr9WazTnXSM1Tky7kgrKy6tDQ2tSeZ9P");
 
 #[program]
 pub mod memeoor {
