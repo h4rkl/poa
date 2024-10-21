@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::keccak::hashv;
-use anchor_spl::token::{Mint, TokenAccount};
+use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}};
 
 use crate::state::*;
 
@@ -15,10 +15,10 @@ pub struct AttentionInit<'info> {
 
     // The ATA where the attention token reward tokens will be sent
     #[account(
-        init,
+        init_if_needed,
         payer = authority,
-        token::mint = token_mint,
-        token::authority = authority,
+        associated_token::mint = token_mint,
+        associated_token::authority = authority,
     )]
     pub reward_vault: Box<Account<'info, TokenAccount>>,
 
@@ -31,10 +31,11 @@ pub struct AttentionInit<'info> {
     )]
     pub proof_account: Box<Account<'info, ProofAcc>>,
 
-    #[account(mut)]
+    /// CHECK: This is not dangerous because we don't read or write from this account
     pub attention_account: AccountInfo<'info>,
 
-    pub token_program: Program<'info, anchor_spl::token::Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
 
@@ -62,7 +63,11 @@ pub struct ProofAcc {
 pub fn attention_init(ctx: Context<AttentionInit>, args: AttentionInitArgs) -> Result<()> {
     let clock = Clock::get()?;
 
-    if ctx.accounts.attention_account.key() != ATTENTION_ACC.parse::<Pubkey>().map_err(|_| ProgramError::InvalidAccountData)? {
+    if ctx.accounts.attention_account.key()
+        != ATTENTION_ACC
+            .parse::<Pubkey>()
+            .map_err(|_| ProgramError::InvalidAccountData)?
+    {
         return Err(ProgramError::InvalidAccountData.into());
     }
 

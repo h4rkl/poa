@@ -1,6 +1,6 @@
 import * as anchor from '@coral-xyz/anchor';
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults'
-import { findMetadataPda, mplTokenMetadata, MPL_TOKEN_METADATA_PROGRAM_ID, findMeta, fetchDigitalAsset } from '@metaplex-foundation/mpl-token-metadata'
+import { findMetadataPda, mplTokenMetadata, MPL_TOKEN_METADATA_PROGRAM_ID, fetchDigitalAsset } from '@metaplex-foundation/mpl-token-metadata'
 import { Program } from '@coral-xyz/anchor';
 import {
   Keypair,
@@ -10,21 +10,21 @@ import {
   SYSVAR_RENT_PUBKEY,
 } from '@solana/web3.js';
 import {
-  AuthorityType,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
-  createAccount,
-  createMint,
   getAccount,
+  getAssociatedTokenAddress,
   getMint,
-  mintTo,
-  setAuthority,
 } from '@solana/spl-token';
 import {
+  attentionTokenMetadata,
   CONFIG_SEED,
   FEE_VAULT_SEED,
   MINT_SEED,
+  PROOF_ACC_SEED,
   TOKEN_VAULT_SEED,
   toLamports,
+  attentionAccount,
 } from './test-helpers';
 import { Memeoor } from '../target/types/memeoor';
 import { Pda, publicKey } from '@metaplex-foundation/umi';
@@ -38,23 +38,14 @@ const program = anchor.workspace.Memeoor as Program<Memeoor>;
 const umi = createUmi(provider.connection).use(mplTokenMetadata())
 
 // Define the Jest tests
-describe('Memeoor Program', () => {
+describe('Proof of Attention', () => {
   let poolOwner: Keypair;
-  let poolOwnerTokenAccount: PublicKey;
   let mint: PublicKey;
   let userAccount: Keypair;
-  let userTokenAccount: PublicKey;
-  let userClaim: PublicKey;
   let tokenPoolVault: PublicKey;
   let tokenPoolAcc: PublicKey;
   let feeVault: PublicKey;
   let mintMetadataPDA: Pda;
-
-  const metadata = {
-    uri: "https://raw.githubusercontent.com/zetamarkets/brand/master/token/zex.json",
-    name: "Memeoor",
-    symbol: "MEME",
-  };
 
   // Before all tests, set up accounts and mint tokens
   beforeAll(async () => {
@@ -75,25 +66,12 @@ describe('Memeoor Program', () => {
 
     // Create a mint
     mint = PublicKey.findProgramAddressSync(
-      [Buffer.from(MINT_SEED), Buffer.from(metadata.name)],
+      [Buffer.from(MINT_SEED), Buffer.from(attentionTokenMetadata.name)],
       program.programId
     )[0]
 
     // reward token mint metadata account address
     mintMetadataPDA = findMetadataPda(umi, { mint: publicKey(mint) });
-
-    // poolOwnerTokenAccount = await createAccount(
-    //   provider.connection,
-    //   poolOwner,
-    //   mint,
-    //   poolOwner.publicKey
-    // );
-    // userTokenAccount = await createAccount(
-    //   provider.connection,
-    //   userAccount,
-    //   mint,
-    //   userAccount.publicKey
-    // );
 
     tokenPoolAcc = PublicKey.findProgramAddressSync(
       [Buffer.from(CONFIG_SEED), mint.toBuffer()],
@@ -110,21 +88,10 @@ describe('Memeoor Program', () => {
       program.programId
     )[0];
 
-    // [userClaim] = PublicKey.findProgramAddressSync(
-    //   [
-    //     userAccount.publicKey.toBuffer(),
-    //     tokenPoolAcc.toBuffer(),
-    //     Buffer.from(MEMEOOR_PROTOCOL),
-    //   ],
-    //   program.programId
-    // );
     console.log('Accounts:');
     console.log('poolOwner public key:', poolOwner.publicKey.toBase58());
-    // console.log('poolOwnerTokenAccount:', poolOwnerTokenAccount.toBase58());
     console.log('mint:', mint.toBase58());
     console.log('userAccount public key:', userAccount.publicKey.toBase58());
-    // console.log('userTokenAccount:', userTokenAccount.toBase58());
-    // console.log('userClaim:', userClaim.toBase58());
     console.log('tokenPoolVault:', tokenPoolVault.toBase58());
     console.log('tokenPoolAcc:', tokenPoolAcc.toBase58());
     console.log('feeVault:', feeVault.toBase58());
@@ -136,13 +103,13 @@ describe('Memeoor Program', () => {
     const stepInterval = new anchor.BN(toLamports(10));
     const stepFactor = new anchor.BN(toLamports(2));
     const totalSupply = new anchor.BN(toLamports(100));
-    const tokenDecimals = 5;    
+    const tokenDecimals = 5;
 
     await program.methods
-      .initializeToken({
-        tokenName: metadata.name,
-        uri: metadata.uri,
-        symbol: metadata.symbol,
+      .tokenPoolInitialise({
+        tokenName: attentionTokenMetadata.name,
+        uri: attentionTokenMetadata.uri,
+        symbol: attentionTokenMetadata.symbol,
         tokenDecimals,
         initialCost,
         stepInterval,
@@ -174,9 +141,9 @@ describe('Memeoor Program', () => {
 
     // make checks for metadata values
     const metadataAccount = await fetchDigitalAsset(umi, publicKey(mint));
-    expect(metadataAccount.metadata.name).toBe(metadata.name);
-    expect(metadataAccount.metadata.symbol).toBe(metadata.symbol);
-    expect(metadataAccount.metadata.uri).toBe(metadata.uri);
+    expect(metadataAccount.metadata.name).toBe(attentionTokenMetadata.name);
+    expect(metadataAccount.metadata.symbol).toBe(attentionTokenMetadata.symbol);
+    expect(metadataAccount.metadata.uri).toBe(attentionTokenMetadata.uri);
 
     // Add tests to check that token meta is correct
     const mintInfo = await getMint(provider.connection, mint);
@@ -194,36 +161,105 @@ describe('Memeoor Program', () => {
     expect(tokenPoolVaultInfo.amount).toBe(BigInt(totalSupply.toString()));
   });
 
-  //   // Test claiming tokens
-  //   it('Claims tokens from the airdrop pool', async () => {
-  //     // Perform the claim
-  //     await program.methods
-  //       .claimTokens(new anchor.BN(toLamports(1000)))
-  //       .accountsStrict({
-  //         poolAuthority: tokenPoolConfig,
-  //         userTokenAccount,
-  //         user: userAccount.publicKey,
-  //         tokenPoolVault,
-  //         userClaim,
-  //         mint,
-  //         tokenProgram: TOKEN_PROGRAM_ID,
-  //         systemProgram: SystemProgram.programId,
-  //       })
-  //       .signers([userAccount])
-  //       .rpc();
+  describe('Attention Init', () => {
+    let rewardVault: PublicKey;
+    let proofAccount: PublicKey;
 
-  //     const tokenPoolVaultInfo = await getAccount(
-  //       provider.connection,
-  //       tokenPoolVault
-  //     );
-  //     const userTokenAccountInfo = await getAccount(
-  //       provider.connection,
-  //       userTokenAccount
-  //     );
-  //     const userClaimData = await program.account.userClaim.fetch(userClaim);
+    const timeout = 30; // 30 seconds
 
-  //     expect(userClaimData.hasClaimed).toBe(true);
-  //     expect(userTokenAccountInfo.amount).toBe(BigInt(toLamports(1000)));
-  //     expect(tokenPoolVaultInfo.amount).toBe(BigInt(toLamports(599000)));
-  //   });
+    beforeAll(async () => {
+      rewardVault = await getAssociatedTokenAddress(
+        mint,
+        userAccount.publicKey
+      );
+      [proofAccount] = PublicKey.findProgramAddressSync(
+        [Buffer.from(PROOF_ACC_SEED), userAccount.publicKey.toBuffer(), mint.toBuffer()],
+        program.programId
+      );
+      console.log('proofAccount:', proofAccount.toBase58());
+      console.log('rewardVault:', rewardVault.toBase58());
+    });
+
+    it('Initializes attention proof', async () => {
+      await program.methods
+        .attentionInitialise({
+          tokenName: attentionTokenMetadata.name,
+          timeout: new anchor.BN(timeout),
+        })
+        .accountsStrict({
+          authority: userAccount.publicKey,
+          tokenMint: mint,
+          rewardVault,
+          proofAccount,
+          attentionAccount,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .signers([userAccount])
+        .rpc().catch(e => console.error("***attention init error***", e));
+
+      // Fetch and verify the proof account
+      const proofAccData = await program.account.proofAcc.fetch(proofAccount);
+      expect(proofAccData.authority.equals(userAccount.publicKey)).toBe(true);
+      expect(proofAccData.timeout).toBe(timeout);
+      expect(proofAccData.balance.toNumber()).toBe(0);
+      expect(proofAccData.tokenMint.equals(mint)).toBe(true);
+      expect(proofAccData.tokenRewardVault.equals(rewardVault)).toBe(true);
+      expect(proofAccData.totalHashes.toNumber()).toBe(0);
+      expect(proofAccData.totalRewards.toNumber()).toBe(0);
+
+      // Verify that the reward vault was created
+      const rewardVaultInfo = await getAccount(provider.connection, rewardVault);
+      expect(rewardVaultInfo.mint.equals(mint)).toBe(true);
+      expect(rewardVaultInfo.owner.equals(userAccount.publicKey)).toBe(true);
+    });
+
+    it('Fails to initialize with invalid token name', async () => {
+      const invalidTokenName = "InvalidToken";
+
+      await expect(
+        program.methods
+          .attentionInitialise({
+            tokenName: invalidTokenName,
+            timeout: new anchor.BN(timeout),
+          })
+          .accountsStrict({
+            authority: userAccount.publicKey,
+            tokenMint: mint,
+            rewardVault,
+            proofAccount,
+            attentionAccount,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          })
+          .signers([userAccount])
+          .rpc()
+      ).rejects.toThrow();
+    });
+
+    it('Fails to initialize with existing proof account', async () => {
+
+      await expect(
+        program.methods
+          .attentionInitialise({
+            tokenName: attentionTokenMetadata.name,
+            timeout: new anchor.BN(timeout),
+          })
+          .accountsStrict({
+            authority: userAccount.publicKey,
+            tokenMint: mint,
+            rewardVault,
+            proofAccount,
+            attentionAccount,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          })
+          .signers([userAccount])
+          .rpc()
+      ).rejects.toThrow();
+    });
+  });
 });

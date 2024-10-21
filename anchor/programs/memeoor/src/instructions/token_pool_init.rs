@@ -153,7 +153,7 @@ pub fn token_pool_init(
         name: token_name.clone(),
         // symbol,
         // uri,
-        symbol: "MEME".to_string(),
+        symbol: "CLICK".to_string(),
         uri: "https://raw.githubusercontent.com/zetamarkets/brand/master/token/zex.json"
             .to_string(),
         seller_fee_basis_points: 0,

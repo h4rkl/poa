@@ -8,16 +8,201 @@
   },
   "instructions": [
     {
-      "name": "initialize_token",
+      "name": "attention_initialise",
       "discriminator": [
-        38,
-        209,
-        150,
-        50,
-        190,
-        117,
-        16,
-        54
+        141,
+        59,
+        71,
+        212,
+        101,
+        14,
+        158,
+        49
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_mint",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "args.token_name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "reward_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "proof_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  111,
+                  102,
+                  95,
+                  97,
+                  99,
+                  99
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "attention_account"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "AttentionInitArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "token_pool_initialise",
+      "discriminator": [
+        253,
+        132,
+        132,
+        255,
+        204,
+        109,
+        7,
+        255
       ],
       "accounts": [
         {
@@ -33,14 +218,6 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  101,
-                  109,
-                  101,
-                  111,
-                  111,
-                  114,
-                  95,
                   109,
                   105,
                   110,
@@ -66,14 +243,6 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  101,
-                  109,
-                  101,
-                  111,
-                  111,
-                  114,
-                  95,
                   99,
                   111,
                   110,
@@ -97,14 +266,6 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  101,
-                  109,
-                  101,
-                  111,
-                  111,
-                  114,
-                  95,
                   116,
                   111,
                   107,
@@ -137,14 +298,6 @@
               {
                 "kind": "const",
                 "value": [
-                  109,
-                  101,
-                  109,
-                  101,
-                  111,
-                  111,
-                  114,
-                  95,
                   102,
                   101,
                   101,
@@ -207,6 +360,19 @@
       ]
     },
     {
+      "name": "ProofAcc",
+      "discriminator": [
+        38,
+        127,
+        65,
+        80,
+        78,
+        110,
+        29,
+        41
+      ]
+    },
+    {
       "name": "TokenPoolAcc",
       "discriminator": [
         180,
@@ -230,9 +396,42 @@
       "code": 6001,
       "name": "InvalidPoolAddress",
       "msg": "Invalid pool address."
+    },
+    {
+      "code": 6002,
+      "name": "MiningCooldownNotMet",
+      "msg": "Mining cooldown not met."
+    },
+    {
+      "code": 6003,
+      "name": "InvalidHash",
+      "msg": "Invalid hash provided."
+    },
+    {
+      "code": 6004,
+      "name": "HashNotBelowDifficulty",
+      "msg": "Hash not below difficulty target."
     }
   ],
   "types": [
+    {
+      "name": "AttentionInitArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "token_name",
+            "type": "string"
+          },
+          {
+            "name": "timeout",
+            "type": {
+              "option": "u32"
+            }
+          }
+        ]
+      }
+    },
     {
       "name": "FeeVault",
       "type": {
@@ -241,6 +440,108 @@
           {
             "name": "token_pool_acc",
             "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProofAcc",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "balance",
+            "type": "u64"
+          },
+          {
+            "name": "timeout",
+            "type": "u32"
+          },
+          {
+            "name": "challenge",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "last_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "last_hash_at",
+            "type": "i64"
+          },
+          {
+            "name": "last_stake_at",
+            "type": "i64"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_reward_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_hashes",
+            "type": "u64"
+          },
+          {
+            "name": "total_rewards",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenPoolAcc",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint_address",
+            "type": "pubkey"
+          },
+          {
+            "name": "pool_fee_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "initial_cost",
+            "type": "u64"
+          },
+          {
+            "name": "step_interval",
+            "type": "u64"
+          },
+          {
+            "name": "step_factor",
+            "type": "u64"
+          },
+          {
+            "name": "difficulty",
+            "type": "u64"
+          },
+          {
+            "name": "last_difficulty_adjustment",
+            "type": "i64"
           }
         ]
       }
@@ -281,38 +582,6 @@
           {
             "name": "uri",
             "type": "string"
-          }
-        ]
-      }
-    },
-    {
-      "name": "TokenPoolAcc",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "authority",
-            "type": "pubkey"
-          },
-          {
-            "name": "mint_address",
-            "type": "pubkey"
-          },
-          {
-            "name": "pool_fee_vault",
-            "type": "pubkey"
-          },
-          {
-            "name": "initial_cost",
-            "type": "u64"
-          },
-          {
-            "name": "step_interval",
-            "type": "u64"
-          },
-          {
-            "name": "step_factor",
-            "type": "u64"
           }
         ]
       }

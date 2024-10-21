@@ -18,7 +18,10 @@ pub mod memeoor {
         token_pool_init(ctx, args)
     }
 
-    pub fn attention_initialise(ctx: Context<AttentionInit>, args: AttentionInitArgs) -> Result<()> {
+    pub fn attention_initialise(
+        ctx: Context<AttentionInit>,
+        args: AttentionInitArgs,
+    ) -> Result<()> {
         attention_init(ctx, args)
     }
 }
