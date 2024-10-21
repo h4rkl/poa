@@ -13,12 +13,12 @@ pub struct AttentionInit<'info> {
     #[account( seeds = [MINT_SEED, &args.token_name.as_bytes()], bump, )]
     pub token_mint: Box<Account<'info, Mint>>,
 
+    // The ATA where the attention token reward tokens will be sent
     #[account(
         init,
         payer = authority,
-        space = 8 + 32,
-        seeds = [TOKEN_VAULT_SEED, &authority.key().as_ref(), &token_mint.key().as_ref()],
-        bump,
+        token::mint = token_mint,
+        token::authority = authority,
     )]
     pub reward_vault: Box<Account<'info, TokenAccount>>,
 
@@ -31,6 +31,10 @@ pub struct AttentionInit<'info> {
     )]
     pub proof_account: Box<Account<'info, ProofAcc>>,
 
+    #[account(mut)]
+    pub attention_account: AccountInfo<'info>,
+
+    pub token_program: Program<'info, anchor_spl::token::Token>,
     pub system_program: Program<'info, System>,
 }
 
@@ -57,6 +61,23 @@ pub struct ProofAcc {
 
 pub fn attention_init(ctx: Context<AttentionInit>, args: AttentionInitArgs) -> Result<()> {
     let clock = Clock::get()?;
+
+    if ctx.accounts.attention_account.key() != ATTENTION_ACC.parse::<Pubkey>().map_err(|_| ProgramError::InvalidAccountData)? {
+        return Err(ProgramError::InvalidAccountData.into());
+    }
+
+    anchor_lang::solana_program::program::invoke(
+        &anchor_lang::solana_program::system_instruction::transfer(
+            &ctx.accounts.authority.key(),
+            &ctx.accounts.attention_account.key(),
+            BASE_FEE,
+        ),
+        &[
+            ctx.accounts.authority.to_account_info(),
+            ctx.accounts.attention_account.to_account_info(),
+            ctx.accounts.system_program.to_account_info(),
+        ],
+    )?;
 
     let proof = &mut ctx.accounts.proof_account;
     proof.set_inner(ProofAcc {
