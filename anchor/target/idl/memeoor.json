@@ -185,7 +185,7 @@
           "name": "args",
           "type": {
             "defined": {
-              "name": "InitializeTokenPoolArgs"
+              "name": "TokenPoolInitArgs"
             }
           }
         }
@@ -246,7 +246,7 @@
       }
     },
     {
-      "name": "InitializeTokenPoolArgs",
+      "name": "TokenPoolInitArgs",
       "type": {
         "kind": "struct",
         "fields": [
