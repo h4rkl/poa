@@ -111,7 +111,7 @@ pub fn mine_token_pool(ctx: Context<MineTokenPool>, provided_hash: [u8; 32]) -> 
     let cpi_accounts = token::Transfer {
         from: ctx.accounts.token_pool_vault.to_account_info(),
         to: ctx.accounts.reward_vault.to_account_info(),
-        authority: ctx.accounts.token_pool_acc.to_account_info(),
+        authority: token_pool_acc.to_account_info(),
     };
     let cpi_program = ctx.accounts.token_program.to_account_info();
     let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
@@ -146,11 +146,11 @@ fn adjust_difficulty(token_pool_acc: &mut TokenPoolAcc, current_timestamp: i64) 
     let time_elapsed = current_timestamp - token_pool_acc.last_difficulty_adjustment;
     let expected_time = TIME_DIFFICULTY_ADJUSTMENT;
 
-    if time_elapsed < expected_time / 2 {
+    if time_elapsed < (expected_time / 2).into() {
         token_pool_acc.difficulty = token_pool_acc
             .difficulty
             .saturating_add(token_pool_acc.difficulty / 10);
-    } else if time_elapsed > expected_time * 2 {
+    } else if time_elapsed > (expected_time * 2).into() {
         token_pool_acc.difficulty = token_pool_acc
             .difficulty
             .saturating_sub(token_pool_acc.difficulty / 10);
