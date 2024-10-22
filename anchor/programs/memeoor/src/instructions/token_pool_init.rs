@@ -40,11 +40,9 @@ pub struct TokenPoolInit<'info> {
             32 + // authority: Pubkey
             32 + // mint_address: Pubkey
             32 + // pool_fee_vault: Pubkey
-            8 + // initial_cost: u64
-            8 + // step_interval: u64
-            8 + // step_factor: u64
-            8 + // difficulty: u64
-            8, // last_difficulty_adjustment: i64
+            8 + // reward_amount: u64
+            8 + // pool_fee: u64
+            4, // timeout: u32
         seeds = [CONFIG_SEED, &mint.key().as_ref()],
         bump
     )]
