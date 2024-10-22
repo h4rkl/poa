@@ -75,6 +75,10 @@ npm run dev
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## Buy me a coffee
+
+If you've use this contract or found the code useful feel free to drop me a bit of SOL at ERxPNh9x8eJZb3esccWVPRGbMNt9YccyEwej7sz2sSGJ
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
