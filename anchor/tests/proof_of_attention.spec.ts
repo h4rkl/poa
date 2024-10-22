@@ -102,6 +102,7 @@ describe('Proof of Attention', () => {
     const totalSupply = new anchor.BN(toLamports(100));
     const rewardAmount = new anchor.BN(toLamports(1));
     const poolFee = new anchor.BN(toLamports(0.01));
+    const timeout = 30; // 30 seconds
     const tokenDecimals = 5;
 
     await program.methods
@@ -109,6 +110,7 @@ describe('Proof of Attention', () => {
         tokenName: attentionTokenMetadata.name,
         uri: attentionTokenMetadata.uri,
         symbol: attentionTokenMetadata.symbol,
+        timeout,
         tokenDecimals,
         rewardAmount,
         poolFee,
@@ -135,6 +137,7 @@ describe('Proof of Attention', () => {
     expect(fetchTPConfig.rewardAmount.eq(rewardAmount)).toBe(true);
     expect(fetchTPConfig.poolFee.eq(poolFee)).toBe(true);
     expect(fetchTPConfig.poolFeeVault.equals(feeVault)).toBe(true);
+    expect(fetchTPConfig.timeout).toBe(timeout);
 
     // make checks for metadata values
     const metadataAccount = await fetchDigitalAsset(umi, publicKey(mint));
@@ -162,8 +165,6 @@ describe('Proof of Attention', () => {
     let rewardVault: PublicKey;
     let proofAccount: PublicKey;
 
-    const timeout = 30; // 30 seconds
-
     beforeAll(async () => {
       rewardVault = await getAssociatedTokenAddress(
         mint,
@@ -181,7 +182,6 @@ describe('Proof of Attention', () => {
       await program.methods
         .attentionInitialise({
           tokenName: attentionTokenMetadata.name,
-          timeout: new anchor.BN(timeout),
         })
         .accountsStrict({
           authority: userAccount.publicKey,
@@ -199,11 +199,10 @@ describe('Proof of Attention', () => {
       // Fetch and verify the proof account
       const proofAccData = await program.account.proofAcc.fetch(proofAccount);
       expect(proofAccData.authority.equals(userAccount.publicKey)).toBe(true);
-      expect(proofAccData.timeout).toBe(timeout);
       expect(proofAccData.balance.toNumber()).toBe(0);
       expect(proofAccData.tokenMint.equals(mint)).toBe(true);
       expect(proofAccData.tokenRewardVault.equals(rewardVault)).toBe(true);
-      expect(proofAccData.totalHashes.toNumber()).toBe(0);
+      expect(proofAccData.totalProofs.toNumber()).toBe(0);
       expect(proofAccData.totalRewards.toNumber()).toBe(0);
 
       // Verify that the reward vault was created
@@ -223,7 +222,6 @@ describe('Proof of Attention', () => {
         program.methods
           .attentionInitialise({
             tokenName: invalidTokenName,
-            timeout: new anchor.BN(timeout),
           })
           .accountsStrict({
             authority: userAccount.publicKey,
@@ -246,7 +244,6 @@ describe('Proof of Attention', () => {
         program.methods
           .attentionInitialise({
             tokenName: attentionTokenMetadata.name,
-            timeout: new anchor.BN(timeout),
           })
           .accountsStrict({
             authority: userAccount.publicKey,

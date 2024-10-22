@@ -200,6 +200,252 @@ export type Memeoor = {
       ]
     },
     {
+      "name": "attentionProve",
+      "discriminator": [
+        208,
+        197,
+        26,
+        102,
+        131,
+        35,
+        91,
+        179
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "proofAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  111,
+                  102,
+                  95,
+                  97,
+                  99,
+                  99
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "account",
+                "path": "tokenMint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tokenMint",
+          "writable": true
+        },
+        {
+          "name": "tokenPoolAcc",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "tokenMint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tokenPoolVault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "tokenMint"
+              },
+              {
+                "kind": "account",
+                "path": "tokenPoolAcc"
+              }
+            ]
+          }
+        },
+        {
+          "name": "feeVault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  101,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "tokenPoolAcc"
+              }
+            ]
+          }
+        },
+        {
+          "name": "rewardVault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "tokenMint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "attentionAccount",
+          "writable": true
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "clock",
+          "address": "SysvarC1ock11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "tokenPoolInitialise",
       "discriminator": [
         253,
@@ -406,18 +652,13 @@ export type Memeoor = {
     },
     {
       "code": 6002,
-      "name": "miningCooldownNotMet",
-      "msg": "Mining cooldown not met."
+      "name": "cooldownNotMet",
+      "msg": "Cooldown not met."
     },
     {
       "code": 6003,
       "name": "invalidHash",
       "msg": "Invalid hash provided."
-    },
-    {
-      "code": 6004,
-      "name": "hashNotBelowDifficulty",
-      "msg": "Hash not below difficulty target."
     }
   ],
   "types": [
@@ -429,12 +670,6 @@ export type Memeoor = {
           {
             "name": "tokenName",
             "type": "string"
-          },
-          {
-            "name": "timeout",
-            "type": {
-              "option": "u32"
-            }
           }
         ]
       }
@@ -465,10 +700,6 @@ export type Memeoor = {
             "type": "u64"
           },
           {
-            "name": "timeout",
-            "type": "u32"
-          },
-          {
             "name": "challenge",
             "type": {
               "array": [
@@ -487,11 +718,7 @@ export type Memeoor = {
             }
           },
           {
-            "name": "lastHashAt",
-            "type": "i64"
-          },
-          {
-            "name": "lastStakeAt",
+            "name": "lastProofAt",
             "type": "i64"
           },
           {
@@ -503,11 +730,11 @@ export type Memeoor = {
             "type": "pubkey"
           },
           {
-            "name": "totalHashes",
+            "name": "totalRewards",
             "type": "u64"
           },
           {
-            "name": "totalRewards",
+            "name": "totalProofs",
             "type": "u64"
           }
         ]
@@ -537,6 +764,10 @@ export type Memeoor = {
           {
             "name": "poolFee",
             "type": "u64"
+          },
+          {
+            "name": "timeout",
+            "type": "u32"
           }
         ]
       }
@@ -553,6 +784,10 @@ export type Memeoor = {
           {
             "name": "poolFee",
             "type": "u64"
+          },
+          {
+            "name": "timeout",
+            "type": "u32"
           },
           {
             "name": "symbol",
