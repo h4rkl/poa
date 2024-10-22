@@ -213,6 +213,10 @@ describe('Proof of Attention', () => {
       const rewardVaultInfo = await getAccount(provider.connection, rewardVault);
       expect(rewardVaultInfo.mint.equals(mint)).toBe(true);
       expect(rewardVaultInfo.owner.equals(userAccount.publicKey)).toBe(true);
+
+      // Verify that the attention account has the correct fees
+      const attentionAccInfo = await provider.connection.getAccountInfo(attentionAccount);
+      attentionAccInfo && expect(attentionAccInfo.lamports).toBe(1_500_000);
     });
 
     it('Fails to initialize with invalid token name', async () => {

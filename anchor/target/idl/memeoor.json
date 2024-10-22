@@ -166,7 +166,8 @@
           }
         },
         {
-          "name": "attention_account"
+          "name": "attention_account",
+          "writable": true
         },
         {
           "name": "associated_token_program",

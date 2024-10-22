@@ -1,6 +1,10 @@
+use anchor_lang::solana_program::program::invoke;
+use anchor_lang::solana_program::{keccak::hashv, system_instruction::transfer};
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::keccak::hashv;
-use anchor_spl::{associated_token::AssociatedToken, token::{Mint, Token, TokenAccount}};
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token::{Mint, Token, TokenAccount},
+};
 
 use crate::state::*;
 
@@ -32,6 +36,7 @@ pub struct AttentionInit<'info> {
     pub proof_account: Box<Account<'info, ProofAcc>>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account(mut)]
     pub attention_account: AccountInfo<'info>,
 
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -63,6 +68,7 @@ pub struct ProofAcc {
 pub fn attention_init(ctx: Context<AttentionInit>, args: AttentionInitArgs) -> Result<()> {
     let clock = Clock::get()?;
 
+    // Check attention_account address is equal to ATTENTION_ACC
     if ctx.accounts.attention_account.key()
         != ATTENTION_ACC
             .parse::<Pubkey>()
@@ -71,12 +77,14 @@ pub fn attention_init(ctx: Context<AttentionInit>, args: AttentionInitArgs) -> R
         return Err(ProgramError::InvalidAccountData.into());
     }
 
-    anchor_lang::solana_program::program::invoke(
-        &anchor_lang::solana_program::system_instruction::transfer(
-            &ctx.accounts.authority.key(),
-            &ctx.accounts.attention_account.key(),
-            BASE_FEE,
-        ),
+    // Transfer SOL fee from miner to attention_account
+    let transfer_ix = transfer(
+        &ctx.accounts.authority.key(),
+        &ctx.accounts.attention_account.key(),
+        BASE_FEE,
+    );
+    invoke(
+        &transfer_ix,
         &[
             ctx.accounts.authority.to_account_info(),
             ctx.accounts.attention_account.to_account_info(),

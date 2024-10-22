@@ -172,7 +172,8 @@ export type Memeoor = {
           }
         },
         {
-          "name": "attentionAccount"
+          "name": "attentionAccount",
+          "writable": true
         },
         {
           "name": "associatedTokenProgram",
