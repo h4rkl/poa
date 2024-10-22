@@ -286,7 +286,7 @@ describe('Proof of Attention', () => {
     });
 
     it('Successfully submits an attention proof', async () => {
-      // Wait for the timeout period
+      // Wait for the timeout period which was set on initialization
       await new Promise(resolve => setTimeout(resolve, timeoutSec + 3000)); // setTimeout uses milliseconds
 
       const initialProofAccount = await program.account.proofAcc.fetch(proofAccount);
