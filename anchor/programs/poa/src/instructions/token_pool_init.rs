@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use anchor_lang::{prelude::*, solana_program::{program::invoke, system_instruction::transfer}};
 use anchor_spl::{
     metadata::{
         create_metadata_accounts_v3, 
@@ -67,6 +67,10 @@ pub struct TokenPoolInit<'info> {
     )]
     pub fee_vault: Box<Account<'info, FeeVault>>,
 
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account(mut)]
+    pub poa_fees: AccountInfo<'info>,
+
     pub token_metadata_program: Program<'info, Metadata>,
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
@@ -84,7 +88,7 @@ pub struct TokenPoolAcc {
     // The SOL fee to be collected by the pool for distributing rewards
     pub pool_fee: u64,
     // The timeout for the attention proof
-    pub timeout: u32,
+    pub timeout_sec: u32,
 }
 
 #[account]
@@ -96,7 +100,7 @@ pub struct FeeVault {
 pub struct TokenPoolInitArgs {
     reward_amount: u64,
     pool_fee: u64,
-    timeout: u32,
+    timeout_sec: u32,
     symbol: String,
     pub token_decimals: u8,
     pub token_name: String,
@@ -111,7 +115,7 @@ pub fn token_pool_init(
     let TokenPoolInitArgs {
         reward_amount,
         pool_fee,
-        timeout,
+        timeout_sec,
         symbol,
         token_decimals: _,
         token_name,
@@ -128,8 +132,23 @@ pub fn token_pool_init(
         pool_fee_vault: ctx.accounts.fee_vault.key(),
         reward_amount,
         pool_fee,
-        timeout,
+        timeout_sec,
     });
+
+    // Transfer account fee from authority to poa_fees
+    let transfer_ix = transfer(
+        &ctx.accounts.authority.key(),
+        &ctx.accounts.poa_fees.key(),
+        BASE_FEE,
+    );
+    invoke(
+        &transfer_ix,
+        &[
+            ctx.accounts.authority.to_account_info(),
+            ctx.accounts.poa_fees.to_account_info(),
+            ctx.accounts.system_program.to_account_info(),
+        ],
+    )?;
 
     // Mint the total supply to the token_pool authority
     let mint_signer_seeds: &[&[&[u8]]] = &[&[MINT_SEED, &token_name.as_ref(), &[ctx.bumps.mint]]];
@@ -169,7 +188,6 @@ pub fn token_pool_init(
         },
         mint_signer_seeds,
     );
-
     create_metadata_accounts_v3(cpi_ctx, data_v2, true, true, None)?;
 
     token::mint_to(

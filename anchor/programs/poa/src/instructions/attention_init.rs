@@ -1,11 +1,12 @@
+use anchor_lang::prelude::*;
 use anchor_lang::solana_program::program::invoke;
 use anchor_lang::solana_program::{keccak::hashv, system_instruction::transfer};
-use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
     token::{Mint, Token, TokenAccount},
 };
 
+use crate::errors::CustomError;
 use crate::state::*;
 
 #[derive(Accounts)]
@@ -37,7 +38,7 @@ pub struct AttentionInit<'info> {
 
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut)]
-    pub attention_account: AccountInfo<'info>,
+    pub poa_fees: AccountInfo<'info>,
 
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_program: Program<'info, Token>,
@@ -65,26 +66,26 @@ pub struct ProofAcc {
 pub fn attention_init(ctx: Context<AttentionInit>, _args: AttentionInitArgs) -> Result<()> {
     let clock = Clock::get()?;
 
-    // Check attention_account address is equal to ATTENTION_ACC
-    if ctx.accounts.attention_account.key()
-        != ATTENTION_ACC
+    // Check poa_fees address is equal to POA_FEE_ACC
+    if ctx.accounts.poa_fees.key()
+        != POA_FEE_ACC
             .parse::<Pubkey>()
-            .map_err(|_| ProgramError::InvalidAccountData)?
+            .map_err(|_| CustomError::InvalidPOAAcc)?
     {
-        return Err(ProgramError::InvalidAccountData.into());
+        return Err(CustomError::InvalidPOAAcc.into());
     }
 
-    // Transfer account fee from authority to attention_account
+    // Transfer account fee from authority to poa_fees
     let transfer_ix = transfer(
         &ctx.accounts.authority.key(),
-        &ctx.accounts.attention_account.key(),
+        &ctx.accounts.poa_fees.key(),
         BASE_FEE,
     );
     invoke(
         &transfer_ix,
         &[
             ctx.accounts.authority.to_account_info(),
-            ctx.accounts.attention_account.to_account_info(),
+            ctx.accounts.poa_fees.to_account_info(),
             ctx.accounts.system_program.to_account_info(),
         ],
     )?;

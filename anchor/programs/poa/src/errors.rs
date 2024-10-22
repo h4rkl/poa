@@ -10,4 +10,6 @@ pub enum CustomError {
     CooldownNotMet,
     #[msg("Invalid hash provided.")]
     InvalidHash,
+    #[msg("Invalid POA fee acc.")]
+    InvalidPOAAcc,
 }

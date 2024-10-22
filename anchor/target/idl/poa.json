@@ -166,7 +166,7 @@
           }
         },
         {
-          "name": "attention_account",
+          "name": "poa_fees",
           "writable": true
         },
         {
@@ -417,7 +417,7 @@
           }
         },
         {
-          "name": "attention_account",
+          "name": "poa_fees",
           "writable": true
         },
         {
@@ -564,6 +564,10 @@
           }
         },
         {
+          "name": "poa_fees",
+          "writable": true
+        },
+        {
           "name": "token_metadata_program",
           "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
         },
@@ -653,6 +657,11 @@
       "code": 6003,
       "name": "InvalidHash",
       "msg": "Invalid hash provided."
+    },
+    {
+      "code": 6004,
+      "name": "InvalidPOAAcc",
+      "msg": "Invalid POA fee acc."
     }
   ],
   "types": [
@@ -760,7 +769,7 @@
             "type": "u64"
           },
           {
-            "name": "timeout",
+            "name": "timeout_sec",
             "type": "u32"
           }
         ]
@@ -780,7 +789,7 @@
             "type": "u64"
           },
           {
-            "name": "timeout",
+            "name": "timeout_sec",
             "type": "u32"
           },
           {

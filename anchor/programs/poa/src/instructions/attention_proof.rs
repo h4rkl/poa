@@ -44,6 +44,7 @@ pub struct AttentionProof<'info> {
     )]
     pub fee_vault: Account<'info, FeeVault>,
 
+    // The reward vault for the user account
     #[account(
         mut,
         associated_token::mint = token_mint,
@@ -53,7 +54,7 @@ pub struct AttentionProof<'info> {
 
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut)]
-    pub attention_account: AccountInfo<'info>,
+    pub poa_fees: AccountInfo<'info>,
 
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_program: Program<'info, Token>,
@@ -65,10 +66,11 @@ pub fn attention_proof(ctx: Context<AttentionProof>) -> Result<()> {
     let clock = Clock::get()?;
     let proof = &mut ctx.accounts.proof_account;
     let token_pool_acc = &mut ctx.accounts.token_pool_acc;
+    let mint = ctx.accounts.token_mint.key();
     let timestamp = clock.unix_timestamp;
 
     // Verify that the timeout has passed since the last proof attempt
-    if timestamp - proof.last_proof_at < token_pool_acc.timeout.into() {
+    if timestamp - proof.last_proof_at < token_pool_acc.timeout_sec.into() {
         return Err(CustomError::CooldownNotMet.into());
     }
 
@@ -81,9 +83,9 @@ pub fn attention_proof(ctx: Context<AttentionProof>) -> Result<()> {
         &ctx.accounts.fee_vault.key(),
         token_pool_acc.pool_fee,
     );
-    let ix_to_attention_account = transfer(
+    let ix_to_poa_fees = transfer(
         &ctx.accounts.authority.key(),
-        &ctx.accounts.attention_account.key(),
+        &ctx.accounts.poa_fees.key(),
         TX_FEE,
     );
 
@@ -98,10 +100,10 @@ pub fn attention_proof(ctx: Context<AttentionProof>) -> Result<()> {
     )?;
 
     invoke(
-        &ix_to_attention_account,
+        &ix_to_poa_fees,
         &[
             ctx.accounts.authority.to_account_info(),
-            ctx.accounts.attention_account.to_account_info(),
+            ctx.accounts.poa_fees.to_account_info(),
             ctx.accounts.system_program.to_account_info(),
         ],
     )?;
@@ -112,13 +114,23 @@ pub fn attention_proof(ctx: Context<AttentionProof>) -> Result<()> {
     proof.total_rewards += reward;
 
     // Transfer reward from token pool vault to attention's reward vault
+    let token_pool_acc_seeds = &[
+        CONFIG_SEED,
+        &mint.as_ref(),
+        &[ctx.bumps.token_pool_acc],
+    ];
+    let signer_seeds = &[&token_pool_acc_seeds[..]];
+
     let cpi_accounts = token::Transfer {
         from: ctx.accounts.token_pool_vault.to_account_info(),
         to: ctx.accounts.reward_vault.to_account_info(),
-        authority: token_pool_acc.to_account_info(),
+        authority: ctx.accounts.token_pool_acc.to_account_info(),
     };
-    let cpi_program = ctx.accounts.token_program.to_account_info();
-    let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
+    let cpi_ctx = CpiContext::new_with_signer(
+        ctx.accounts.token_program.to_account_info(),
+        cpi_accounts,
+        signer_seeds,
+    );
     token::transfer(cpi_ctx, reward)?;
 
     Ok(())

@@ -172,7 +172,7 @@ export type Poa = {
           }
         },
         {
-          "name": "attentionAccount",
+          "name": "poaFees",
           "writable": true
         },
         {
@@ -423,7 +423,7 @@ export type Poa = {
           }
         },
         {
-          "name": "attentionAccount",
+          "name": "poaFees",
           "writable": true
         },
         {
@@ -570,6 +570,10 @@ export type Poa = {
           }
         },
         {
+          "name": "poaFees",
+          "writable": true
+        },
+        {
           "name": "tokenMetadataProgram",
           "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
         },
@@ -659,6 +663,11 @@ export type Poa = {
       "code": 6003,
       "name": "invalidHash",
       "msg": "Invalid hash provided."
+    },
+    {
+      "code": 6004,
+      "name": "invalidPoaAcc",
+      "msg": "Invalid POA fee acc."
     }
   ],
   "types": [
@@ -766,7 +775,7 @@ export type Poa = {
             "type": "u64"
           },
           {
-            "name": "timeout",
+            "name": "timeoutSec",
             "type": "u32"
           }
         ]
@@ -786,7 +795,7 @@ export type Poa = {
             "type": "u64"
           },
           {
-            "name": "timeout",
+            "name": "timeoutSec",
             "type": "u32"
           },
           {
