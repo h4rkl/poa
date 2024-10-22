@@ -8,7 +8,7 @@ pub mod state;
 declare_id!("CLiCKaKS3DZUCr9WazTnXSM1Tky7kgrKy6tDQ2tSeZ9P");
 
 #[program]
-pub mod memeoor {
+pub mod poa {
     use super::*;
 
     pub fn token_pool_initialise(

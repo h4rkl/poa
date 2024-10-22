@@ -1,12 +1,12 @@
 [package]
-name = "memeoor"
+name = "poa"
 version = "0.1.0"
 description = "Launch and mine meme tokens on Solana"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "memeoor"
+name = "poa"
 
 [features]
 no-entrypoint = []

@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@memeoor/anchor": ["anchor/src/index.ts"]
+      "@poa/anchor": ["anchor/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

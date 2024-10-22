@@ -1,14 +1,20 @@
-{
+/**
+ * Program IDL in camelCase format in order to be used in JS/TS.
+ *
+ * Note that this is only a type helper and is not the actual IDL. The original
+ * IDL can be found at `target/idl/poa.json`.
+ */
+export type Poa = {
   "address": "CLiCKaKS3DZUCr9WazTnXSM1Tky7kgrKy6tDQ2tSeZ9P",
   "metadata": {
-    "name": "memeoor",
+    "name": "poa",
     "version": "0.1.0",
     "spec": "0.1.0",
     "description": "Launch and mine meme tokens on Solana"
   },
   "instructions": [
     {
-      "name": "attention_initialise",
+      "name": "attentionInitialise",
       "discriminator": [
         141,
         59,
@@ -26,7 +32,7 @@
           "signer": true
         },
         {
-          "name": "token_mint",
+          "name": "tokenMint",
           "pda": {
             "seeds": [
               {
@@ -46,7 +52,7 @@
           }
         },
         {
-          "name": "reward_vault",
+          "name": "rewardVault",
           "writable": true,
           "pda": {
             "seeds": [
@@ -93,7 +99,7 @@
               },
               {
                 "kind": "account",
-                "path": "token_mint"
+                "path": "tokenMint"
               }
             ],
             "program": {
@@ -136,7 +142,7 @@
           }
         },
         {
-          "name": "proof_account",
+          "name": "proofAccount",
           "writable": true,
           "pda": {
             "seeds": [
@@ -160,25 +166,25 @@
               },
               {
                 "kind": "account",
-                "path": "token_mint"
+                "path": "tokenMint"
               }
             ]
           }
         },
         {
-          "name": "attention_account",
+          "name": "attentionAccount",
           "writable": true
         },
         {
-          "name": "associated_token_program",
+          "name": "associatedTokenProgram",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "token_program",
+          "name": "tokenProgram",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -187,14 +193,14 @@
           "name": "args",
           "type": {
             "defined": {
-              "name": "AttentionInitArgs"
+              "name": "attentionInitArgs"
             }
           }
         }
       ]
     },
     {
-      "name": "attention_prove",
+      "name": "attentionProve",
       "discriminator": [
         208,
         197,
@@ -212,7 +218,7 @@
           "signer": true
         },
         {
-          "name": "proof_account",
+          "name": "proofAccount",
           "writable": true,
           "pda": {
             "seeds": [
@@ -236,17 +242,17 @@
               },
               {
                 "kind": "account",
-                "path": "token_mint"
+                "path": "tokenMint"
               }
             ]
           }
         },
         {
-          "name": "token_mint",
+          "name": "tokenMint",
           "writable": true
         },
         {
-          "name": "token_pool_acc",
+          "name": "tokenPoolAcc",
           "writable": true,
           "pda": {
             "seeds": [
@@ -263,13 +269,13 @@
               },
               {
                 "kind": "account",
-                "path": "token_mint"
+                "path": "tokenMint"
               }
             ]
           }
         },
         {
-          "name": "token_pool_vault",
+          "name": "tokenPoolVault",
           "writable": true,
           "pda": {
             "seeds": [
@@ -291,17 +297,17 @@
               },
               {
                 "kind": "account",
-                "path": "token_mint"
+                "path": "tokenMint"
               },
               {
                 "kind": "account",
-                "path": "token_pool_acc"
+                "path": "tokenPoolAcc"
               }
             ]
           }
         },
         {
-          "name": "fee_vault",
+          "name": "feeVault",
           "writable": true,
           "pda": {
             "seeds": [
@@ -321,13 +327,13 @@
               },
               {
                 "kind": "account",
-                "path": "token_pool_acc"
+                "path": "tokenPoolAcc"
               }
             ]
           }
         },
         {
-          "name": "reward_vault",
+          "name": "rewardVault",
           "writable": true,
           "pda": {
             "seeds": [
@@ -374,7 +380,7 @@
               },
               {
                 "kind": "account",
-                "path": "token_mint"
+                "path": "tokenMint"
               }
             ],
             "program": {
@@ -417,19 +423,19 @@
           }
         },
         {
-          "name": "attention_account",
+          "name": "attentionAccount",
           "writable": true
         },
         {
-          "name": "associated_token_program",
+          "name": "associatedTokenProgram",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "token_program",
+          "name": "tokenProgram",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         },
         {
@@ -440,7 +446,7 @@
       "args": []
     },
     {
-      "name": "token_pool_initialise",
+      "name": "tokenPoolInitialise",
       "discriminator": [
         253,
         132,
@@ -479,11 +485,11 @@
           }
         },
         {
-          "name": "metadata_account",
+          "name": "metadataAccount",
           "writable": true
         },
         {
-          "name": "token_pool_acc",
+          "name": "tokenPoolAcc",
           "writable": true,
           "pda": {
             "seeds": [
@@ -506,7 +512,7 @@
           }
         },
         {
-          "name": "token_pool_vault",
+          "name": "tokenPoolVault",
           "writable": true,
           "pda": {
             "seeds": [
@@ -532,13 +538,13 @@
               },
               {
                 "kind": "account",
-                "path": "token_pool_acc"
+                "path": "tokenPoolAcc"
               }
             ]
           }
         },
         {
-          "name": "fee_vault",
+          "name": "feeVault",
           "writable": true,
           "pda": {
             "seeds": [
@@ -558,21 +564,21 @@
               },
               {
                 "kind": "account",
-                "path": "token_pool_acc"
+                "path": "tokenPoolAcc"
               }
             ]
           }
         },
         {
-          "name": "token_metadata_program",
+          "name": "tokenMetadataProgram",
           "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
         },
         {
-          "name": "token_program",
+          "name": "tokenProgram",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         },
         {
@@ -585,7 +591,7 @@
           "name": "args",
           "type": {
             "defined": {
-              "name": "TokenPoolInitArgs"
+              "name": "tokenPoolInitArgs"
             }
           }
         }
@@ -594,7 +600,7 @@
   ],
   "accounts": [
     {
-      "name": "FeeVault",
+      "name": "feeVault",
       "discriminator": [
         192,
         178,
@@ -607,7 +613,7 @@
       ]
     },
     {
-      "name": "ProofAcc",
+      "name": "proofAcc",
       "discriminator": [
         38,
         127,
@@ -620,7 +626,7 @@
       ]
     },
     {
-      "name": "TokenPoolAcc",
+      "name": "tokenPoolAcc",
       "discriminator": [
         180,
         83,
@@ -636,52 +642,52 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidTokenPoolAccount",
+      "name": "invalidTokenPoolAccount",
       "msg": "Invalid pool token account."
     },
     {
       "code": 6001,
-      "name": "InvalidPoolAddress",
+      "name": "invalidPoolAddress",
       "msg": "Invalid pool address."
     },
     {
       "code": 6002,
-      "name": "CooldownNotMet",
+      "name": "cooldownNotMet",
       "msg": "Cooldown not met."
     },
     {
       "code": 6003,
-      "name": "InvalidHash",
+      "name": "invalidHash",
       "msg": "Invalid hash provided."
     }
   ],
   "types": [
     {
-      "name": "AttentionInitArgs",
+      "name": "attentionInitArgs",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "token_name",
+            "name": "tokenName",
             "type": "string"
           }
         ]
       }
     },
     {
-      "name": "FeeVault",
+      "name": "feeVault",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "token_pool_acc",
+            "name": "tokenPoolAcc",
             "type": "pubkey"
           }
         ]
       }
     },
     {
-      "name": "ProofAcc",
+      "name": "proofAcc",
       "type": {
         "kind": "struct",
         "fields": [
@@ -703,7 +709,7 @@
             }
           },
           {
-            "name": "last_hash",
+            "name": "lastHash",
             "type": {
               "array": [
                 "u8",
@@ -712,30 +718,30 @@
             }
           },
           {
-            "name": "last_proof_at",
+            "name": "lastProofAt",
             "type": "i64"
           },
           {
-            "name": "token_mint",
+            "name": "tokenMint",
             "type": "pubkey"
           },
           {
-            "name": "token_reward_vault",
+            "name": "tokenRewardVault",
             "type": "pubkey"
           },
           {
-            "name": "total_rewards",
+            "name": "totalRewards",
             "type": "u64"
           },
           {
-            "name": "total_proofs",
+            "name": "totalProofs",
             "type": "u64"
           }
         ]
       }
     },
     {
-      "name": "TokenPoolAcc",
+      "name": "tokenPoolAcc",
       "type": {
         "kind": "struct",
         "fields": [
@@ -744,19 +750,19 @@
             "type": "pubkey"
           },
           {
-            "name": "mint_address",
+            "name": "mintAddress",
             "type": "pubkey"
           },
           {
-            "name": "pool_fee_vault",
+            "name": "poolFeeVault",
             "type": "pubkey"
           },
           {
-            "name": "reward_amount",
+            "name": "rewardAmount",
             "type": "u64"
           },
           {
-            "name": "pool_fee",
+            "name": "poolFee",
             "type": "u64"
           },
           {
@@ -767,16 +773,16 @@
       }
     },
     {
-      "name": "TokenPoolInitArgs",
+      "name": "tokenPoolInitArgs",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "reward_amount",
+            "name": "rewardAmount",
             "type": "u64"
           },
           {
-            "name": "pool_fee",
+            "name": "poolFee",
             "type": "u64"
           },
           {
@@ -788,15 +794,15 @@
             "type": "string"
           },
           {
-            "name": "token_decimals",
+            "name": "tokenDecimals",
             "type": "u8"
           },
           {
-            "name": "token_name",
+            "name": "tokenName",
             "type": "string"
           },
           {
-            "name": "total_supply",
+            "name": "totalSupply",
             "type": "u64"
           },
           {
@@ -807,4 +813,4 @@
       }
     }
   ]
-}
+};

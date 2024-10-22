@@ -26,7 +26,7 @@ import {
   toLamports,
   attentionAccount,
 } from './test-helpers';
-import { Memeoor } from '../target/types/memeoor';
+import { Poa } from '../target/types/poa';
 import { Pda, publicKey } from '@metaplex-foundation/umi';
 
 // Configure the provider to use the local cluster
@@ -34,7 +34,7 @@ const provider = anchor.AnchorProvider.env();
 anchor.setProvider(provider);
 
 // Load the program
-const program = anchor.workspace.Memeoor as Program<Memeoor>;
+const program = anchor.workspace.poa as Program<Poa>;
 const umi = createUmi(provider.connection).use(mplTokenMetadata())
 
 // Define the Jest tests

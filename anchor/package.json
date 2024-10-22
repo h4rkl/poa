@@ -1,5 +1,5 @@
 {
-  "name": "@memeoor/anchor",
+  "name": "@poa/anchor",
   "version": "0.0.1",
   "dependencies": {
     "@coral-xyz/anchor": "github:coral-xyz/anchor",

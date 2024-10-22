@@ -6,7 +6,7 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-memeoor = "CLiCKaKS3DZUCr9WazTnXSM1Tky7kgrKy6tDQ2tSeZ9P"
+poa = "CLiCKaKS3DZUCr9WazTnXSM1Tky7kgrKy6tDQ2tSeZ9P"
 
 [registry]
 url = "https://api.apr.dev"
