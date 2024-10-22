@@ -146,21 +146,11 @@ pub fn token_pool_init(
     // Mint the total supply to the token_pool authority
     let mint_signer_seeds: &[&[&[u8]]] = &[&[MINT_SEED, &token_name.as_ref(), &[ctx.bumps.mint]]];
 
-    // fn truncate_symbol(symbol: &str) -> String {
-    //     symbol.chars().take(200).collect::<String>()
-    // }
-    // msg!("*****************symbol: {}", truncate_symbol(&symbol));
-    // msg!("*****************uri: {}", truncate_symbol(&uri));
-    // msg!("*****************name: {}", truncate_symbol(&token_name));
-
     // On-chain token metadata for the mint
     let data_v2 = DataV2 {
         name: token_name.clone(),
-        // symbol,
-        // uri,
-        symbol: "CLICK".to_string(),
-        uri: "https://raw.githubusercontent.com/zetamarkets/brand/master/token/zex.json"
-            .to_string(),
+        symbol,
+        uri,
         seller_fee_basis_points: 0,
         creators: None,
         collection: None,
