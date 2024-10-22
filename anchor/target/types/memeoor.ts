@@ -531,24 +531,12 @@ export type Memeoor = {
             "type": "pubkey"
           },
           {
-            "name": "initialCost",
+            "name": "rewardAmount",
             "type": "u64"
           },
           {
-            "name": "stepInterval",
+            "name": "poolFee",
             "type": "u64"
-          },
-          {
-            "name": "stepFactor",
-            "type": "u64"
-          },
-          {
-            "name": "difficulty",
-            "type": "u64"
-          },
-          {
-            "name": "lastDifficultyAdjustment",
-            "type": "i64"
           }
         ]
       }
@@ -559,15 +547,11 @@ export type Memeoor = {
         "kind": "struct",
         "fields": [
           {
-            "name": "initialCost",
+            "name": "rewardAmount",
             "type": "u64"
           },
           {
-            "name": "stepFactor",
-            "type": "u64"
-          },
-          {
-            "name": "stepInterval",
+            "name": "poolFee",
             "type": "u64"
           },
           {

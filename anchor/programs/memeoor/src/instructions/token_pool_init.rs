@@ -79,17 +79,14 @@ pub struct TokenPoolInit<'info> {
 pub struct TokenPoolAcc {
     pub authority: Pubkey,
     pub mint_address: Pubkey,
+    // The vault where the pool fees are collected for distribution
     pub pool_fee_vault: Pubkey,
-    // The initial cost for mining
-    pub initial_cost: u64,
-    // The interval at which the mining cost increases
-    pub step_interval: u64,
-    // The factor by which the mining cost increases after each step
-    pub step_factor: u64,
-    // The difficulty for mining
-    pub difficulty: u64,
-    // The timestamp of the last difficulty adjustment
-    pub last_difficulty_adjustment: i64,
+    // The fixed amount of tokens to be rewarded for attention proofs
+    pub reward_amount: u64,
+    // The SOL fee to be collected by the pool for distributing rewards
+    pub pool_fee: u64,
+    // The timeout for the attention proof
+    pub timeout: u32,
 }
 
 #[account]
@@ -99,9 +96,9 @@ pub struct FeeVault {
 
 #[derive(Clone, AnchorSerialize, AnchorDeserialize)]
 pub struct TokenPoolInitArgs {
-    initial_cost: u64,
-    step_factor: u64,
-    step_interval: u64,
+    reward_amount: u64,
+    pool_fee: u64,
+    timeout: u32,
     symbol: String,
     pub token_decimals: u8,
     pub token_name: String,
@@ -114,9 +111,9 @@ pub fn token_pool_init(
     args: TokenPoolInitArgs,
 ) -> Result<()> {
     let TokenPoolInitArgs {
-        initial_cost,
-        step_factor,
-        step_interval,
+        reward_amount,
+        pool_fee,
+        timeout,
         symbol,
         token_decimals: _,
         token_name,
@@ -131,11 +128,9 @@ pub fn token_pool_init(
         authority: ctx.accounts.authority.key(),
         mint_address: ctx.accounts.mint.key(),
         pool_fee_vault: ctx.accounts.fee_vault.key(),
-        initial_cost,
-        step_interval,
-        step_factor,
-        difficulty: 0,
-        last_difficulty_adjustment: Clock::get().unwrap().slot.try_into().unwrap(),
+        reward_amount,
+        pool_fee,
+        timeout,
     });
 
     // Mint the total supply to the token_pool authority

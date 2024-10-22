@@ -99,10 +99,9 @@ describe('Proof of Attention', () => {
 
   // Test initializing the token pool
   it('Initializes the token pool', async () => {
-    const initialCost = new anchor.BN(toLamports(1));
-    const stepInterval = new anchor.BN(toLamports(10));
-    const stepFactor = new anchor.BN(toLamports(2));
     const totalSupply = new anchor.BN(toLamports(100));
+    const rewardAmount = new anchor.BN(toLamports(1));
+    const poolFee = new anchor.BN(toLamports(0.01));
     const tokenDecimals = 5;
 
     await program.methods
@@ -111,9 +110,8 @@ describe('Proof of Attention', () => {
         uri: attentionTokenMetadata.uri,
         symbol: attentionTokenMetadata.symbol,
         tokenDecimals,
-        initialCost,
-        stepInterval,
-        stepFactor,
+        rewardAmount,
+        poolFee,
         totalSupply,
       })
       .accountsStrict({
@@ -134,9 +132,8 @@ describe('Proof of Attention', () => {
     // Fetch the token pool config and check that the values are set correctly
     const fetchTPConfig = await program.account.tokenPoolAcc.fetch(tokenPoolAcc);
     expect(fetchTPConfig.authority.equals(poolOwner.publicKey)).toBe(true);
-    expect(fetchTPConfig.initialCost.eq(initialCost)).toBe(true);
-    expect(fetchTPConfig.stepInterval.eq(stepInterval)).toBe(true);
-    expect(fetchTPConfig.stepFactor.eq(stepFactor)).toBe(true);
+    expect(fetchTPConfig.rewardAmount.eq(rewardAmount)).toBe(true);
+    expect(fetchTPConfig.poolFee.eq(poolFee)).toBe(true);
     expect(fetchTPConfig.poolFeeVault.equals(feeVault)).toBe(true);
 
     // make checks for metadata values

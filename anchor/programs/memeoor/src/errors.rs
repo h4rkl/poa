@@ -6,10 +6,8 @@ pub enum CustomError {
     InvalidTokenPoolAccount,
     #[msg("Invalid pool address.")]
     InvalidPoolAddress,
-    #[msg("Mining cooldown not met.")]
-    MiningCooldownNotMet,
+    #[msg("Cooldown not met.")]
+    CooldownNotMet,
     #[msg("Invalid hash provided.")]
     InvalidHash,
-    #[msg("Hash not below difficulty target.")]
-    HashNotBelowDifficulty,
 }

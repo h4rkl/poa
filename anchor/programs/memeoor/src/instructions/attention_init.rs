@@ -47,25 +47,22 @@ pub struct AttentionInit<'info> {
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct AttentionInitArgs {
     pub token_name: String,
-    pub timeout: Option<u32>,
 }
 
 #[account]
 pub struct ProofAcc {
     pub authority: Pubkey,
     pub balance: u64,
-    pub timeout: u32,
     pub challenge: [u8; 32],
     pub last_hash: [u8; 32],
-    pub last_hash_at: i64,
-    pub last_stake_at: i64,
+    pub last_proof_at: i64,
     pub token_mint: Pubkey,
     pub token_reward_vault: Pubkey,
-    pub total_hashes: u64,
     pub total_rewards: u64,
+    pub total_proofs: u64,
 }
 
-pub fn attention_init(ctx: Context<AttentionInit>, args: AttentionInitArgs) -> Result<()> {
+pub fn attention_init(ctx: Context<AttentionInit>, _args: AttentionInitArgs) -> Result<()> {
     let clock = Clock::get()?;
 
     // Check attention_account address is equal to ATTENTION_ACC
@@ -77,7 +74,7 @@ pub fn attention_init(ctx: Context<AttentionInit>, args: AttentionInitArgs) -> R
         return Err(ProgramError::InvalidAccountData.into());
     }
 
-    // Transfer SOL fee from miner to attention_account
+    // Transfer account fee from authority to attention_account
     let transfer_ix = transfer(
         &ctx.accounts.authority.key(),
         &ctx.accounts.attention_account.key(),
@@ -95,7 +92,6 @@ pub fn attention_init(ctx: Context<AttentionInit>, args: AttentionInitArgs) -> R
     let proof = &mut ctx.accounts.proof_account;
     proof.set_inner(ProofAcc {
         authority: ctx.accounts.authority.key(),
-        timeout: args.timeout.unwrap_or(TIME_DIFFICULTY_ADJUSTMENT),
         balance: 0,
         challenge: hashv(&[
             ctx.accounts.authority.key().as_ref(),
@@ -104,11 +100,10 @@ pub fn attention_init(ctx: Context<AttentionInit>, args: AttentionInitArgs) -> R
         ])
         .0,
         last_hash: [0; 32],
-        last_hash_at: clock.unix_timestamp,
-        last_stake_at: clock.unix_timestamp,
+        last_proof_at: clock.unix_timestamp,
         token_mint: ctx.accounts.token_mint.key(),
         token_reward_vault: ctx.accounts.reward_vault.key(),
-        total_hashes: 0,
+        total_proofs: 0,
         total_rewards: 0,
     });
 

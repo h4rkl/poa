@@ -400,7 +400,7 @@
     },
     {
       "code": 6002,
-      "name": "MiningCooldownNotMet",
+      "name": "CooldownNotMet",
       "msg": "Mining cooldown not met."
     },
     {
@@ -525,24 +525,12 @@
             "type": "pubkey"
           },
           {
-            "name": "initial_cost",
+            "name": "reward_amount",
             "type": "u64"
           },
           {
-            "name": "step_interval",
+            "name": "pool_fee",
             "type": "u64"
-          },
-          {
-            "name": "step_factor",
-            "type": "u64"
-          },
-          {
-            "name": "difficulty",
-            "type": "u64"
-          },
-          {
-            "name": "last_difficulty_adjustment",
-            "type": "i64"
           }
         ]
       }
@@ -553,15 +541,11 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "initial_cost",
+            "name": "reward_amount",
             "type": "u64"
           },
           {
-            "name": "step_factor",
-            "type": "u64"
-          },
-          {
-            "name": "step_interval",
+            "name": "pool_fee",
             "type": "u64"
           },
           {

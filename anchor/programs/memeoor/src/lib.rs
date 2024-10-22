@@ -24,4 +24,8 @@ pub mod memeoor {
     ) -> Result<()> {
         attention_init(ctx, args)
     }
+
+    pub fn attention_prove(ctx: Context<AttentionProof>) -> Result<()> {
+        attention_proof(ctx)
+    }
 }
