@@ -35,14 +35,7 @@ pub struct TokenPoolInit<'info> {
     #[account(
         init,
         payer = authority,
-        space = 
-            8 + // discriminator
-            32 + // authority: Pubkey
-            32 + // mint_address: Pubkey
-            32 + // pool_fee_vault: Pubkey
-            8 + // reward_amount: u64
-            8 + // pool_fee: u64
-            4, // timeout: u32
+        space = 8 + std::mem::size_of::<TokenPoolAcc>(),
         seeds = [CONFIG_SEED, &mint.key().as_ref()],
         bump
     )]
@@ -61,7 +54,7 @@ pub struct TokenPoolInit<'info> {
     #[account(
         init,
         payer = authority,
-        space = 8 + 32,
+        space = 8 + std::mem::size_of::<FeeVault>(),
         seeds = [FEE_VAULT_SEED, &token_pool_acc.key().as_ref()],
         bump
     )]
