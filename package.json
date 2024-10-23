@@ -7,7 +7,7 @@
     "anchor-build": "cd anchor && anchor build",
     "anchor-localnet": "cd anchor && anchor localnet",
     "anchor-test": "cd anchor && anchor test",
-    "copy-anchor-types": "cp -R anchor/target/types/poa.ts src/poa/types.ts && cp -R anchor/target/idl/poa.json src/poa/idl.json",
+    "copy-anchor-types": "cp -R anchor/target/types/poa.ts src/poa/types.ts && cp -R anchor/target/idl/poa.json src/poa/idl.json && cp -R anchor/tests/test-helpers.ts src/poa/constants.ts",
     "dev": "pnpm copy-anchor-types && next dev",
     "build": "pnpm copy-anchor-types && next build",
     "start": "next start",

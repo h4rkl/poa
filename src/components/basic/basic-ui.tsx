@@ -1,5 +1,6 @@
 'use client';
 
+import { attentionTokenMetadata } from '@/poa/constants';
 import { usePoaProgram } from './basic-data-access'
 
 export function BasicCreate() {
@@ -8,7 +9,7 @@ export function BasicCreate() {
   return (
     <button
       className="btn btn-xs lg:btn-md btn-primary"
-      onClick={() => attentionInitialise.mutateAsync({ tokenName: "POA" })}
+      onClick={() => attentionInitialise.mutateAsync({ tokenName: attentionTokenMetadata.name })}
       disabled={attentionInitialise.isPending}
     >
       Run program{attentionInitialise.isPending && '...'}

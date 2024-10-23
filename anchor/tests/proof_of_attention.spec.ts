@@ -68,28 +68,28 @@ describe('Proof of Attention', () => {
     );
 
     // Create a mint
-    mint = PublicKey.findProgramAddressSync(
-      [Buffer.from(MINT_SEED), Buffer.from(attentionTokenMetadata.name)],
+    [mint] = PublicKey.findProgramAddressSync(
+      [MINT_SEED, Buffer.from(attentionTokenMetadata.name)],
       program.programId
-    )[0]
+    );
 
     // reward token mint metadata account address
     mintMetadataPDA = findMetadataPda(umi, { mint: publicKey(mint) });
 
-    tokenPoolAcc = PublicKey.findProgramAddressSync(
-      [Buffer.from(CONFIG_SEED), mint.toBuffer()],
+    [tokenPoolAcc] = PublicKey.findProgramAddressSync(
+      [CONFIG_SEED, mint.toBuffer()],
       program.programId
-    )[0];
+    );
 
-    tokenPoolVault = PublicKey.findProgramAddressSync(
-      [Buffer.from(TOKEN_VAULT_SEED), mint.toBuffer(), tokenPoolAcc.toBuffer()],
+    [tokenPoolVault] = PublicKey.findProgramAddressSync(
+      [TOKEN_VAULT_SEED, mint.toBuffer(), tokenPoolAcc.toBuffer()],
       program.programId
-    )[0];
+    );
 
-    feeVault = PublicKey.findProgramAddressSync(
-      [Buffer.from(FEE_VAULT_SEED), tokenPoolAcc.toBuffer()],
+    [feeVault] = PublicKey.findProgramAddressSync(
+      [FEE_VAULT_SEED, tokenPoolAcc.toBuffer()],
       program.programId
-    )[0];
+    );
 
     console.log('Accounts:');
     console.log('poolOwner public key:', poolOwner.publicKey.toBase58());
@@ -180,7 +180,7 @@ describe('Proof of Attention', () => {
         userAccount.publicKey
       );
       [proofAccount] = PublicKey.findProgramAddressSync(
-        [Buffer.from(PROOF_ACC_SEED), userAccount.publicKey.toBuffer(), mint.toBuffer()],
+        [PROOF_ACC_SEED), userAccount.publicKey.toBuffer(), mint.toBuffer()],
         program.programId
       );
       console.log('proofAccount:', proofAccount.toBase58());
