@@ -1,9 +1,9 @@
 "use client";
 
 import { attentionTokenMetadata } from "@/poa/constants";
-import { usePoaProgram } from "./basic-data-access";
+import { usePoaProgram } from "./poa-data-access";
 
-export function BasicCreate() {
+export function POACreate() {
   const { attentionInitialise, attentionProve } = usePoaProgram();
 
   return (
@@ -33,7 +33,7 @@ export function BasicCreate() {
   );
 }
 
-export function BasicProgram() {
+export function POAProgram() {
   const { getProgramAccount } = usePoaProgram();
 
   if (getProgramAccount.isLoading) {

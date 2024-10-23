@@ -9,7 +9,7 @@ export const PROOF_ACC_SEED = Buffer.from("proof_acc");
 export const poaFees = new PublicKey("CLiCKaKS3DZUCr9WazTnXSM1Tky7kgrKy6tDQ2tSeZ9P");
 
 export const attentionTokenMetadata = {
-  uri: "https://raw.githubusercontent.com/zetamarkets/brand/master/token/zex.json",
+  uri: "https://gist.githubusercontent.com/h4rkl/c7e582319fe6c39570f12c1d77eba31f/raw/bb854d81d3dee64a8cc5dd4970fc61ebd841b603/data.json",
   name: "Attention",
   symbol: "CLICK",
 };

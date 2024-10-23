@@ -4,17 +4,17 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { ExplorerLink } from '../cluster/cluster-ui';
 import { WalletButton } from '../solana/solana-provider';
 import { AppHero, ellipsify } from '../ui/ui-layout';
-import { usePoaProgram } from './basic-data-access';
-import { BasicCreate, BasicProgram } from './basic-ui';
+import { usePoaProgram } from './poa-data-access';
+import { POACreate, POAProgram } from './poa-ui';
 
-export default function BasicFeature() {
+export default function POAFeature() {
   const { publicKey } = useWallet();
   const { programId } = usePoaProgram();
 
   return publicKey ? (
     <div>
       <AppHero
-        title="Basic"
+        title="POA"
         subtitle={'Run the program by clicking the "Run program" button.'}
       >
         <p className="mb-6">
@@ -23,9 +23,9 @@ export default function BasicFeature() {
             label={ellipsify(programId.toString())}
           />
         </p>
-        <BasicCreate />
+        <POACreate />
       </AppHero>
-      <BasicProgram />
+      <POAProgram />
     </div>
   ) : (
     <div className="max-w-4xl mx-auto">
