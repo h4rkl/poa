@@ -48,14 +48,14 @@ export function usePoaProgram() {
     [CONFIG_SEED, mint.toBuffer()],
     program.programId
   );
-  // const [tokenPoolVault] = PublicKey.findProgramAddressSync(
-  //   [TOKEN_VAULT_SEED, mint.toBuffer(), tokenPoolAcc.toBuffer()],
-  //   program.programId
-  // );
-  // const [feeVault] = PublicKey.findProgramAddressSync(
-  //   [FEE_VAULT_SEED, tokenPoolAcc.toBuffer()],
-  //   program.programId
-  // );
+  const [tokenPoolVault] = PublicKey.findProgramAddressSync(
+    [TOKEN_VAULT_SEED, mint.toBuffer(), tokenPoolAcc.toBuffer()],
+    program.programId
+  );
+  const [feeVault] = PublicKey.findProgramAddressSync(
+    [FEE_VAULT_SEED, tokenPoolAcc.toBuffer()],
+    program.programId
+  );
   const rewardVaultQuery = useQuery({
     queryKey: ["reward-vault", mint.toBase58(), userAccount?.toBase58()],
     queryFn: () => getAssociatedTokenAddress(mint, userAccount!),
@@ -99,7 +99,28 @@ export function usePoaProgram() {
 
   const attentionProve = useMutation({
     mutationKey: ["poa", "attentionProve", { cluster }],
-    mutationFn: () => program.methods.attentionProve().rpc(),
+    mutationFn: () => {
+      if (!rewardVaultQuery.data) {
+        throw new Error("Reward vault not loaded");
+      }
+      return program.methods
+        .attentionProve()
+        .accountsStrict({
+          authority: userAccount!,
+          proofAccount,
+          tokenMint: mint,
+          tokenPoolAcc,
+          tokenPoolVault,
+          feeVault,
+          rewardVault: rewardVaultQuery.data,
+          poaFees,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        })
+        .rpc();
+    },
     onSuccess: (signature) => {
       transactionToast(signature);
     },

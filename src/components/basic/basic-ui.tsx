@@ -1,19 +1,35 @@
-'use client';
+"use client";
 
-import { attentionTokenMetadata } from '@/poa/constants';
-import { usePoaProgram } from './basic-data-access'
+import { attentionTokenMetadata } from "@/poa/constants";
+import { usePoaProgram } from "./basic-data-access";
 
 export function BasicCreate() {
-  const { attentionInitialise } = usePoaProgram();
+  const { attentionInitialise, attentionProve } = usePoaProgram();
 
   return (
-    <button
-      className="btn btn-xs lg:btn-md btn-primary"
-      onClick={() => attentionInitialise.mutateAsync({ tokenName: attentionTokenMetadata.name })}
-      disabled={attentionInitialise.isPending}
-    >
-      Run program{attentionInitialise.isPending && '...'}
-    </button>
+    <>
+      <button
+        className="btn btn-xs lg:btn-md btn-primary"
+        onClick={() =>
+          attentionInitialise.mutateAsync({
+            tokenName: attentionTokenMetadata.name,
+          })
+        }
+        disabled={attentionInitialise.isPending}
+      >
+        Create acc{attentionInitialise.isPending && "..."}
+      </button>
+
+      <button
+        className="btn btn-xs lg:btn-md btn-primary"
+        onClick={() =>
+          attentionProve.mutateAsync()
+        }
+        disabled={attentionInitialise.isPending}
+      >
+        Click for attn{attentionInitialise.isPending && "..."}
+      </button>
+    </>
   );
 }
 
@@ -34,7 +50,7 @@ export function BasicProgram() {
     );
   }
   return (
-    <div className={'space-y-6'}>
+    <div className={"space-y-6"}>
       <pre>{JSON.stringify(getProgramAccount.data.value, null, 2)}</pre>
     </div>
   );
