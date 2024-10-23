@@ -1,23 +1,23 @@
 'use client';
 
-import { useBasicProgram } from './basic-data-access'
+import { usePoaProgram } from './basic-data-access'
 
 export function BasicCreate() {
-  const { greet } = useBasicProgram();
+  const { attentionInitialise } = usePoaProgram();
 
   return (
     <button
       className="btn btn-xs lg:btn-md btn-primary"
-      onClick={() => greet.mutateAsync()}
-      disabled={greet.isPending}
+      onClick={() => attentionInitialise.mutateAsync({ tokenName: "POA" })}
+      disabled={attentionInitialise.isPending}
     >
-      Run program{greet.isPending && '...'}
+      Run program{attentionInitialise.isPending && '...'}
     </button>
   );
 }
 
 export function BasicProgram() {
-  const { getProgramAccount } = useBasicProgram();
+  const { getProgramAccount } = usePoaProgram();
 
   if (getProgramAccount.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>;

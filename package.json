@@ -7,8 +7,9 @@
     "anchor-build": "cd anchor && anchor build",
     "anchor-localnet": "cd anchor && anchor localnet",
     "anchor-test": "cd anchor && anchor test",
-    "dev": "next dev",
-    "build": "next build",
+    "copy-anchor-types": "cp -R anchor/target/types/poa.ts src/poa/types.ts && cp -R anchor/target/idl/poa.json src/poa/idl.json",
+    "dev": "pnpm copy-anchor-types && next dev",
+    "build": "pnpm copy-anchor-types && next build",
     "start": "next start",
     "lint": "next lint"
   },
