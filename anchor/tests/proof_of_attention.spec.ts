@@ -180,7 +180,7 @@ describe('Proof of Attention', () => {
         userAccount.publicKey
       );
       [proofAccount] = PublicKey.findProgramAddressSync(
-        [PROOF_ACC_SEED), userAccount.publicKey.toBuffer(), mint.toBuffer()],
+        [(PROOF_ACC_SEED), userAccount.publicKey.toBuffer(), mint.toBuffer()],
         program.programId
       );
       console.log('proofAccount:', proofAccount.toBase58());
