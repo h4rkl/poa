@@ -39,7 +39,8 @@ const umi = createUmi(provider.connection).use(mplTokenMetadata())
 
 // Define the Jest tests
 describe('Proof of Attention', () => {
-  let poolOwner: Keypair;
+  let appAuthority: Keypair;
+  let custodian: Keypair;
   let mint: PublicKey;
   let userAccount: Keypair;
   let tokenPoolVault: PublicKey;
@@ -51,12 +52,13 @@ describe('Proof of Attention', () => {
 
   // Before all tests, set up accounts and mint tokens
   beforeAll(async () => {
-    poolOwner = Keypair.generate();
+    appAuthority = Keypair.generate();
+    custodian = Keypair.generate();
     userAccount = Keypair.generate();
 
     // Airdrop SOL to pool owner, user, and poaFees
     await Promise.all(
-      [poolOwner, userAccount, poaFees].map(async (account) => {
+      [appAuthority, userAccount, custodian, poaFees].map(async (account) => {
         const publicKey = 'publicKey' in account ? account.publicKey : account;
         await provider.connection.confirmTransaction(
           await provider.connection.requestAirdrop(
@@ -92,7 +94,8 @@ describe('Proof of Attention', () => {
     );
 
     console.log('Accounts:');
-    console.log('poolOwner public key:', poolOwner.publicKey.toBase58());
+    console.log('appAuthority public key:', appAuthority.publicKey.toBase58());
+    console.log('custodian public key:', custodian.publicKey.toBase58());
     console.log('mint:', mint.toBase58());
     console.log('userAccount public key:', userAccount.publicKey.toBase58());
     console.log('tokenPoolVault:', tokenPoolVault.toBase58());
@@ -121,7 +124,8 @@ describe('Proof of Attention', () => {
         totalSupply,
       })
       .accountsStrict({
-        authority: poolOwner.publicKey,
+        authority: appAuthority.publicKey,
+        custodian: custodian.publicKey,
         mint,
         metadataAccount: mintMetadataPDA[0],
         tokenPoolAcc,
@@ -133,12 +137,13 @@ describe('Proof of Attention', () => {
         systemProgram: SystemProgram.programId,
         rent: SYSVAR_RENT_PUBKEY,
       })
-      .signers([poolOwner])
+      .signers([appAuthority, custodian])
       .rpc().catch(e => console.error("***initialise token error***", e));
 
     // Fetch the token pool config and check that the values are set correctly
     const fetchTPConfig = await program.account.tokenPoolAcc.fetch(tokenPoolAcc);
-    expect(fetchTPConfig.authority.equals(poolOwner.publicKey)).toBe(true);
+    expect(fetchTPConfig.authority.equals(appAuthority.publicKey)).toBe(true);
+    expect(fetchTPConfig.custodian.equals(custodian.publicKey)).toBe(true);
     expect(fetchTPConfig.rewardAmount.eq(rewardAmount)).toBe(true);
     expect(fetchTPConfig.poolFee.eq(poolFee)).toBe(true);
     expect(fetchTPConfig.poolFeeVault.equals(feeVault)).toBe(true);

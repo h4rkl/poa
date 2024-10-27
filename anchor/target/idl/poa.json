@@ -458,6 +458,11 @@
           "signer": true
         },
         {
+          "name": "custodian",
+          "writable": true,
+          "signer": true
+        },
+        {
           "name": "mint",
           "writable": true,
           "pda": {
@@ -750,6 +755,10 @@
         "fields": [
           {
             "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "custodian",
             "type": "pubkey"
           },
           {

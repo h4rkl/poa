@@ -16,12 +16,17 @@ use crate::errors::*;
 #[derive(Accounts)]
 #[instruction(args: TokenPoolInitArgs)]
 pub struct TokenPoolInit<'info> {
+    // The authority is the account that signs on behalf of the PoA application (typically via the API)
     #[account(mut)]
     pub authority: Signer<'info>,
 
+    // The custodian is the account that will be paying for the transaction and have authority over the token pool vault
+    #[account(mut)]
+    pub custodian: Signer<'info>,
+
     #[account(
         init,
-        payer = authority,
+        payer = custodian,
         seeds = [MINT_SEED, &args.token_name.as_bytes()],
         bump,
         mint::decimals = args.token_decimals,
@@ -35,7 +40,7 @@ pub struct TokenPoolInit<'info> {
 
     #[account(
         init,
-        payer = authority,
+        payer = custodian,
         space = 8 + std::mem::size_of::<TokenPoolAcc>(),
         seeds = [CONFIG_SEED, &mint.key().as_ref()],
         bump
@@ -44,7 +49,7 @@ pub struct TokenPoolInit<'info> {
 
     #[account(
         init,
-        payer = authority,
+        payer = custodian,
         seeds = [TOKEN_VAULT_SEED, &mint.key().as_ref(), &token_pool_acc.key().as_ref()],
         bump,
         token::mint = mint,
@@ -54,7 +59,7 @@ pub struct TokenPoolInit<'info> {
 
     #[account(
         init,
-        payer = authority,
+        payer = custodian,
         space = 8 + std::mem::size_of::<FeeVault>(),
         seeds = [FEE_VAULT_SEED, &token_pool_acc.key().as_ref()],
         bump
@@ -73,7 +78,10 @@ pub struct TokenPoolInit<'info> {
 
 #[account]
 pub struct TokenPoolAcc {
+    // The authority is the account that signs on behalf of the PoA application (typically via the API)
     pub authority: Pubkey,
+    // The custodian is the account that will be paying for the transaction and have withdraw authority over the token pool fee vault
+    pub custodian: Pubkey,
     pub mint_address: Pubkey,
     // The vault where the pool fees are collected for distribution
     pub pool_fee_vault: Pubkey,
@@ -131,6 +139,7 @@ pub fn token_pool_init(
     // Creating token pool account
     token_pool_acc.set_inner(TokenPoolAcc {
         authority: ctx.accounts.authority.key(),
+        custodian: ctx.accounts.custodian.key(),
         mint_address: ctx.accounts.mint.key(),
         pool_fee_vault: ctx.accounts.fee_vault.key(),
         reward_amount,
@@ -140,14 +149,14 @@ pub fn token_pool_init(
 
     // Transfer account fee from authority to poa_fees
     let transfer_ix = transfer(
-        &ctx.accounts.authority.key(),
+        &ctx.accounts.custodian.key(),
         &ctx.accounts.poa_fees.key(),
         BASE_FEE,
     );
     invoke(
         &transfer_ix,
         &[
-            ctx.accounts.authority.to_account_info(),
+            ctx.accounts.custodian.to_account_info(),
             ctx.accounts.poa_fees.to_account_info(),
             ctx.accounts.system_program.to_account_info(),
         ],
@@ -174,7 +183,7 @@ pub fn token_pool_init(
             metadata: ctx.accounts.metadata_account.to_account_info(),
             mint: ctx.accounts.mint.to_account_info(),
             mint_authority: ctx.accounts.mint.to_account_info(),
-            payer: ctx.accounts.authority.to_account_info(),
+            payer: ctx.accounts.custodian.to_account_info(),
             update_authority: ctx.accounts.mint.to_account_info(),
             system_program: ctx.accounts.system_program.to_account_info(),
             rent: ctx.accounts.rent.to_account_info(),
