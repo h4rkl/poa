@@ -11,6 +11,7 @@ use anchor_spl::{
 };
 
 use crate::state::*;
+use crate::errors::*;
 
 #[derive(Accounts)]
 #[instruction(args: TokenPoolInitArgs)]
@@ -117,6 +118,15 @@ pub fn token_pool_init(
     } = args;
 
     let token_pool_acc = &mut ctx.accounts.token_pool_acc;
+
+    // Check poa_fees address is equal to POA_FEE_ACC
+    if ctx.accounts.poa_fees.key()
+        != POA_FEE_ACC
+            .parse::<Pubkey>()
+            .map_err(|_| CustomError::InvalidPOAAcc)?
+    {
+        return Err(CustomError::InvalidPOAAcc.into());
+    }
 
     // Creating token pool account
     token_pool_acc.set_inner(TokenPoolAcc {
