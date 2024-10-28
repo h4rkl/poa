@@ -213,7 +213,12 @@ export type Poa = {
       ],
       "accounts": [
         {
-          "name": "authority",
+          "name": "tokenPoolAuthority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "attentionAuthority",
           "writable": true,
           "signer": true
         },
@@ -238,7 +243,7 @@ export type Poa = {
               },
               {
                 "kind": "account",
-                "path": "authority"
+                "path": "attentionAuthority"
               },
               {
                 "kind": "account",
@@ -339,7 +344,7 @@ export type Poa = {
             "seeds": [
               {
                 "kind": "account",
-                "path": "authority"
+                "path": "attentionAuthority"
               },
               {
                 "kind": "const",

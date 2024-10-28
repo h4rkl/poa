@@ -207,7 +207,12 @@
       ],
       "accounts": [
         {
-          "name": "authority",
+          "name": "token_pool_authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "attention_authority",
           "writable": true,
           "signer": true
         },
@@ -232,7 +237,7 @@
               },
               {
                 "kind": "account",
-                "path": "authority"
+                "path": "attention_authority"
               },
               {
                 "kind": "account",
@@ -333,7 +338,7 @@
             "seeds": [
               {
                 "kind": "account",
-                "path": "authority"
+                "path": "attention_authority"
               },
               {
                 "kind": "const",

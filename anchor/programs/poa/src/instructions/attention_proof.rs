@@ -10,12 +10,17 @@ use crate::state::*;
 
 #[derive(Accounts)]
 pub struct AttentionProof<'info> {
+    // The authority is the account that signs on behalf of the PoA application (typically via the API)
     #[account(mut)]
-    pub authority: Signer<'info>,
+    pub token_pool_authority: Signer<'info>,
+
+    // The attention authority is the account that will be paying for the transaction and receiving the attention reward
+    #[account(mut)]
+    pub attention_authority: Signer<'info>,
 
     #[account(
         mut,
-        seeds = [PROOF_ACC_SEED, &authority.key().as_ref(), &token_mint.key().as_ref()],
+        seeds = [PROOF_ACC_SEED, &attention_authority.key().as_ref(), &token_mint.key().as_ref()],
         bump,
     )]
     pub proof_account: Account<'info, ProofAcc>,
@@ -45,7 +50,7 @@ pub struct AttentionProof<'info> {
     #[account(
         mut,
         associated_token::mint = token_mint,
-        associated_token::authority = authority
+        associated_token::authority = attention_authority
     )]
     pub reward_vault: Account<'info, TokenAccount>,
 
@@ -66,6 +71,11 @@ pub fn attention_proof(ctx: Context<AttentionProof>) -> Result<()> {
     let mint = ctx.accounts.token_mint.key();
     let timestamp = clock.unix_timestamp;
 
+    require!(
+        token_pool_acc.authority == ctx.accounts.token_pool_authority.key(),
+        CustomError::InvalidTokenPoolAccount
+    );
+
     // Verify that the timeout has passed since the last proof attempt
     if timestamp - proof.last_proof_at < token_pool_acc.timeout_sec.into() {
         return Err(CustomError::CooldownNotMet.into());
@@ -76,12 +86,12 @@ pub fn attention_proof(ctx: Context<AttentionProof>) -> Result<()> {
 
     // Create instruction data
     let ix_to_fee_vault = transfer(
-        &ctx.accounts.authority.key(),
+        &ctx.accounts.attention_authority.key(),
         &ctx.accounts.fee_vault.key(),
         token_pool_acc.pool_fee,
     );
     let ix_to_poa_fees = transfer(
-        &ctx.accounts.authority.key(),
+        &ctx.accounts.attention_authority.key(),
         &ctx.accounts.poa_fees.key(),
         TX_FEE,
     );
@@ -90,7 +100,7 @@ pub fn attention_proof(ctx: Context<AttentionProof>) -> Result<()> {
     invoke(
         &ix_to_fee_vault,
         &[
-            ctx.accounts.authority.to_account_info(),
+            ctx.accounts.attention_authority.to_account_info(),
             ctx.accounts.fee_vault.to_account_info(),
             ctx.accounts.system_program.to_account_info(),
         ],
@@ -99,7 +109,7 @@ pub fn attention_proof(ctx: Context<AttentionProof>) -> Result<()> {
     invoke(
         &ix_to_poa_fees,
         &[
-            ctx.accounts.authority.to_account_info(),
+            ctx.accounts.attention_authority.to_account_info(),
             ctx.accounts.poa_fees.to_account_info(),
             ctx.accounts.system_program.to_account_info(),
         ],

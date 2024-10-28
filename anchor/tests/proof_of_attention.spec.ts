@@ -48,6 +48,7 @@ describe('Proof of Attention', () => {
   let mintMetadataPDA: Pda;
 
   const timeoutSec = 1; // 1 second
+  const timeoutInit = async () => await new Promise(resolve => setTimeout(resolve, timeoutSec * 1000)); // setTimeout uses milliseconds
 
   // Before all tests, set up accounts and mint tokens
   beforeAll(async () => {
@@ -287,7 +288,7 @@ describe('Proof of Attention', () => {
 
     it('Successfully submits an attention proof', async () => {
       // Wait for the timeout period which was set on initialization
-      await new Promise(resolve => setTimeout(resolve, timeoutSec + 3000)); // setTimeout uses milliseconds
+      await timeoutInit(); // setTimeout uses milliseconds
 
       const initialProofAccount = await program.account.proofAcc.fetch(proofAccount);
       const initialRewardVaultBalance = (await getAccount(provider.connection, rewardVault)).amount;
@@ -296,7 +297,8 @@ describe('Proof of Attention', () => {
       await program.methods
         .attentionProve()
         .accountsStrict({
-          authority: userAccount.publicKey,
+          tokenPoolAuthority: poolOwner.publicKey,
+          attentionAuthority: userAccount.publicKey,
           proofAccount,
           tokenMint: mint,
           tokenPoolAcc,
@@ -309,7 +311,7 @@ describe('Proof of Attention', () => {
           systemProgram: SystemProgram.programId,
           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         })
-        .signers([userAccount])
+        .signers([userAccount, poolOwner])
         .rpc().catch(e => console.error("***attention prove error***", e));
 
       const updatedProofAccount = await program.account.proofAcc.fetch(proofAccount);
@@ -328,7 +330,8 @@ describe('Proof of Attention', () => {
         program.methods
           .attentionProve()
           .accountsStrict({
-            authority: userAccount.publicKey,
+            tokenPoolAuthority: poolOwner.publicKey,
+            attentionAuthority: userAccount.publicKey,
             proofAccount,
             tokenMint: mint,
             tokenPoolAcc,
@@ -341,7 +344,7 @@ describe('Proof of Attention', () => {
             systemProgram: SystemProgram.programId,
             clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           })
-          .signers([userAccount])
+          .signers([userAccount, poolOwner])
           .rpc()
       ).rejects.toThrow(/CooldownNotMet/);
     });
@@ -359,7 +362,8 @@ describe('Proof of Attention', () => {
         program.methods
           .attentionProve()
           .accountsStrict({
-            authority: incorrectUser.publicKey,
+            tokenPoolAuthority: poolOwner.publicKey,
+            attentionAuthority: incorrectUser.publicKey,
             proofAccount,
             tokenMint: mint,
             tokenPoolAcc,
@@ -372,7 +376,7 @@ describe('Proof of Attention', () => {
             systemProgram: SystemProgram.programId,
             clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           })
-          .signers([incorrectUser])
+          .signers([incorrectUser, poolOwner])
           .rpc()
       ).rejects.toThrow();
     });
@@ -384,7 +388,8 @@ describe('Proof of Attention', () => {
         program.methods
           .attentionProve()
           .accountsStrict({
-            authority: userAccount.publicKey,
+            tokenPoolAuthority: poolOwner.publicKey,
+            attentionAuthority: userAccount.publicKey,
             proofAccount,
             tokenMint: incorrectMint,
             tokenPoolAcc,
@@ -397,9 +402,35 @@ describe('Proof of Attention', () => {
             systemProgram: SystemProgram.programId,
             clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           })
-          .signers([userAccount])
+          .signers([userAccount, poolOwner])
           .rpc()
       ).rejects.toThrow();
+    });
+
+    it('Fails to submit attention proof without the token pool authority', async () => {
+      await timeoutInit(); // setTimeout uses milliseconds
+      const incorrectTokenPoolAuthority = Keypair.generate();
+      await expect(
+        program.methods
+          .attentionProve()
+          .accountsStrict({
+            tokenPoolAuthority: incorrectTokenPoolAuthority.publicKey,
+            attentionAuthority: userAccount.publicKey,
+            proofAccount,
+            tokenMint: mint,
+            tokenPoolAcc,
+            tokenPoolVault,
+            feeVault,
+            rewardVault,
+            poaFees,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          })
+          .signers([userAccount, incorrectTokenPoolAuthority])
+          .rpc()
+      ).rejects.toThrow(/InvalidTokenPoolAccount/);
     });
   });
 
