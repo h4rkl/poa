@@ -407,4 +407,120 @@ describe('Proof of Attention', () => {
       ).rejects.toThrow();
     });
   });
+
+  describe('Fee Vault Withdraw', () => {  
+    beforeAll(async () => {
+      // Ensure custodian has some SOL
+      await provider.connection.confirmTransaction(
+        await provider.connection.requestAirdrop(
+          feeVault,
+          LAMPORTS_PER_SOL * 3
+        )
+      );
+  
+      // Get the fee vault balance before tests
+      const feeVaultBalance = await provider.connection.getBalance(feeVault);
+      console.log('Initial fee vault balance:', feeVaultBalance);
+    });
+  
+    it('Successfully withdraws fees from the fee vault', async () => {
+      const withdrawAmount = new anchor.BN(toLamports(0.1)); // Withdraw 0.1 SOL
+      const initialCustodianBalance = await provider.connection.getBalance(custodian.publicKey);
+      const initialFeeVaultBalance = await provider.connection.getBalance(feeVault);
+  
+      await program.methods
+        .feeVaultWithdrawFunds({
+          tokenName: attentionTokenMetadata.name,
+          amount: withdrawAmount,
+        })
+        .accountsStrict({
+          custodian: custodian.publicKey,
+          mint,
+          tokenPoolAcc,
+          feeVault,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([custodian])
+        .rpc();
+  
+      const finalCustodianBalance = await provider.connection.getBalance(custodian.publicKey);
+      const finalFeeVaultBalance = await provider.connection.getBalance(feeVault);
+  
+      expect(finalCustodianBalance).toBeGreaterThan(initialCustodianBalance);
+      expect(finalFeeVaultBalance).toBeLessThan(initialFeeVaultBalance);
+      expect(initialFeeVaultBalance - finalFeeVaultBalance).toBe(withdrawAmount.toNumber());
+    });
+  
+    it('Fails to withdraw more than the fee vault balance', async () => {
+      const feeVaultBalance = await provider.connection.getBalance(feeVault);
+      const excessiveAmount = new anchor.BN(feeVaultBalance + toLamports(1)); // Try to withdraw more than available
+  
+      await expect(
+        program.methods
+          .feeVaultWithdrawFunds({
+            tokenName: attentionTokenMetadata.name,
+            amount: excessiveAmount,
+          })
+          .accountsStrict({
+            custodian: custodian.publicKey,
+            mint,
+            tokenPoolAcc,
+            feeVault,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([custodian])
+          .rpc()
+      ).rejects.toThrow(/InsufficientFeeVaultBalance/);
+    });
+  
+    it('Fails when non-custodian tries to withdraw', async () => {
+      const nonCustodian = Keypair.generate();
+      await provider.connection.confirmTransaction(
+        await provider.connection.requestAirdrop(
+          nonCustodian.publicKey,
+          LAMPORTS_PER_SOL
+        )
+      );
+  
+      const withdrawAmount = new anchor.BN(toLamports(0.1));
+  
+      await expect(
+        program.methods
+          .feeVaultWithdrawFunds({
+            tokenName: attentionTokenMetadata.name,
+            amount: withdrawAmount,
+          })
+          .accountsStrict({
+            custodian: nonCustodian.publicKey,
+            mint,
+            tokenPoolAcc,
+            feeVault,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([nonCustodian])
+          .rpc()
+      ).rejects.toThrow(/WithdrawNotApproved/);
+    });
+  
+    it('Fails when trying to withdraw with incorrect token name', async () => {
+      const withdrawAmount = new anchor.BN(toLamports(0.1));
+  
+      await expect(
+        program.methods
+          .feeVaultWithdrawFunds({
+            tokenName: "IncorrectTokenName",
+            amount: withdrawAmount,
+          })
+          .accountsStrict({
+            custodian: custodian.publicKey,
+            mint,
+            tokenPoolAcc,
+            feeVault,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([custodian])
+          .rpc()
+      ).rejects.toThrow();
+    });
+  });
 });

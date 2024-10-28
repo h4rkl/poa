@@ -12,4 +12,8 @@ pub enum CustomError {
     InvalidHash,
     #[msg("Invalid POA fee acc.")]
     InvalidPOAAcc,
+    #[msg("Withdraw not approved.")]
+    WithdrawNotApproved,
+    #[msg("Insufficient fee vault balance.")]
+    InsufficientFeeVaultBalance,
 }

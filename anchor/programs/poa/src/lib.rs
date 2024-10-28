@@ -28,4 +28,8 @@ pub mod poa {
     pub fn attention_prove(ctx: Context<AttentionProof>) -> Result<()> {
         attention_proof(ctx)
     }
+
+    pub fn fee_vault_withdraw_funds(ctx: Context<FeeVaultWithdraw>, args: FeeVaultWithdrawArgs) -> Result<()> {
+        fee_vault_withdraw(ctx, args)
+    }
 }

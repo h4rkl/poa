@@ -37,11 +37,8 @@ pub struct AttentionProof<'info> {
     )]
     pub token_pool_vault: Account<'info, TokenAccount>,
 
-    #[account(
-        mut,
-        seeds = [FEE_VAULT_SEED, &token_pool_acc.key().as_ref()],
-        bump
-    )]
+    // The fee vault where the rewards are collected for the project
+    #[account( mut, seeds = [FEE_VAULT_SEED, &token_pool_acc.key().as_ref()], bump )]
     pub fee_vault: Account<'info, FeeVault>,
 
     // The reward vault for the user account
