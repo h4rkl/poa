@@ -409,22 +409,14 @@ describe('Proof of Attention', () => {
   });
 
   describe('Fee Vault Withdraw', () => {  
-    beforeAll(async () => {
-      // Ensure custodian has some SOL
-      await provider.connection.confirmTransaction(
-        await provider.connection.requestAirdrop(
-          feeVault,
-          LAMPORTS_PER_SOL * 3
-        )
-      );
-  
+    beforeAll(async () => {  
       // Get the fee vault balance before tests
       const feeVaultBalance = await provider.connection.getBalance(feeVault);
       console.log('Initial fee vault balance:', feeVaultBalance);
     });
   
     it('Successfully withdraws fees from the fee vault', async () => {
-      const withdrawAmount = new anchor.BN(toLamports(0.1)); // Withdraw 0.1 SOL
+      const withdrawAmount = new anchor.BN(toLamports(0.00069420)); // Withdraw 0.00069420 SOL
       const initialCustodianBalance = await provider.connection.getBalance(custodian.publicKey);
       const initialFeeVaultBalance = await provider.connection.getBalance(feeVault);
   
