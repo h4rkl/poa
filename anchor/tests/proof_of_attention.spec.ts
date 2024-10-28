@@ -184,6 +184,8 @@ describe('Proof of Attention', () => {
         [PROOF_ACC_SEED, userAccount.publicKey.toBuffer(), mint.toBuffer()],
         program.programId
       );
+      console.log('proofAccount:', proofAccount.toBase58());
+      console.log('rewardVault:', rewardVault.toBase58());
     });
 
     it('Initializes attention proof', async () => {
