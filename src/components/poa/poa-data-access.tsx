@@ -62,10 +62,12 @@ export function usePoaProgram() {
     enabled: !!userAccount,
   });
 
-  const [proofAccount] = PublicKey.findProgramAddressSync(
-    [PROOF_ACC_SEED, userAccount!.toBuffer(), mint.toBuffer()],
-    program.programId
-  );
+  const proofAccount = userAccount
+    ? PublicKey.findProgramAddressSync(
+        [PROOF_ACC_SEED, userAccount.toBuffer(), mint.toBuffer()],
+        program.programId
+      )[0]
+    : null;
   const getProgramAccount = useQuery({
     queryKey: ["get-program-account", { cluster }],
     queryFn: () => connection.getParsedAccountInfo(program.programId),
@@ -130,37 +132,39 @@ export function usePoaProgram() {
   const tokenPoolInitialise = useMutation({
     mutationKey: ["poa", "tokenPoolInitialise", { cluster }],
     mutationFn: (args: {
-      rewardAmount: anchor.BN;
+      authority: PublicKey;
+      custodian: PublicKey;
+      feeVault: PublicKey;
+      metadataAccount: PublicKey;
+      mint: PublicKey;
+      poaFees: PublicKey;
       poolFee: anchor.BN;
-      timeoutSec: number;
+      poolOwner: Keypair;
+      rewardAmount: anchor.BN;
       symbol: string;
+      timeoutSec: number;
       tokenDecimals: number;
       tokenName: string;
-      totalSupply: anchor.BN;
-      uri: string;
-      authority: PublicKey;
-      mint: PublicKey;
-      metadataAccount: PublicKey;
       tokenPoolAcc: PublicKey;
       tokenPoolVault: PublicKey;
-      feeVault: PublicKey;
-      poaFees: PublicKey;
-      poolOwner: Keypair;
+      totalSupply: anchor.BN;
+      uri: string;
     }) =>
       program.methods
         .tokenPoolInitialise(args)
         .accountsStrict({
           authority: args.authority,
-          mint: args.mint,
+          custodian: args.custodian,
+          feeVault: args.feeVault,
           metadataAccount: args.metadataAccount,
+          mint: args.mint,
+          poaFees: args.poaFees,
           tokenPoolAcc: args.tokenPoolAcc,
           tokenPoolVault: args.tokenPoolVault,
-          feeVault: args.feeVault,
-          poaFees: args.poaFees,
+          rent: SYSVAR_RENT_PUBKEY,
+          systemProgram: SystemProgram.programId,
           tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
           tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-          rent: SYSVAR_RENT_PUBKEY,
         })
         .rpc(),
     onSuccess: (signature) => {

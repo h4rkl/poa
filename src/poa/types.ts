@@ -446,6 +446,110 @@ export type Poa = {
       "args": []
     },
     {
+      "name": "feeVaultWithdrawFunds",
+      "discriminator": [
+        226,
+        211,
+        147,
+        63,
+        231,
+        112,
+        56,
+        214
+      ],
+      "accounts": [
+        {
+          "name": "custodian",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "args.token_name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tokenPoolAcc",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "feeVault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  101,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "tokenPoolAcc"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "feeVaultWithdrawArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "tokenPoolInitialise",
       "discriminator": [
         253,
@@ -460,6 +564,11 @@ export type Poa = {
       "accounts": [
         {
           "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "custodian",
           "writable": true,
           "signer": true
         },
@@ -668,6 +777,16 @@ export type Poa = {
       "code": 6004,
       "name": "invalidPoaAcc",
       "msg": "Invalid POA fee acc."
+    },
+    {
+      "code": 6005,
+      "name": "withdrawNotApproved",
+      "msg": "Withdraw not approved."
+    },
+    {
+      "code": 6006,
+      "name": "insufficientFeeVaultBalance",
+      "msg": "Insufficient fee vault balance."
     }
   ],
   "types": [
@@ -691,6 +810,22 @@ export type Poa = {
           {
             "name": "tokenPoolAcc",
             "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "feeVaultWithdrawArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tokenName",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
           }
         ]
       }
@@ -756,6 +891,10 @@ export type Poa = {
         "fields": [
           {
             "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "custodian",
             "type": "pubkey"
           },
           {
