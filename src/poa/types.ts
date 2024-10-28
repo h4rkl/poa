@@ -213,7 +213,12 @@ export type Poa = {
       ],
       "accounts": [
         {
-          "name": "authority",
+          "name": "tokenPoolAuthority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "attentionAuthority",
           "writable": true,
           "signer": true
         },
@@ -238,7 +243,7 @@ export type Poa = {
               },
               {
                 "kind": "account",
-                "path": "authority"
+                "path": "attentionAuthority"
               },
               {
                 "kind": "account",
@@ -339,7 +344,7 @@ export type Poa = {
             "seeds": [
               {
                 "kind": "account",
-                "path": "authority"
+                "path": "attentionAuthority"
               },
               {
                 "kind": "const",
@@ -459,7 +464,7 @@ export type Poa = {
       ],
       "accounts": [
         {
-          "name": "custodian",
+          "name": "authority",
           "writable": true,
           "signer": true
         },
@@ -564,11 +569,6 @@ export type Poa = {
       "accounts": [
         {
           "name": "authority",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "custodian",
           "writable": true,
           "signer": true
         },
@@ -891,10 +891,6 @@ export type Poa = {
         "fields": [
           {
             "name": "authority",
-            "type": "pubkey"
-          },
-          {
-            "name": "custodian",
             "type": "pubkey"
           },
           {

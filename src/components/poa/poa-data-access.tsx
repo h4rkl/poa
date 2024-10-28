@@ -35,7 +35,7 @@ import {
 export function usePoaProgram() {
   const { connection } = useConnection();
   const { cluster } = useCluster();
-  const { publicKey: userAccount } = useWallet();
+  const { signTransaction, publicKey: userAccount } = useWallet();
   const transactionToast = useTransactionToast();
   const provider = useAnchorProvider();
   const program = new anchor.Program(IDL as Poa, provider);
@@ -79,6 +79,9 @@ export function usePoaProgram() {
       if (!rewardVaultQuery.data) {
         throw new Error("Reward vault not loaded");
       }
+      if (!proofAccount) {
+        throw new Error("Proof acc not loaded");
+      }
       return program.methods
         .attentionInitialise(args)
         .accountsStrict({
@@ -101,14 +104,18 @@ export function usePoaProgram() {
 
   const attentionProve = useMutation({
     mutationKey: ["poa", "attentionProve", { cluster }],
-    mutationFn: () => {
+    mutationFn: async () => {
       if (!rewardVaultQuery.data) {
         throw new Error("Reward vault not loaded");
       }
-      return program.methods
+      if (!proofAccount) {
+        throw new Error("Proof acc not loaded");
+      }
+      const tx = await program.methods
         .attentionProve()
         .accountsStrict({
-          authority: userAccount!,
+          tokenPoolAuthority: "to_sign",
+          attentionAuthority: userAccount!,
           proofAccount,
           tokenMint: mint,
           tokenPoolAcc,
@@ -121,7 +128,28 @@ export function usePoaProgram() {
           systemProgram: SystemProgram.programId,
           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         })
-        .rpc();
+        .transaction();
+
+      if (!signTransaction) {
+        throw new Error("Wallet not connected");
+      }
+      const signedTx = await signTransaction(tx);
+      const serializedTx = signedTx.serialize();
+
+      const response = await fetch('/api/finalize-transaction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ transaction: serializedTx.toString('base64') }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to finalize transaction');
+      }
+
+      const { signature } = await response.json();
+      return signature;
     },
     onSuccess: (signature) => {
       transactionToast(signature);
@@ -154,7 +182,6 @@ export function usePoaProgram() {
         .tokenPoolInitialise(args)
         .accountsStrict({
           authority: args.authority,
-          custodian: args.custodian,
           feeVault: args.feeVault,
           metadataAccount: args.metadataAccount,
           mint: args.mint,
