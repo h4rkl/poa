@@ -9,7 +9,7 @@ use crate::{FeeVault, TokenPoolAcc};
 #[instruction(args: FeeVaultWithdrawArgs)]
 pub struct FeeVaultWithdraw<'info> {
     #[account(mut)]
-    pub custodian: Signer<'info>,
+    pub authority: Signer<'info>,
 
     #[account( mut, seeds = [MINT_SEED, &args.token_name.as_bytes()], bump, )]
     pub mint: Box<Account<'info, Mint>>,
@@ -35,11 +35,11 @@ pub fn fee_vault_withdraw(
 ) -> Result<()> {
     let token_pool_acc = &ctx.accounts.token_pool_acc;
     let fee_vault = &mut ctx.accounts.fee_vault;
-    let custodian = &ctx.accounts.custodian;
+    let authority = &ctx.accounts.authority;
 
     // Check if the token_pool_acc approves the transaction
     require!(
-        token_pool_acc.custodian == custodian.key(),
+        token_pool_acc.authority == authority.key(),
         CustomError::WithdrawNotApproved
     );
 
@@ -52,7 +52,7 @@ pub fn fee_vault_withdraw(
 
     // Transfer SOL from fee_vault to custodian
     ctx.accounts.fee_vault.sub_lamports(args.amount)?;
-    ctx.accounts.custodian.add_lamports(args.amount)?;
+    ctx.accounts.authority.add_lamports(args.amount)?;
 
     Ok(())
 }

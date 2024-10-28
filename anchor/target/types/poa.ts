@@ -459,7 +459,7 @@ export type Poa = {
       ],
       "accounts": [
         {
-          "name": "custodian",
+          "name": "authority",
           "writable": true,
           "signer": true
         },
@@ -564,11 +564,6 @@ export type Poa = {
       "accounts": [
         {
           "name": "authority",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "custodian",
           "writable": true,
           "signer": true
         },
@@ -891,10 +886,6 @@ export type Poa = {
         "fields": [
           {
             "name": "authority",
-            "type": "pubkey"
-          },
-          {
-            "name": "custodian",
             "type": "pubkey"
           },
           {

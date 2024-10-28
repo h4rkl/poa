@@ -39,8 +39,7 @@ const umi = createUmi(provider.connection).use(mplTokenMetadata())
 
 // Define the Jest tests
 describe('Proof of Attention', () => {
-  let appAuthority: Keypair;
-  let custodian: Keypair;
+  let poolOwner: Keypair;
   let mint: PublicKey;
   let userAccount: Keypair;
   let tokenPoolVault: PublicKey;
@@ -52,13 +51,12 @@ describe('Proof of Attention', () => {
 
   // Before all tests, set up accounts and mint tokens
   beforeAll(async () => {
-    appAuthority = Keypair.generate();
-    custodian = Keypair.generate();
+    poolOwner = Keypair.generate();
     userAccount = Keypair.generate();
 
     // Airdrop SOL to pool owner, user, and poaFees
     await Promise.all(
-      [appAuthority, userAccount, custodian, poaFees].map(async (account) => {
+      [poolOwner, userAccount, poaFees].map(async (account) => {
         const publicKey = 'publicKey' in account ? account.publicKey : account;
         await provider.connection.confirmTransaction(
           await provider.connection.requestAirdrop(
@@ -94,8 +92,7 @@ describe('Proof of Attention', () => {
     );
 
     console.log('Accounts:');
-    console.log('appAuthority public key:', appAuthority.publicKey.toBase58());
-    console.log('custodian public key:', custodian.publicKey.toBase58());
+    console.log('poolOwner public key:', poolOwner.publicKey.toBase58());
     console.log('mint:', mint.toBase58());
     console.log('userAccount public key:', userAccount.publicKey.toBase58());
     console.log('tokenPoolVault:', tokenPoolVault.toBase58());
@@ -124,8 +121,7 @@ describe('Proof of Attention', () => {
         totalSupply,
       })
       .accountsStrict({
-        authority: appAuthority.publicKey,
-        custodian: custodian.publicKey,
+        authority: poolOwner.publicKey,
         mint,
         metadataAccount: mintMetadataPDA[0],
         tokenPoolAcc,
@@ -137,13 +133,12 @@ describe('Proof of Attention', () => {
         systemProgram: SystemProgram.programId,
         rent: SYSVAR_RENT_PUBKEY,
       })
-      .signers([appAuthority, custodian])
+      .signers([poolOwner])
       .rpc().catch(e => console.error("***initialise token error***", e));
 
     // Fetch the token pool config and check that the values are set correctly
     const fetchTPConfig = await program.account.tokenPoolAcc.fetch(tokenPoolAcc);
-    expect(fetchTPConfig.authority.equals(appAuthority.publicKey)).toBe(true);
-    expect(fetchTPConfig.custodian.equals(custodian.publicKey)).toBe(true);
+    expect(fetchTPConfig.authority.equals(poolOwner.publicKey)).toBe(true);
     expect(fetchTPConfig.rewardAmount.eq(rewardAmount)).toBe(true);
     expect(fetchTPConfig.poolFee.eq(poolFee)).toBe(true);
     expect(fetchTPConfig.poolFeeVault.equals(feeVault)).toBe(true);
@@ -206,6 +201,7 @@ describe('Proof of Attention', () => {
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
+          attentionAgent: undefined
         })
         .signers([userAccount])
         .rpc().catch(e => console.error("***attention init error***", e));
@@ -417,7 +413,7 @@ describe('Proof of Attention', () => {
   
     it('Successfully withdraws fees from the fee vault', async () => {
       const withdrawAmount = new anchor.BN(toLamports(0.00069420)); // Withdraw 0.00069420 SOL
-      const initialCustodianBalance = await provider.connection.getBalance(custodian.publicKey);
+      const initialPoolOwnerBalance = await provider.connection.getBalance(poolOwner.publicKey);
       const initialFeeVaultBalance = await provider.connection.getBalance(feeVault);
   
       await program.methods
@@ -426,19 +422,19 @@ describe('Proof of Attention', () => {
           amount: withdrawAmount,
         })
         .accountsStrict({
-          custodian: custodian.publicKey,
+          authority: poolOwner.publicKey,
           mint,
           tokenPoolAcc,
           feeVault,
           systemProgram: SystemProgram.programId,
         })
-        .signers([custodian])
+        .signers([poolOwner])
         .rpc();
   
-      const finalCustodianBalance = await provider.connection.getBalance(custodian.publicKey);
+      const finalPoolOwnerBalance = await provider.connection.getBalance(poolOwner.publicKey);
       const finalFeeVaultBalance = await provider.connection.getBalance(feeVault);
   
-      expect(finalCustodianBalance).toBeGreaterThan(initialCustodianBalance);
+      expect(finalPoolOwnerBalance).toBeGreaterThan(initialPoolOwnerBalance);
       expect(finalFeeVaultBalance).toBeLessThan(initialFeeVaultBalance);
       expect(initialFeeVaultBalance - finalFeeVaultBalance).toBe(withdrawAmount.toNumber());
     });
@@ -454,22 +450,22 @@ describe('Proof of Attention', () => {
             amount: excessiveAmount,
           })
           .accountsStrict({
-            custodian: custodian.publicKey,
+            authority: poolOwner.publicKey,
             mint,
             tokenPoolAcc,
             feeVault,
             systemProgram: SystemProgram.programId,
           })
-          .signers([custodian])
+          .signers([poolOwner])
           .rpc()
       ).rejects.toThrow(/InsufficientFeeVaultBalance/);
     });
   
-    it('Fails when non-custodian tries to withdraw', async () => {
-      const nonCustodian = Keypair.generate();
+    it('Fails when non-poolOwner tries to withdraw', async () => {
+      const nonPoolOwner = Keypair.generate();
       await provider.connection.confirmTransaction(
         await provider.connection.requestAirdrop(
-          nonCustodian.publicKey,
+          nonPoolOwner.publicKey,
           LAMPORTS_PER_SOL
         )
       );
@@ -483,13 +479,13 @@ describe('Proof of Attention', () => {
             amount: withdrawAmount,
           })
           .accountsStrict({
-            custodian: nonCustodian.publicKey,
+            authority: nonPoolOwner.publicKey,
             mint,
             tokenPoolAcc,
             feeVault,
             systemProgram: SystemProgram.programId,
           })
-          .signers([nonCustodian])
+          .signers([nonPoolOwner])
           .rpc()
       ).rejects.toThrow(/WithdrawNotApproved/);
     });
@@ -504,13 +500,13 @@ describe('Proof of Attention', () => {
             amount: withdrawAmount,
           })
           .accountsStrict({
-            custodian: custodian.publicKey,
+            authority: poolOwner.publicKey,
             mint,
             tokenPoolAcc,
             feeVault,
             systemProgram: SystemProgram.programId,
           })
-          .signers([custodian])
+          .signers([poolOwner])
           .rpc()
       ).rejects.toThrow();
     });
