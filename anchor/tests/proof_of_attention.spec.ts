@@ -324,6 +324,7 @@ describe('Proof of Attention', () => {
     });
 
     it('Fails to submit attention proof with incorrect authority', async () => {
+      await timeoutInit();
       const incorrectUser = Keypair.generate();
       await provider.connection.confirmTransaction(
         await provider.connection.requestAirdrop(
@@ -359,6 +360,7 @@ describe('Proof of Attention', () => {
 
     it('Fails to submit attention proof with incorrect token mint', async () => {
       const incorrectMint = Keypair.generate().publicKey;
+      await timeoutInit();
 
       await expect(
         program.methods
