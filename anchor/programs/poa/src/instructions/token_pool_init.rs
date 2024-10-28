@@ -76,6 +76,8 @@ pub struct TokenPoolInit<'info> {
 pub struct TokenPoolAcc {
     // The authority is the account that signs on behalf of the PoA application (typically via the API) and has withdraw authority over the token pool fee vault
     pub authority: Pubkey,
+    // The unique token name for the token pool
+    pub token_name: String,
     pub mint_address: Pubkey,
     // The vault where the pool fees are collected for distribution
     pub pool_fee_vault: Pubkey,
@@ -133,6 +135,7 @@ pub fn token_pool_init(
     // Creating token pool account
     token_pool_acc.set_inner(TokenPoolAcc {
         authority: ctx.accounts.authority.key(),
+        token_name: token_name.clone(),
         mint_address: ctx.accounts.mint.key(),
         pool_fee_vault: ctx.accounts.fee_vault.key(),
         reward_amount,

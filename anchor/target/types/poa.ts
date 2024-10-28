@@ -14,202 +14,16 @@ export type Poa = {
   },
   "instructions": [
     {
-      "name": "attentionInitialise",
+      "name": "attentionInteract",
       "discriminator": [
-        141,
-        59,
-        71,
-        212,
-        101,
-        14,
-        158,
-        49
-      ],
-      "accounts": [
-        {
-          "name": "authority",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "tokenMint",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  105,
-                  110,
-                  116
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "args.token_name"
-              }
-            ]
-          }
-        },
-        {
-          "name": "rewardVault",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "account",
-                "path": "authority"
-              },
-              {
-                "kind": "const",
-                "value": [
-                  6,
-                  221,
-                  246,
-                  225,
-                  215,
-                  101,
-                  161,
-                  147,
-                  217,
-                  203,
-                  225,
-                  70,
-                  206,
-                  235,
-                  121,
-                  172,
-                  28,
-                  180,
-                  133,
-                  237,
-                  95,
-                  91,
-                  55,
-                  145,
-                  58,
-                  140,
-                  245,
-                  133,
-                  126,
-                  255,
-                  0,
-                  169
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "tokenMint"
-              }
-            ],
-            "program": {
-              "kind": "const",
-              "value": [
-                140,
-                151,
-                37,
-                143,
-                78,
-                36,
-                137,
-                241,
-                187,
-                61,
-                16,
-                41,
-                20,
-                142,
-                13,
-                131,
-                11,
-                90,
-                19,
-                153,
-                218,
-                255,
-                16,
-                132,
-                4,
-                142,
-                123,
-                216,
-                219,
-                233,
-                248,
-                89
-              ]
-            }
-          }
-        },
-        {
-          "name": "proofAccount",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  112,
-                  114,
-                  111,
-                  111,
-                  102,
-                  95,
-                  97,
-                  99,
-                  99
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "authority"
-              },
-              {
-                "kind": "account",
-                "path": "tokenMint"
-              }
-            ]
-          }
-        },
-        {
-          "name": "poaFees",
-          "writable": true
-        },
-        {
-          "name": "associatedTokenProgram",
-          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
-        },
-        {
-          "name": "tokenProgram",
-          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
-        },
-        {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": [
-        {
-          "name": "args",
-          "type": {
-            "defined": {
-              "name": "attentionInitArgs"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "attentionProve",
-      "discriminator": [
-        208,
-        197,
-        26,
-        102,
-        131,
-        35,
-        91,
-        179
+        174,
+        238,
+        99,
+        38,
+        128,
+        139,
+        126,
+        204
       ],
       "accounts": [
         {
@@ -448,7 +262,16 @@ export type Poa = {
           "address": "SysvarC1ock11111111111111111111111111111111"
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "attentionInteractionArgs"
+            }
+          }
+        }
+      ]
     },
     {
       "name": "feeVaultWithdrawFunds",
@@ -791,7 +614,7 @@ export type Poa = {
   ],
   "types": [
     {
-      "name": "attentionInitArgs",
+      "name": "attentionInteractionArgs",
       "type": {
         "kind": "struct",
         "fields": [
@@ -892,6 +715,10 @@ export type Poa = {
           {
             "name": "authority",
             "type": "pubkey"
+          },
+          {
+            "name": "tokenName",
+            "type": "string"
           },
           {
             "name": "mintAddress",

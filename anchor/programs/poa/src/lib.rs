@@ -18,15 +18,11 @@ pub mod poa {
         token_pool_init(ctx, args)
     }
 
-    pub fn attention_initialise(
-        ctx: Context<AttentionInit>,
-        args: AttentionInitArgs,
+    pub fn attention_interact(
+        ctx: Context<AttentionInteraction>,
+        args: AttentionInteractionArgs,
     ) -> Result<()> {
-        attention_init(ctx, args)
-    }
-
-    pub fn attention_prove(ctx: Context<AttentionProof>) -> Result<()> {
-        attention_proof(ctx)
+        attention_interaction(ctx, args)
     }
 
     pub fn fee_vault_withdraw_funds(ctx: Context<FeeVaultWithdraw>, args: FeeVaultWithdrawArgs) -> Result<()> {
