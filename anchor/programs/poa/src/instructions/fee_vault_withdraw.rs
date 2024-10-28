@@ -43,6 +43,12 @@ pub fn fee_vault_withdraw(
         CustomError::WithdrawNotApproved
     );
 
+    // Check the pool fee vault is correct
+    require!(
+        token_pool_acc.pool_fee_vault == fee_vault.key(),
+        CustomError::WithdrawNotApproved
+    );
+
     // Manually check the balance of SOL in the fee_vault
     let fee_vault_balance = fee_vault.to_account_info().lamports();
     require!(

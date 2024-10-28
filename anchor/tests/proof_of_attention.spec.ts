@@ -201,7 +201,6 @@ describe('Proof of Attention', () => {
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
-          attentionAgent: undefined
         })
         .signers([userAccount])
         .rpc().catch(e => console.error("***attention init error***", e));
