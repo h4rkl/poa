@@ -1,3 +1,5 @@
+// modified from https://codepen.io/jkantner/pen/oNjjEaJ
+
 import { useEffect, useRef, RefObject } from 'react';
 
 export function useExplosiveButton(): { 

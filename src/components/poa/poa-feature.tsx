@@ -5,7 +5,7 @@ import { ExplorerLink } from "../cluster/cluster-ui";
 import { WalletButton } from "../solana/solana-provider";
 import { AppHero, ellipsify } from "../ui/ui-layout";
 import { usePoaProgram } from "./poa-data-access";
-import { POACreate, POAProgram } from "./poa-ui";
+import { POACreate } from "./poa-ui";
 
 export default function POAFeature() {
   const { publicKey } = useWallet();
@@ -22,7 +22,6 @@ export default function POAFeature() {
           />
         </p>
       </AppHero>
-      <POAProgram />
     </div>
   ) : (
     <div className="max-w-4xl mx-auto">
