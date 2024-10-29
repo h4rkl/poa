@@ -25,7 +25,8 @@ import {
   TOKEN_VAULT_SEED,
   toLamports,
   poaFees,
-} from './test-helpers';
+  toTokenAmount,
+} from '../src';
 import { Poa } from '../target/types/poa';
 import { Pda, publicKey } from '@metaplex-foundation/umi';
 import * as fs from 'fs';
@@ -50,6 +51,9 @@ describe('Proof of Attention', () => {
   let mintMetadataPDA: Pda;
 
   const timeoutSec = 1; // 1 second
+  const supply = 1_000_000;
+  const reward = 100;
+  const tokenDecimals = 5;
   const timeoutInit = async () => await new Promise(resolve => setTimeout(resolve, timeoutSec * 1000)); // setTimeout uses milliseconds
 
   // Before all tests, set up accounts and mint tokens
@@ -113,10 +117,9 @@ describe('Proof of Attention', () => {
 
   // Test initializing the token pool
   it('Initializes the token pool', async () => {
-    const totalSupply = new anchor.BN(toLamports(100));
-    const rewardAmount = new anchor.BN(toLamports(1));
+    const totalSupply = new anchor.BN(toTokenAmount(supply, tokenDecimals));
+    const rewardAmount = new anchor.BN(toTokenAmount(reward, tokenDecimals));
     const poolFee = new anchor.BN(toLamports(0.01));
-    const tokenDecimals = 5;
     const poaFeesBalanceBefore = await provider.connection.getBalance(poaFees);
 
     await program.methods
@@ -228,7 +231,7 @@ describe('Proof of Attention', () => {
       expect(proofAccData.tokenMint.equals(mint)).toBe(true);
       expect(proofAccData.tokenRewardVault.equals(rewardVault)).toBe(true);
       expect(proofAccData.totalProofs.toNumber()).toBe(1);
-      expect(proofAccData.totalRewards.toNumber()).toBe(1000000000);
+      expect(proofAccData.totalRewards.toNumber()).toBe(toTokenAmount(reward, tokenDecimals));
 
       // Verify that the reward vault was created
       const rewardVaultInfo = await getAccount(provider.connection, rewardVault);
@@ -277,8 +280,8 @@ describe('Proof of Attention', () => {
       expect(updatedProofAccount.totalProofs.toNumber()).toEqual(initialProofAccount.totalProofs.toNumber() + 1);
       expect(updatedProofAccount.totalRewards.toNumber()).toBeGreaterThan(initialProofAccount.totalRewards.toNumber());
       expect(updatedProofAccount.lastProofAt.toNumber()).toBeGreaterThan(initialProofAccount.lastProofAt.toNumber());
-      expect(updatedRewardVaultBalance).toBe(initialRewardVaultBalance + BigInt(toLamports(1)));
-      expect(updatedTokenPoolVaultBalance).toBe(initialTokenPoolVaultBalance - BigInt(toLamports(1)));
+      expect(updatedRewardVaultBalance).toBe(initialRewardVaultBalance + BigInt(toTokenAmount(reward, tokenDecimals)));
+      expect(updatedTokenPoolVaultBalance).toBe(initialTokenPoolVaultBalance - BigInt(toTokenAmount(reward, tokenDecimals)));
     });
 
     it('Fails to submit attention proof before timeout', async () => {
