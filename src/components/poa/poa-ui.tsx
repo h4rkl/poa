@@ -2,19 +2,25 @@
 
 import { attentionTokenMetadata } from "@/poa/constants";
 import { usePoaProgram } from "./poa-data-access";
+import { useExplosiveButton } from "@/hooks/button-explode";
 
 export function POACreate() {
   const { attentionInteract } = usePoaProgram();
+  const { buttonRef, explode } = useExplosiveButton();
+
+  const handleClick = async () => {
+    await attentionInteract.mutateAsync({
+      tokenName: attentionTokenMetadata.name,
+    });
+    explode();
+  };
 
   return (
     <>
       <button
+        ref={buttonRef}
         className="btn btn-xl lg:btn-lg btn-primary min-w-xl"
-        onClick={() =>
-          attentionInteract.mutateAsync({
-            tokenName: attentionTokenMetadata.name,
-          })
-        }
+        onClick={handleClick}
         disabled={attentionInteract.isPending}
       >
         Click{attentionInteract.isPending && "..."}
