@@ -4,6 +4,8 @@ import { attentionTokenMetadata } from "@/poa/constants";
 import { usePoaProgram } from "./poa-data-access";
 import { useExplosiveButton } from "@/hooks/button-explode";
 
+import "./poa-ui.css";
+
 export function POACreate() {
   const { attentionInteract } = usePoaProgram();
   const { buttonRef, explode } = useExplosiveButton();
