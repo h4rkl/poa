@@ -5,10 +5,12 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { ellipsify } from "../ui/ui-layout";
 import { ExplorerLink } from "../cluster/cluster-ui";
+import { fromTokenAmount } from "@/utils";
 
 interface TokenHolder {
   address: string;
   balance: number;
+  isUser?: boolean;
 }
 
 const LeaderFeature: React.FC = () => {
@@ -28,16 +30,52 @@ const LeaderFeature: React.FC = () => {
         const largestAccounts = await connection.getTokenLargestAccounts(
           tokenPublicKey
         );
-        console.log("largestAccounts:", largestAccounts);
 
         const filteredAccounts = largestAccounts.value.filter(
           (account) => account.address.toBase58() !== tokenVaultAddress
         );
 
-        const top3 = filteredAccounts.slice(0, 3).map((account) => ({
+        let top3: TokenHolder[] = filteredAccounts.slice(0, 3).map((account) => ({
           address: account.address.toBase58(),
-          balance: Number(account.amount) / Math.pow(10, 9), // Assuming 9 decimals, adjust if different
+          balance: Number(account.amount) / Math.pow(10, 5),
+          isUser: false,
         }));
+
+        // Fetch user's token balance if wallet is connected
+        if (publicKey) {
+          const userTokenAccount = await connection.getTokenAccountsByOwner(
+            publicKey,
+            { mint: tokenPublicKey }
+          );
+          if (userTokenAccount.value.length > 0) {
+            const userTokenAccountAddress = userTokenAccount.value[0].pubkey.toBase58();
+            const userBalance = await connection.getTokenAccountBalance(
+              userTokenAccount.value[0].pubkey
+            );
+            const userTokenBalance = Number(
+              fromTokenAmount(Number(userBalance.value.amount))
+            );
+            console.log("userTokenBalance:", userTokenBalance);
+
+            if (userTokenBalance > 0) {
+              const userHolder: TokenHolder = {
+                address: userTokenAccountAddress,
+                balance: userTokenBalance,
+                isUser: true,
+              };
+
+              // Add user to the list if they're not in top 3
+              if (!top3.some(holder => holder.address === userTokenAccountAddress)) {                
+                top3.push(userHolder);
+                top3.sort((a, b) => b.balance - a.balance);
+                top3 = top3.slice(0, 4);
+              }
+              if (top3.some(holder => holder.address === userTokenAccountAddress)) {
+                top3.find(holder => holder.address === userTokenAccountAddress)!.isUser = true;
+              }
+            }
+          }
+        }
 
         setTopHolders(top3);
         setLoading(false);
@@ -57,13 +95,15 @@ const LeaderFeature: React.FC = () => {
   return (
     <div className="leaderboard max-w-2xl mt-6 px-4 mx-auto py-6 shadow-md rounded-lg border border-gray-600">
       <h2 className="text-2xl font-semibold text-center mb-4">
-        Top 3 Token Holders
+        Leaderboard
       </h2>
-      <ul className="space-y-3">
+      <ul>
         {topHolders.map((holder, index) => (
           <li
             key={holder.address}
-            className="flex justify-between items-center border-b pb-2 border-gray-600"
+            className={`flex justify-between items-center border-b px-2 py-4 border-gray-600 ${
+              holder.isUser ? "bg-yellow-100 dark:bg-yellow-900" : ""
+            }`}
           >
             <span className="font-medium">{index + 1}.</span>
             <span className="text-blue-500 hover:underline">
@@ -71,9 +111,10 @@ const LeaderFeature: React.FC = () => {
                 label={ellipsify(holder.address)}
                 path={`account/${holder.address}`}
               />
+              {holder.isUser && " (You)"}
             </span>
             <span className="font-semibold">
-              {(holder.balance * 10000).toFixed(0)} $CLICK
+              {holder.balance} $CLICK
             </span>
           </li>
         ))}
