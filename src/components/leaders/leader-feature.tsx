@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { useConnection } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { ellipsify } from "../ui/ui-layout";
 import { ExplorerLink } from "../cluster/cluster-ui";
 
@@ -16,19 +16,25 @@ const LeaderFeature: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const { connection } = useConnection();
+  const { publicKey } = useWallet();
 
   useEffect(() => {
     const fetchTopHolders = async () => {
       try {
         const tokenAddress = process.env.NEXT_PUBLIC_MINT!;
         const tokenPublicKey = new PublicKey(tokenAddress);
+        const tokenVaultAddress = process.env.NEXT_PUBLIC_TOKEN_VAULT!;
 
         const largestAccounts = await connection.getTokenLargestAccounts(
           tokenPublicKey
         );
         console.log("largestAccounts:", largestAccounts);
 
-        const top3 = largestAccounts.value.slice(0, 3).map((account) => ({
+        const filteredAccounts = largestAccounts.value.filter(
+          (account) => account.address.toBase58() !== tokenVaultAddress
+        );
+
+        const top3 = filteredAccounts.slice(0, 3).map((account) => ({
           address: account.address.toBase58(),
           balance: Number(account.amount) / Math.pow(10, 9), // Assuming 9 decimals, adjust if different
         }));
