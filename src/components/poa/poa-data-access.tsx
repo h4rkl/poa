@@ -109,7 +109,7 @@ export function usePoaProgram() {
       const signedTx = await signTransaction(tx);
       const serializedTx = signedTx.serialize();
 
-      const response = await fetch('/api/finalize-transaction', {
+      const response = await fetch('/api/attention-interact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
