@@ -7,6 +7,8 @@ import { ellipsify } from "../ui/ui-layout";
 import { ExplorerLink } from "../cluster/cluster-ui";
 import { fromTokenAmount } from "@/utils";
 
+const MAX_TOP_HOLDERS = 5;
+
 interface TokenHolder {
   address: string;
   balance: number;
@@ -35,11 +37,13 @@ const LeaderFeature: React.FC = () => {
           (account) => account.address.toBase58() !== tokenVaultAddress
         );
 
-        let top3: TokenHolder[] = filteredAccounts.slice(0, 3).map((account) => ({
-          address: account.address.toBase58(),
-          balance: Number(account.amount) / Math.pow(10, 5),
-          isUser: false,
-        }));
+        let topDogs: TokenHolder[] = filteredAccounts
+          .slice(0, MAX_TOP_HOLDERS)
+          .map((account) => ({
+            address: account.address.toBase58(),
+            balance: Number(account.amount) / Math.pow(10, 5),
+            isUser: false,
+          }));
 
         // Fetch user's token balance if wallet is connected
         if (publicKey) {
@@ -48,7 +52,8 @@ const LeaderFeature: React.FC = () => {
             { mint: tokenPublicKey }
           );
           if (userTokenAccount.value.length > 0) {
-            const userTokenAccountAddress = userTokenAccount.value[0].pubkey.toBase58();
+            const userTokenAccountAddress =
+              userTokenAccount.value[0].pubkey.toBase58();
             const userBalance = await connection.getTokenAccountBalance(
               userTokenAccount.value[0].pubkey
             );
@@ -65,19 +70,29 @@ const LeaderFeature: React.FC = () => {
               };
 
               // Add user to the list if they're not in top 3
-              if (!top3.some(holder => holder.address === userTokenAccountAddress)) {                
-                top3.push(userHolder);
-                top3.sort((a, b) => b.balance - a.balance);
-                top3 = top3.slice(0, 4);
+              if (
+                !topDogs.some(
+                  (holder) => holder.address === userTokenAccountAddress
+                )
+              ) {
+                topDogs.push(userHolder);
+                topDogs.sort((a, b) => b.balance - a.balance);
+                topDogs = topDogs.slice(0, MAX_TOP_HOLDERS + 1);
               }
-              if (top3.some(holder => holder.address === userTokenAccountAddress)) {
-                top3.find(holder => holder.address === userTokenAccountAddress)!.isUser = true;
+              if (
+                topDogs.some(
+                  (holder) => holder.address === userTokenAccountAddress
+                )
+              ) {
+                topDogs.find(
+                  (holder) => holder.address === userTokenAccountAddress
+                )!.isUser = true;
               }
             }
           }
         }
 
-        setTopHolders(top3);
+        setTopHolders(topDogs);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching top holders:", error);
@@ -94,9 +109,7 @@ const LeaderFeature: React.FC = () => {
 
   return (
     <div className="leaderboard max-w-2xl mt-6 px-4 mx-auto py-6 shadow-md rounded-lg border border-gray-600">
-      <h2 className="text-2xl font-semibold text-center mb-4">
-        Leaderboard
-      </h2>
+      <h2 className="text-2xl font-semibold text-center mb-4">Leaderboard</h2>
       <ul>
         {topHolders.map((holder, index) => (
           <li
@@ -105,7 +118,11 @@ const LeaderFeature: React.FC = () => {
               holder.isUser ? "bg-green-100 dark:bg-green-900" : ""
             }`}
           >
-            <span className="font-medium">{index + 1}.</span>
+            <span className="font-medium">
+              {holder.isUser && index === topHolders.length - 1 && topHolders.length > MAX_TOP_HOLDERS
+                ? "😊"
+                : `${index + 1}.`}
+            </span>
             <span className="text-green-500 hover:underline">
               <ExplorerLink
                 label={ellipsify(holder.address)}
@@ -113,9 +130,7 @@ const LeaderFeature: React.FC = () => {
               />
               {holder.isUser && " (You)"}
             </span>
-            <span className="font-semibold">
-              {holder.balance} $CLICK
-            </span>
+            <span className="font-semibold">{holder.balance} $CLICK</span>
           </li>
         ))}
       </ul>
