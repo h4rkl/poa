@@ -9,7 +9,7 @@ export function POACreate() {
   return (
     <>
       <button
-        className="btn btn-xs lg:btn-md btn-primary"
+        className="btn btn-xl lg:btn-lg btn-primary min-w-xl"
         onClick={() =>
           attentionInteract.mutateAsync({
             tokenName: attentionTokenMetadata.name,

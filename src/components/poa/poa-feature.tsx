@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useWallet } from '@solana/wallet-adapter-react';
-import { ExplorerLink } from '../cluster/cluster-ui';
-import { WalletButton } from '../solana/solana-provider';
-import { AppHero, ellipsify } from '../ui/ui-layout';
-import { usePoaProgram } from './poa-data-access';
-import { POACreate, POAProgram } from './poa-ui';
+import { useWallet } from "@solana/wallet-adapter-react";
+import { ExplorerLink } from "../cluster/cluster-ui";
+import { WalletButton } from "../solana/solana-provider";
+import { AppHero, ellipsify } from "../ui/ui-layout";
+import { usePoaProgram } from "./poa-data-access";
+import { POACreate, POAProgram } from "./poa-ui";
 
 export default function POAFeature() {
   const { publicKey } = useWallet();
@@ -13,17 +13,14 @@ export default function POAFeature() {
 
   return publicKey ? (
     <div>
-      <AppHero
-        title="POA"
-        subtitle={'Click for attention'}
-      >
-        <p className="mb-6">
+      <AppHero title="POA" subtitle={"Click for attention"}>
+        <POACreate />
+        <p className="mt-6">
           <ExplorerLink
             path={`account/${programId}`}
             label={ellipsify(programId.toString())}
           />
         </p>
-        <POACreate />
       </AppHero>
       <POAProgram />
     </div>
