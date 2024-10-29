@@ -39,8 +39,8 @@ class ExplosiveButton {
   private centerY: number = 0;
   private pieceWidth: number = 0;
   private pieceHeight: number = 0;
-  private piecesX: number = 9;
-  private piecesY: number = 4;
+  private piecesX: number = 15;
+  private piecesY: number = 6;
   private duration: number = 1000;
 
   constructor(el: HTMLElement) {
@@ -74,7 +74,7 @@ class ExplosiveButton {
     if (!this.element.classList.contains("exploding-button")) {
       this.hideContent();
 
-      this.createParticles("fire", 25, duration);
+      this.createParticles("fire", 50, duration);
       this.createParticles("debris", this.piecesX * this.piecesY, duration);
 
       // Automatically reset after the animation is finished

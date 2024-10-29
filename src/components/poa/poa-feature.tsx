@@ -6,6 +6,7 @@ import { WalletButton } from "../solana/solana-provider";
 import { AppHero, ellipsify } from "../ui/ui-layout";
 import { usePoaProgram } from "./poa-data-access";
 import { POACreate } from "./poa-ui";
+import RewardsPool from "../rewards/pool";
 
 export default function POAFeature() {
   const { publicKey } = useWallet();
@@ -21,6 +22,7 @@ export default function POAFeature() {
             label={ellipsify(programId.toString())}
           />
         </p>
+        <RewardsPool />
       </AppHero>
     </div>
   ) : (
