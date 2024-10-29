@@ -11,9 +11,9 @@ export function POACreate() {
   const { buttonRef, explode } = useExplosiveButton();
 
   const handleClick = async () => {
-    await attentionInteract.mutateAsync({
-      tokenName: attentionTokenMetadata.name,
-    });
+    // await attentionInteract.mutateAsync({
+    //   tokenName: attentionTokenMetadata.name,
+    // });
     explode();
   };
 
@@ -22,7 +22,7 @@ export function POACreate() {
       <div className="w-full max-w-4xl px-4">
         <button
           ref={buttonRef}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-sans text-base py-2 px-4 rounded-sm transition-colors duration-150 ease-linear focus:outline-none active:transform active:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-sans text-base py-2 px-4 rounded-sm transition-colors duration-150 ease-linear focus:outline-none active:transform active:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleClick}
           disabled={attentionInteract.isPending}
         >

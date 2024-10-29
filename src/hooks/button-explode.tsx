@@ -233,6 +233,12 @@ class DebrisParticle extends Particle {
     const rotY = randomInt(0, maxAngle);
     const rotZ = randomInt(0, maxAngle);
 
+    // Add a random shade of green to each debris particle
+    const greenHue = randomInt(100, 140); // Range of green hues
+    const greenSaturation = randomInt(60, 100);
+    const greenLightness = randomInt(30, 70);
+    this.div.style.backgroundColor = `hsl(${greenHue}, ${greenSaturation}%, ${greenLightness}%)`;
+
     this.runSequence(
       this.div,
       [
