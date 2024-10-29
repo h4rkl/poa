@@ -5,28 +5,42 @@ import bs58 from 'bs58';
 export async function POST(request: Request) {
   try {
     const { transaction } = await request.json();
-    console.log('transaction:', transaction);
-    
 
     if (!transaction) {
       return NextResponse.json({ error: 'No transaction provided' }, { status: 400 });
     }
 
-    // Deserialize the transaction
-    const deserializedTransaction = Transaction.from(Buffer.from(transaction, 'base64'));
+    // Deserialize the transaction from base64
+    const deserializedTx = Transaction.from(Buffer.from(transaction, 'base64'));
 
     // Create a Keypair from the POA_SIGNING_AUTHORITY
     const signingAuthoritySecret = process.env.POA_SIGNING_AUTHORITY!;
-    const signingAuthority = Keypair.fromSecretKey(bs58.decode(signingAuthoritySecret));
+    let signingAuthority: Keypair;
+    try {
+      // Parse the JSON string to an array of numbers
+      const secretKeyArray = JSON.parse(signingAuthoritySecret);
+      if (!Array.isArray(secretKeyArray) || secretKeyArray.length !== 64) {
+        throw new Error('Invalid secret key format');
+      }
+      // Convert the array of numbers to Uint8Array
+      const secretKeyUint8Array = new Uint8Array(secretKeyArray);
+      signingAuthority = Keypair.fromSecretKey(secretKeyUint8Array);
+    } catch (error) {
+      console.error('Error parsing POA_SIGNING_AUTHORITY:', error);
+      throw new Error('Invalid POA_SIGNING_AUTHORITY format');
+    }
+
+    // Verify the transaction structure if needed
+    // ... (add verification logic here)
 
     // Sign the transaction
-    deserializedTransaction.sign(signingAuthority);
+    deserializedTx.partialSign(signingAuthority);
 
     // Connect to the Solana network
     const connection = new Connection(process.env.SOLANA_RPC_ENDPOINT!);
 
-    // Send the signed transaction
-    const signature = await connection.sendRawTransaction(deserializedTransaction.serialize());
+    // Send the fully signed transaction
+    const signature = await connection.sendRawTransaction(deserializedTx.serialize());
 
     // Get the latest blockhash
     const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();

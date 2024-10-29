@@ -15,6 +15,7 @@ import {
   PublicKey,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
+  Transaction,
 } from "@solana/web3.js";
 import {
   attentionTokenMetadata,
@@ -76,44 +77,44 @@ export function usePoaProgram() {
   const attentionInteract = useMutation({
     mutationKey: ["poa", "attentionInteract", { cluster }],
     mutationFn: async (args: { tokenName: string }) => {
-      if (!rewardVaultQuery.data) {
-        throw new Error("Reward vault not loaded");
+      if (
+        !rewardVaultQuery.data ||
+        !proofAccount ||
+        !userAccount ||
+        !signTransaction
+      ) {
+        throw new Error("Required data not available");
       }
-      if (!proofAccount) {
-        throw new Error("Proof acc not loaded");
-      }
-      const tx = await program.methods
-        .attentionInteract({
-          tokenName: args.tokenName,
-        })
-        .accountsStrict({
-          tokenPoolAuthority: new PublicKey("11111111111111111111111111111111"), // Placeholder
-          attentionAuthority: userAccount!,
-          proofAccount,
-          tokenMint: mint,
-          tokenPoolAcc,
-          tokenPoolVault,
-          feeVault,
-          rewardVault: rewardVaultQuery.data,
-          poaFees,
-          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-        })
-        .transaction();
 
-      // Get a recent blockhash
+      const tx = new Transaction();
+      tx.add(
+        await program.methods
+          .attentionInteract({
+            tokenName: args.tokenName,
+          })
+          .accountsStrict({
+            tokenPoolAuthority: process.env.NEXT_PUBLIC_SIGNING_AUTHORITY!,
+            attentionAuthority: userAccount,
+            proofAccount,
+            tokenMint: mint,
+            tokenPoolAcc,
+            tokenPoolVault,
+            feeVault,
+            rewardVault: rewardVaultQuery.data,
+            poaFees,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          })
+          .instruction()
+      );
+
       const { blockhash } = await connection.getLatestBlockhash();
       tx.recentBlockhash = blockhash;
+      tx.feePayer = userAccount;
 
-      // Set the feePayer to the user's public key
-      tx.feePayer = userAccount!;
-
-      // Partially sign the transaction (user signs it)
-      if (!signTransaction) {
-        throw new Error("Wallet not connected");
-      }
+      // Partially sign the transaction
       const partiallySignedTx = await signTransaction(tx);
 
       // Serialize the partially signed transaction

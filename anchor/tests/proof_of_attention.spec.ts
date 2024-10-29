@@ -28,6 +28,8 @@ import {
 } from './test-helpers';
 import { Poa } from '../target/types/poa';
 import { Pda, publicKey } from '@metaplex-foundation/umi';
+import * as fs from 'fs';
+import path from 'path';
 
 // Configure the provider to use the local cluster
 const provider = anchor.AnchorProvider.env();
@@ -52,7 +54,14 @@ describe('Proof of Attention', () => {
 
   // Before all tests, set up accounts and mint tokens
   beforeAll(async () => {
-    poolOwner = Keypair.generate();
+    const poolOwnerKeypairPath = path.join(__dirname, '..', '..', 'test-keys', 'oWN1o6G79qLrEEK4JB67GYsRNUhAoQRfAYnKJTxbrpe.json');
+    poolOwner = Keypair.fromSecretKey(
+      Uint8Array.from(
+        JSON.parse(
+          fs.readFileSync(poolOwnerKeypairPath, 'utf-8')
+        )
+      )
+    );
     userAccount = Keypair.generate();
 
     // Airdrop SOL to pool owner, user, and poaFees
