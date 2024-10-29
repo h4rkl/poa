@@ -18,16 +18,18 @@ export function POACreate() {
   };
 
   return (
-    <>
-      <button
-        ref={buttonRef}
-        className="btn btn-xl lg:btn-lg btn-primary min-w-xl"
-        onClick={handleClick}
-        disabled={attentionInteract.isPending}
-      >
-        Click{attentionInteract.isPending && "..."}
-      </button>
-    </>
+    <div className="flex w-full min-h-[200px] items-center justify-center">
+      <div className="w-full max-w-4xl px-4">
+        <button
+          ref={buttonRef}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-sans text-base py-2 px-4 rounded-sm transition-colors duration-150 ease-linear focus:outline-none active:transform active:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={handleClick}
+          disabled={attentionInteract.isPending}
+        >
+          Click{attentionInteract.isPending && "..."}
+        </button>
+      </div>
+    </div>
   );
 }
 

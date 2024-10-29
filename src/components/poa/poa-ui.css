@@ -2,4 +2,23 @@
     background-color: transparent !important;
     border-color: transparent !important;
     color: transparent !important;
-  }
+    pointer-events: none;
+    position: relative;
+    will-change: transform;
+    user-select: none;
+}
+
+.particle {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.particle--debris {
+    background: #255ff4;
+    /* Tailwind blue-600 */
+}
+
+.particle--fire {
+    border-radius: 50%;
+}
