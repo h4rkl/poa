@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { Connection, PublicKey } from '@solana/web3.js';
-import { useConnection } from '@solana/wallet-adapter-react';
-import { ellipsify } from '../ui/ui-layout';
-import { ExplorerLink } from '../cluster/cluster-ui';
+import React, { useEffect, useState } from "react";
+import { Connection, PublicKey } from "@solana/web3.js";
+import { useConnection } from "@solana/wallet-adapter-react";
+import { ellipsify } from "../ui/ui-layout";
+import { ExplorerLink } from "../cluster/cluster-ui";
 
 interface TokenHolder {
   address: string;
@@ -20,25 +20,23 @@ const LeaderFeature: React.FC = () => {
   useEffect(() => {
     const fetchTopHolders = async () => {
       try {
-
-        // The token address (mint) you want to check
         const tokenAddress = process.env.NEXT_PUBLIC_MINT!;
         const tokenPublicKey = new PublicKey(tokenAddress);
 
-        // Fetch largest token accounts
-        const largestAccounts = await connection.getTokenLargestAccounts(tokenPublicKey);
-        console.log('largestAccounts:', largestAccounts);
+        const largestAccounts = await connection.getTokenLargestAccounts(
+          tokenPublicKey
+        );
+        console.log("largestAccounts:", largestAccounts);
 
-        // Get top 3 holders
-        const top3 = largestAccounts.value.slice(0, 3).map(account => ({
+        const top3 = largestAccounts.value.slice(0, 3).map((account) => ({
           address: account.address.toBase58(),
-          balance: Number(account.amount) / Math.pow(10, 9) // Assuming 9 decimals, adjust if different
+          balance: Number(account.amount) / Math.pow(10, 9), // Assuming 9 decimals, adjust if different
         }));
 
         setTopHolders(top3);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching top holders:', error);
+        console.error("Error fetching top holders:", error);
         setLoading(false);
       }
     };
@@ -47,18 +45,30 @@ const LeaderFeature: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-center text-lg">Loading...</div>;
   }
 
   return (
-    <div className="leaderboard">
-      <h2>Top 3 Token Holders</h2>
-      <ul>
+    <div className="leaderboard max-w-2xl mt-6 px-4 mx-auto py-6 shadow-md rounded-lg border border-gray-600">
+      <h2 className="text-2xl font-semibold text-center mb-4">
+        Top 3 Token Holders
+      </h2>
+      <ul className="space-y-3">
         {topHolders.map((holder, index) => (
-          <li key={holder.address}>
-            <span>{index + 1}. </span>
-            <span>{<ExplorerLink label={ellipsify(holder.address)} path={`account/${holder.address}`} />}</span>
-            <span> - {(holder.balance*10000).toFixed(0)} tokens</span>
+          <li
+            key={holder.address}
+            className="flex justify-between items-center border-b pb-2 border-gray-600"
+          >
+            <span className="font-medium">{index + 1}.</span>
+            <span className="text-blue-500 hover:underline">
+              <ExplorerLink
+                label={ellipsify(holder.address)}
+                path={`account/${holder.address}`}
+              />
+            </span>
+            <span className="font-semibold">
+              {(holder.balance * 10000).toFixed(0)} $CLICK
+            </span>
           </li>
         ))}
       </ul>
