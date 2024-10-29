@@ -15,7 +15,7 @@ export default function POAFeature() {
     <div>
       <AppHero
         title="POA"
-        subtitle={'Run the program by clicking the "Run program" button.'}
+        subtitle={'Click for attention'}
       >
         <p className="mb-6">
           <ExplorerLink

@@ -17,7 +17,7 @@ export function POACreate() {
         }
         disabled={attentionInteract.isPending}
       >
-        Interact{attentionInteract.isPending && "..."}
+        Click{attentionInteract.isPending && "..."}
       </button>
     </>
   );
