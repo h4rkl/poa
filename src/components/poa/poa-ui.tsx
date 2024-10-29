@@ -4,30 +4,20 @@ import { attentionTokenMetadata } from "@/poa/constants";
 import { usePoaProgram } from "./poa-data-access";
 
 export function POACreate() {
-  const { attentionInitialise, attentionProve } = usePoaProgram();
+  const { attentionInteract } = usePoaProgram();
 
   return (
     <>
       <button
         className="btn btn-xs lg:btn-md btn-primary"
         onClick={() =>
-          attentionInitialise.mutateAsync({
+          attentionInteract.mutateAsync({
             tokenName: attentionTokenMetadata.name,
           })
         }
-        disabled={attentionInitialise.isPending}
+        disabled={attentionInteract.isPending}
       >
-        Create acc{attentionInitialise.isPending && "..."}
-      </button>
-
-      <button
-        className="btn btn-xs lg:btn-md btn-primary"
-        onClick={() =>
-          attentionProve.mutateAsync()
-        }
-        disabled={attentionInitialise.isPending}
-      >
-        Click for attn{attentionInitialise.isPending && "..."}
+        Interact{attentionInteract.isPending && "..."}
       </button>
     </>
   );

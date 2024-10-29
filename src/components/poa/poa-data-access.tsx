@@ -73,38 +73,9 @@ export function usePoaProgram() {
     queryFn: () => connection.getParsedAccountInfo(program.programId),
   });
 
-  const attentionInitialise = useMutation({
-    mutationKey: ["poa", "attentionInitialise", { cluster }],
-    mutationFn: (args: { tokenName: string }) => {
-      if (!rewardVaultQuery.data) {
-        throw new Error("Reward vault not loaded");
-      }
-      if (!proofAccount) {
-        throw new Error("Proof acc not loaded");
-      }
-      return program.methods
-        .attentionInitialise(args)
-        .accountsStrict({
-          authority: userAccount!,
-          tokenMint: mint,
-          rewardVault: rewardVaultQuery.data,
-          proofAccount,
-          poaFees,
-          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-          tokenProgram: TOKEN_PROGRAM_ID,
-        })
-        .rpc();
-    },
-    onSuccess: (signature) => {
-      transactionToast(signature);
-    },
-    onError: () => toast.error("Failed to initialize attention"),
-  });
-
-  const attentionProve = useMutation({
-    mutationKey: ["poa", "attentionProve", { cluster }],
-    mutationFn: async () => {
+  const attentionInteract = useMutation({
+    mutationKey: ["poa", "attentionInteract", { cluster }],
+    mutationFn: async (args: { tokenName: string }) => {
       if (!rewardVaultQuery.data) {
         throw new Error("Reward vault not loaded");
       }
@@ -112,7 +83,9 @@ export function usePoaProgram() {
         throw new Error("Proof acc not loaded");
       }
       const tx = await program.methods
-        .attentionProve()
+        .attentionInteract({
+          tokenName: args.tokenName,
+        })
         .accountsStrict({
           tokenPoolAuthority: "to_sign",
           attentionAuthority: userAccount!,
@@ -204,8 +177,7 @@ export function usePoaProgram() {
     program,
     programId: program.programId,
     getProgramAccount,
-    attentionInitialise,
-    attentionProve,
+    attentionInteract,
     tokenPoolInitialise,
   };
 }
