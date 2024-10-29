@@ -87,7 +87,7 @@ export function usePoaProgram() {
           tokenName: args.tokenName,
         })
         .accountsStrict({
-          tokenPoolAuthority: "to_sign",
+          tokenPoolAuthority: new PublicKey("11111111111111111111111111111111"), // Placeholder
           attentionAuthority: userAccount!,
           proofAccount,
           tokenMint: mint,
@@ -103,22 +103,34 @@ export function usePoaProgram() {
         })
         .transaction();
 
+      // Get a recent blockhash
+      const { blockhash } = await connection.getLatestBlockhash();
+      tx.recentBlockhash = blockhash;
+
+      // Set the feePayer to the user's public key
+      tx.feePayer = userAccount!;
+
+      // Partially sign the transaction (user signs it)
       if (!signTransaction) {
         throw new Error("Wallet not connected");
       }
-      const signedTx = await signTransaction(tx);
-      const serializedTx = signedTx.serialize();
+      const partiallySignedTx = await signTransaction(tx);
 
-      const response = await fetch('/api/attention-interact', {
-        method: 'POST',
+      // Serialize the partially signed transaction
+      const serializedTx = partiallySignedTx.serialize({
+        requireAllSignatures: false,
+      });
+
+      const response = await fetch("/api/attention-interact", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ transaction: serializedTx.toString('base64') }),
+        body: JSON.stringify({ transaction: serializedTx.toString("base64") }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to finalize transaction');
+        throw new Error("Failed to finalize transaction");
       }
 
       const { signature } = await response.json();

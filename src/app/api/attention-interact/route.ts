@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
-import { Connection, Transaction, TransactionConfirmationStrategy } from '@solana/web3.js';
+import { Connection, Transaction, TransactionConfirmationStrategy, Keypair } from '@solana/web3.js';
+import bs58 from 'bs58';
 
 export async function POST(request: Request) {
   try {
     const { transaction } = await request.json();
+    console.log('transaction:', transaction);
+    
 
     if (!transaction) {
       return NextResponse.json({ error: 'No transaction provided' }, { status: 400 });
@@ -12,10 +15,17 @@ export async function POST(request: Request) {
     // Deserialize the transaction
     const deserializedTransaction = Transaction.from(Buffer.from(transaction, 'base64'));
 
-    // Connect to the Solana network (you may want to use an environment variable for the endpoint)
+    // Create a Keypair from the POA_SIGNING_AUTHORITY
+    const signingAuthoritySecret = process.env.POA_SIGNING_AUTHORITY!;
+    const signingAuthority = Keypair.fromSecretKey(bs58.decode(signingAuthoritySecret));
+
+    // Sign the transaction
+    deserializedTransaction.sign(signingAuthority);
+
+    // Connect to the Solana network
     const connection = new Connection(process.env.SOLANA_RPC_ENDPOINT!);
 
-    // Send the transaction
+    // Send the signed transaction
     const signature = await connection.sendRawTransaction(deserializedTransaction.serialize());
 
     // Get the latest blockhash
