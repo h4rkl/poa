@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { Connection, Transaction, TransactionConfirmationStrategy, Keypair } from '@solana/web3.js';
-import bs58 from 'bs58';
 
 export async function POST(request: Request) {
   try {
@@ -30,20 +29,18 @@ export async function POST(request: Request) {
       throw new Error('Invalid POA_SIGNING_AUTHORITY format');
     }
 
-    // Verify the transaction structure if needed
-    // ... (add verification logic here)
+    // Connect to the Solana network
+    const connection = new Connection(process.env.SOLANA_RPC_ENDPOINT!, 'confirmed');
+
+    // Get the latest blockhash
+    const { lastValidBlockHeight, blockhash: recentBlockhash } = await connection.getLatestBlockhash();
+    const blockhash = deserializedTx.recentBlockhash || recentBlockhash;
 
     // Sign the transaction
     deserializedTx.partialSign(signingAuthority);
 
-    // Connect to the Solana network
-    const connection = new Connection(process.env.SOLANA_RPC_ENDPOINT!);
-
     // Send the fully signed transaction
     const signature = await connection.sendRawTransaction(deserializedTx.serialize());
-
-    // Get the latest blockhash
-    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
 
     // Define the confirmation strategy
     const confirmationStrategy: TransactionConfirmationStrategy = {

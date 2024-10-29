@@ -120,18 +120,19 @@ export function usePoaProgram() {
       // Serialize the partially signed transaction
       const serializedTx = partiallySignedTx.serialize({
         requireAllSignatures: false,
-      });
+      }).toString("base64");
 
       const response = await fetch("/api/attention-interact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ transaction: serializedTx.toString("base64") }),
+        body: JSON.stringify({ transaction: serializedTx }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to finalize transaction");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to finalize transaction");
       }
 
       const { signature } = await response.json();
