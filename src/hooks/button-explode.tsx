@@ -52,6 +52,22 @@ class ExplosiveButton {
     this.element.classList.add("exploding-button");
   }
 
+  public reset(): void {
+    if (this.animationTimeout) {
+      clearTimeout(this.animationTimeout);
+      this.animationTimeout = null;
+    }
+    this.element.className = this.originalClasses;
+    
+    // Explicitly reset background color
+    this.element.style.backgroundColor = '';
+    this.element.style.borderColor = '';
+    this.element.style.color = '';
+    
+    // Remove all particle elements
+    this.element.querySelectorAll('.particle').forEach(el => el.remove());
+  }
+
   public explode(duration: number): void {
     if (!this.element.classList.contains("exploding-button")) {
       this.hideContent();
@@ -61,15 +77,10 @@ class ExplosiveButton {
 
       // Automatically reset after the animation is finished
       this.animationTimeout = setTimeout(() => this.reset(), duration);
-    }
-  }
 
-  public reset(): void {
-    if (this.animationTimeout) {
-      clearTimeout(this.animationTimeout);
-      this.animationTimeout = null;
+      // Failsafe: force reset after a slightly longer duration
+      setTimeout(() => this.reset(), duration + 500);
     }
-    this.element.className = this.originalClasses;
   }
 
   private updateDimensions(): void {
