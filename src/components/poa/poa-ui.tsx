@@ -11,9 +11,9 @@ export function POACreate() {
   const { buttonRef, explode } = useExplosiveButton();
 
   const handleClick = async () => {
-    // await attentionInteract.mutateAsync({
-    //   tokenName: attentionTokenMetadata.name,
-    // });
+    await attentionInteract.mutateAsync({
+      tokenName: attentionTokenMetadata.name,
+    });
     explode();
   };
 
