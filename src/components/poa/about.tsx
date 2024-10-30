@@ -7,57 +7,36 @@ const About: React.FC = () => {
         Proof of Attention (PoA)
       </h1>
 
-      <div className="card bg-base-100 shadow-xl mb-6">
-        <div className="card-body">
-          <h2 className="card-title">How It Works</h2>
-          <p>
-            Proof of Attention (PoA) is a system that rewards users for their
-            attention and engagement.
-          </p>
-        </div>
-      </div>
+      Proof of Attention is a Solana program that attempts to reward and validate users for real world attention and interaction 
+      with content or real-world activities. The system uses a combination of variables that can be adjusted including cooldown 
+      periods, reward pools, and fee collection to achieve this. Aiming to incentivise user engagement and making 
+      any application more expensive to bot and removing high frequency transactions to run the app at the target speed for engagement.
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="card bg-primary text-primary-content">
-          <div className="card-body">
-            <h2 className="card-title">Rewards</h2>
-            <p>
-              Users earn tokens for successfully proving their attention. The
-              reward amount is fixed for each proof.
-            </p>
-          </div>
-        </div>
+      The ultimate aim of the program is not to completely stop bots from engaging, but rather to level the playing field 
+      so applications can be engaged at a human pace.
 
-        <div className="card bg-secondary text-secondary-content">
-          <div className="card-body">
-            <h2 className="card-title">Cooldown</h2>
-            <p>
-              There's a cooldown period between proofs to prevent spam and
-              ensure fair distribution of rewards.
-            </p>
-          </div>
-        </div>
+      ## Tokenomics for $CLICK
 
-        <div className="card bg-accent text-accent-content">
-          <div className="card-body">
-            <h2 className="card-title">Click for Attention</h2>
-            <p>
-              Users interact with the system by clicking or performing specific
-              actions to prove their attention.
-            </p>
-          </div>
-        </div>
+      $CLICK is the first token to be minted on PoA. It is a fungible token that represents the value of a single 
+      click on the platform. The token is designed to incentivize and validate genuine attention through a single 
+      interaction with a single button in the app. It is designed to validate the contract, the attention, and the
+      ability for the app to be botted.
 
-        <div className="card bg-neutral text-neutral-content">
-          <div className="card-body">
-            <h2 className="card-title">Leaderboards</h2>
-            <p>
-              Track your progress and compare with others. Leaderboards showcase
-              top performers in the PoA system.
-            </p>
-          </div>
-        </div>
-      </div>
+      - Initial supply: 100,000
+      - Token airdrop per interaction: 1 $CLICK
+      - Interaction cooldown period: 30 seconds
+      - Total possible clicks: 100,000
+      - Reward pool address: BYUdxrVfDHJBz2tUZkuw6PxmZVwQmVwcHNU1LHZJobZW
+      - Reward pool collection per click: 0.001 SOL
+      - Total potential reward pool: 100 SOL
+      - Winner pool: Top 100 holders of $CLICK
+      - Winner pool distribution strategy: a percentage of the purse calculated proportionally by 
+        the $CLICK balance of each holder in the top 100 against the total holdings of the top 100
+
+      The program is designed to create fair launch tokens on Solana, with transparent authorities and 
+      actions. Because each program instance launches with all tokens held by the contract no pre-mine 
+      can be done. And because there is a built-in cooldown for token release, it makes it much more difficult for a single
+      person to manipulate the token supply.
 
       <div className="mt-8">
         <h2 className="text-2xl font-semibold mb-4">Get Started</h2>
