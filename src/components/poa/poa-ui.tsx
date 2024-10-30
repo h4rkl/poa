@@ -23,9 +23,9 @@ export function POACreate() {
   }, [cooldownRemaining]);
 
   const handleClick = async () => {
-    // await attentionInteract.mutateAsync({
-    //   tokenName: attentionTokenMetadata.name,
-    // });
+    await attentionInteract.mutateAsync({
+      tokenName: attentionTokenMetadata.name,
+    });
     explode();
     setTimeout(() => {
       setCooldownRemaining(Number(process.env.NEXT_PUBLIC_COOLDOWN_SECONDS) || 0);
