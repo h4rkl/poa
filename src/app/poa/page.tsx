@@ -1,5 +1,5 @@
-import POAFeature from '@/components/poa/poa-feature'
+import About from '@/components/poa/about';
 
 export default function Page() {
-  return <POAFeature />;
+  return <About />;
 }
