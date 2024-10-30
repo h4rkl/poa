@@ -12,7 +12,7 @@ export const metadata = {
 const links: { label: string; path: string }[] = [
   { label: 'Account', path: '/account' },
   { label: 'Leaderboard', path: '/leaders' },
-  { label: 'POA Program', path: '/poa' },
+  { label: 'About POA', path: '/poa' },
 ]
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
