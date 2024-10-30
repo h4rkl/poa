@@ -8,6 +8,7 @@ use anchor_spl::{
         Metadata
     },
     token::{self, Mint, Token, TokenAccount},
+    token::spl_token::instruction::AuthorityType::MintTokens,
 };
 
 use crate::state::*;
@@ -186,7 +187,7 @@ pub fn token_pool_init(
         },
         mint_signer_seeds,
     );
-    create_metadata_accounts_v3(cpi_ctx, data_v2, true, true, None)?;
+    create_metadata_accounts_v3(cpi_ctx, data_v2, false, true, None)?;
 
     token::mint_to(
         CpiContext::new_with_signer(
@@ -199,6 +200,19 @@ pub fn token_pool_init(
             mint_signer_seeds,
         ),
         total_supply,
+    )?;
+
+    token::set_authority(
+        CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            token::SetAuthority {
+                current_authority: ctx.accounts.mint.to_account_info(),
+                account_or_mint: ctx.accounts.mint.to_account_info(),
+            },
+            mint_signer_seeds,
+        ),
+        MintTokens,
+        None,
     )?;
 
     Ok(())

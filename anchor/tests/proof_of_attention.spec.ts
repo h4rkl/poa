@@ -169,7 +169,7 @@ describe('Proof of Attention', () => {
     expect(mintInfo.supply.toString()).toBe(totalSupply.toString());
     expect(mintInfo.isInitialized).toBe(true);
     expect(mintInfo.freezeAuthority).toBeNull();
-    expect(mintInfo.mintAuthority?.equals(mint)).toBe(true);
+    expect(mintInfo.mintAuthority).toBeNull();
 
     // Check pool token account balance
     const tokenPoolVaultInfo = await getAccount(
