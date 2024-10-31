@@ -23,7 +23,7 @@ const RewardsPool: React.FC = () => {
 
   return (
     <div className="rounded-lg p-6 max-w-sm mx-auto border border-gray-600">
-      <h2 className="text-2xl font-bold mb-4">Rewards Pool</h2>
+      <h2 className="text-2xl font-bold mb-4">Reward Pool</h2>
       <div className="flex items-center w-full justify-center">
         <span className="text-3xl font-bold">
           ☉{balance.toLocaleString()}

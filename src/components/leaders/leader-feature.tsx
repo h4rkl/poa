@@ -115,7 +115,7 @@ const LeaderFeature: React.FC = () => {
           <li
             key={holder.address}
             className={`flex justify-between items-center border-b px-2 py-4 border-gray-600 ${
-              holder.isUser ? "bg-red-100 dark:bg-red-900" : ""
+              holder.isUser ? "bg-purple-100 dark:bg-purple-900" : ""
             }`}
           >
             <span className="font-medium">

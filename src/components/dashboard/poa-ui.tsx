@@ -32,11 +32,9 @@ export function POACreate() {
       await new Promise((resolve) => setTimeout(resolve, 50));
       // Then trigger the explosion
       await explode();
-      setTimeout(() => {
-        setCooldownRemaining(
-          Number(process.env.NEXT_PUBLIC_COOLDOWN_SECONDS) || 0
-        );
-      }, 1000);
+      setCooldownRemaining(
+        Number(process.env.NEXT_PUBLIC_COOLDOWN_SECONDS) || 0
+      );
     } catch (error) {
       console.error("Error during interaction:", error);
     }
@@ -49,15 +47,15 @@ export function POACreate() {
       <div className="w-full max-w-4xl px-4">
         <button
           ref={buttonRef}
-          className="w-full bg-red-600 hover:bg-red-700 text-white font-sans text-base py-2 px-4 rounded-sm transition-colors duration-150 ease-linear focus:outline-none active:transform active:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-red-600 hover:bg-red-700 text-white font-sans text-xl py-4 px-8 rounded-full transition-colors duration-150 ease-linear focus:outline-none active:transform active:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleClick}
           disabled={isDisabled}
         >
           {isDisabled
             ? cooldownRemaining > 0
-              ? `Cooldown: ${cooldownRemaining}s`
-              : "Clicking..."
-            : "Click"}
+              ? `Charging: ${cooldownRemaining}s`
+              : "Ignition..."
+            : "Explode"}
         </button>
       </div>
     </div>
