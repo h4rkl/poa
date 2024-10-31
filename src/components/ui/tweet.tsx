@@ -7,7 +7,7 @@ interface TweetProps {
 
 const Tweet: React.FC<TweetProps> = ({ text, children }) => {
   const handleClick = () => {
-    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    const tweetUrl = `https://twitter.com/intent/post?text=${encodeURIComponent(text)}`;
     window.open(tweetUrl, '_blank', 'noopener,noreferrer');
   };
 
