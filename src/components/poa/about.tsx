@@ -3,39 +3,31 @@ import React from "react";
 import { ExplorerLink } from "../cluster/cluster-ui";
 
 const About: React.FC = () => {
-  const winnerCount = 100;
+  const clickFee = "0.001 SOL";
   const clickReward = "1 $CLICK";
-  const totalSupply = "100,000";
   const coolDownSec = 10;
   const totalRewardPool = "100 SOL";
-  const clickFee = "0.001 SOL";
+  const totalSupply = "100,000";
+  const winnerCount = 100;
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <section className="mb-12">
         <h2 className="text-3xl font-bold mb-6">How to play</h2>
         <ul className="space-y-2 list-disc pl-6">
-          <li>Click the Button</li>
+          <li>Click to explode the Button</li>
           <li>Approve the transaction</li>
+          <li>First click will setup your accs for $CLICK</li>
           <li>
-            The first time you approve a tx it will setup all your accounts for
-            Proof of Attention
+            All clicks send you {clickReward} and {clickFee} the reward pool
           </li>
-          <li>
-            Each click rewards you with {clickReward} and deposits a tiny amount of
-            SOL into the reward pool
-          </li>
-          <li>
-            Once the button is clicked there is an unbottable cooldown period of
-            {coolDownSec} seconds
-          </li>
+          <li>You can click once every {coolDownSec} seconds</li>
           <li>You can click the button as many times as you want</li>
           <li>
-            The top {winnerCount} holders of $CLICK will win a proportional share of the
-            reward pool based on their $CLICK balance
+            Top {winnerCount} $CLICK holders win a share of {totalRewardPool}{" "}
+            based on their $CLICK balance
           </li>
           <li>
-            Any $CLICK bought on the secondary market is eligible for the reward
-            pool
+            Any $CLICK bought on the secondary market is also eligible to win
           </li>
         </ul>
 
@@ -49,14 +41,16 @@ const About: React.FC = () => {
       </section>
 
       <section className="mb-12">
-        <h2 id="tokenomics" className="text-3xl font-bold mb-6">Tokenomics for $CLICK</h2>
+        <h2 id="tokenomics" className="text-3xl font-bold mb-6">
+          Tokenomics for $CLICK
+        </h2>
         <p className="mb-4">
-          $CLICK is the first token to be minted on PoA. It is a fungible token
-          that represents the value of a single click on the platform. The token
-          is designed to incentivize and validate genuine attention through a
-          single interaction with a single button in the app. It is designed to
-          validate the contract, the attention, and the ability for the app to
-          be botted.
+          $CLICK is the first token to be minted using PoA. It is a fungible
+          token that represents the value of a single click on the PoA program.
+          The token is designed to reward and validate genuine attention through
+          a single interaction with a single button in the app. It is designed
+          to validate attention using a fair launch protocol and to level the
+          playing field between users and bots.
         </p>
 
         <ul className="space-y-2 list-disc pl-6">
@@ -64,16 +58,34 @@ const About: React.FC = () => {
           <li>Token airdrop per interaction: {clickReward}</li>
           <li>Interaction cooldown period: {coolDownSec} seconds</li>
           <li>Total possible clicks: {totalSupply} </li>
+
+          <li>$CLICK token address:{" "}
+            <ExplorerLink
+              label={process.env.NEXT_PUBLIC_MINT!}
+              path={`account/${process.env.NEXT_PUBLIC_MINT!}`}
+            /></li>
           <li>
-            Reward pool address: <ExplorerLink label={process.env.NEXT_PUBLIC_REWARDS_POOL!} path={`account/${process.env.NEXT_PUBLIC_REWARDS_POOL!}`} />
+            Reward pool address:{" "}
+            <ExplorerLink
+              label={process.env.NEXT_PUBLIC_REWARDS_POOL!}
+              path={`account/${process.env.NEXT_PUBLIC_REWARDS_POOL!}`}
+            />
           </li>
           <li>Reward pool collection per click: {clickFee}</li>
           <li>Total potential reward pool: {totalRewardPool}</li>
           <li>Winner pool: Top {winnerCount} holders of $CLICK</li>
           <li>
+            Token vault address:{" "}
+            <ExplorerLink
+              label={process.env.NEXT_PUBLIC_TOKEN_VAULT!}
+              path={`account/${process.env.NEXT_PUBLIC_TOKEN_VAULT!}`}
+            />
+          </li>
+          <li>
             Winner pool distribution strategy: a percentage of the purse
             calculated proportionally by the $CLICK balance of each holder in
-            the top {winnerCount} against the total holdings of the top {winnerCount}
+            the top {winnerCount} against the total holdings of the top{" "}
+            {winnerCount}
           </li>
           <li>
             Pool will be seeded with 10 SOL which will be returned to the Pool
