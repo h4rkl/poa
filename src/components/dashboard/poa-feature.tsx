@@ -14,7 +14,7 @@ export default function POAFeature() {
 
   return publicKey ? (
     <div>
-      <AppHero title="Push the Button" subtitle={"An Unbottable Exploding Button Game"}>
+      <AppHero title="Push the Button" subtitle={"An Unbottable Exploding Button Game Built On-Chain With Solana"}>
         <POACreate />
         {/* <p className="mt-6">
           <ExplorerLink

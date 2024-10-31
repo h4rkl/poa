@@ -44,7 +44,7 @@ export function POACreate() {
 
   return (
     <div className="flex w-full min-h-[200px] items-center justify-center">
-      <div className="w-full max-w-4xl px-4">
+      <div className="w-full max-w-xs px-4">
         <button
           ref={buttonRef}
           className="w-full bg-red-600 hover:bg-red-700 text-white font-sans text-xl py-4 px-8 rounded-full transition-colors duration-150 ease-linear focus:outline-none active:transform active:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -53,9 +53,9 @@ export function POACreate() {
         >
           {isDisabled
             ? cooldownRemaining > 0
-              ? `Charging: ${cooldownRemaining}s`
-              : "Ignition..."
-            : "Explode"}
+              ? `Recharging: ${cooldownRemaining}s`
+              : "Igniting..."
+            : "Go Boom"}
         </button>
       </div>
     </div>
