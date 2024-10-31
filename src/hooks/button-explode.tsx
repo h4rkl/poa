@@ -4,7 +4,7 @@ import { useEffect, useRef, RefObject } from 'react';
 
 export function useExplosiveButton(): { 
   buttonRef: RefObject<HTMLButtonElement>; 
-  explode: () => void;
+  explode: () => Promise<void>;
 } {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const explosiveButtonRef = useRef<ExplosiveButton | null>(null);
@@ -20,9 +20,9 @@ export function useExplosiveButton(): {
     };
   }, []);
 
-  const explode = (): void => {
+  const explode = async (): Promise<void> => {
     if (explosiveButtonRef.current) {
-      explosiveButtonRef.current.explode(1000);
+      return explosiveButtonRef.current.explode(1000);
     }
   };
 
@@ -41,7 +41,6 @@ class ExplosiveButton {
   private pieceHeight: number = 0;
   private piecesX: number = 15;
   private piecesY: number = 6;
-  private duration: number = 1000;
 
   constructor(el: HTMLElement) {
     this.element = el;
@@ -70,19 +69,29 @@ class ExplosiveButton {
     this.element.querySelectorAll('.particle').forEach(el => el.remove());
   }
 
-  public explode(duration: number): void {
-    if (!this.element.classList.contains("exploding-button")) {
-      this.hideContent();
-
-      this.createParticles("fire", 50, duration);
-      this.createParticles("debris", this.piecesX * this.piecesY, duration);
-
-      // Automatically reset after the animation is finished
-      this.animationTimeout = setTimeout(() => this.reset(), duration);
-
-      // Failsafe: force reset after a slightly longer duration
-      setTimeout(() => this.reset(), duration + 500);
-    }
+  public explode(duration: number): Promise<void> {
+    return new Promise((resolve) => {
+      if (!this.element.classList.contains("exploding-button")) {
+        this.hideContent();
+  
+        this.createParticles("fire", 50, duration);
+        this.createParticles("debris", this.piecesX * this.piecesY, duration);
+  
+        // Resolve the promise after the animation is complete
+        this.animationTimeout = setTimeout(() => {
+          this.reset();
+          resolve();
+        }, duration);
+  
+        // Failsafe: force reset after a slightly longer duration
+        setTimeout(() => {
+          this.reset();
+          resolve();
+        }, duration + 500);
+      } else {
+        resolve(); // Resolve immediately if already exploding
+      }
+    });
   }
 
   private updateDimensions(): void {

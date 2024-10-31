@@ -31,7 +31,7 @@ const RewardsPool: React.FC = () => {
         </span>
       </div>
       <div className="mt-4 text-sm text-gray-500 text-center">
-        For the Attn Clicker with the most $CLICK
+        For distributing to $CLICK pool winners
       </div>
     </div>
   );

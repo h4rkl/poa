@@ -16,20 +16,30 @@ export function POACreate() {
     let timer: NodeJS.Timeout;
     if (cooldownRemaining > 0) {
       timer = setTimeout(() => {
-        setCooldownRemaining(prevTime => prevTime - 1);
+        setCooldownRemaining((prevTime) => prevTime - 1);
       }, 1000);
     }
     return () => clearTimeout(timer);
   }, [cooldownRemaining]);
 
   const handleClick = async () => {
-    await attentionInteract.mutateAsync({
-      tokenName: attentionTokenMetadata.name,
-    });
-    explode();
-    setTimeout(() => {
-      setCooldownRemaining(Number(process.env.NEXT_PUBLIC_COOLDOWN_SECONDS) || 0);
-    }, 1000);
+    try {
+      // First run the mutation
+      await attentionInteract.mutateAsync({
+        tokenName: attentionTokenMetadata.name,
+      });
+      // Add a small delay to ensure DOM is ready
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      // Then trigger the explosion
+      await explode();
+      setTimeout(() => {
+        setCooldownRemaining(
+          Number(process.env.NEXT_PUBLIC_COOLDOWN_SECONDS) || 0
+        );
+      }, 1000);
+    } catch (error) {
+      console.error("Error during interaction:", error);
+    }
   };
 
   const isDisabled = attentionInteract.isPending || cooldownRemaining > 0;
