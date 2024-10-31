@@ -16,12 +16,12 @@ export default function POAFeature() {
     <div>
       <AppHero title="POA" subtitle={"Click for attention"}>
         <POACreate />
-        <p className="mt-6">
+        {/* <p className="mt-6">
           <ExplorerLink
             path={`account/${programId}`}
             label={ellipsify(programId.toString())}
           />
-        </p>
+        </p> */}
         <RewardsPool />
       </AppHero>
     </div>
