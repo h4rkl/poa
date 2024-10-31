@@ -37,8 +37,8 @@ export const PROOF_ACC_SEED = Buffer.from("proof_acc");
 export const poaFees = new PublicKey("CLiCKaKS3DZUCr9WazTnXSM1Tky7kgrKy6tDQ2tSeZ9P");
 
 export const attentionTokenMetadata = {
-  uri: "https://gist.githubusercontent.com/h4rkl/c7e582319fe6c39570f12c1d77eba31f/raw/eea1b8700acd394597d75bdc7ee615e05c1a3ffc/data.json",
-  name: "Attention",
+  uri: "https://gist.githubusercontent.com/h4rkl/c7e582319fe6c39570f12c1d77eba31f/raw/ba2c15ac7210838e51e0ba0faedea5ef6ee7d62a/data.json",
+  name: "Click",
   symbol: "CLICK",
 };
 
