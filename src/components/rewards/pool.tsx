@@ -3,14 +3,15 @@ import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import React, { useState, useEffect } from "react";
 import { useAtomValue } from 'jotai';
 import { balanceUpdateTriggerAtom } from '../dashboard/poa-ui';
+import { ExplorerLink } from "../cluster/cluster-ui";
 
 const RewardsPool: React.FC = () => {
   const [balance, setBalance] = useState<number>(0);
   const { connection } = useConnection();
+  const publicKey = new PublicKey(process.env.NEXT_PUBLIC_REWARDS_POOL!);
 
   useEffect(() => {
     const fetchBalance = async () => {
-      const publicKey = new PublicKey(process.env.NEXT_PUBLIC_REWARDS_POOL!);
 
       try {
         const balance = await connection.getBalance(publicKey);
@@ -32,7 +33,7 @@ const RewardsPool: React.FC = () => {
         </span>
       </div>
       <div className="mt-4 text-sm text-gray-500 text-center">
-        For distributing to $CLICK pool winners
+        For <ExplorerLink className="text-sm link" label={"distributing"} path={`account/${publicKey.toString()}`} /> to $CLICK pool winners
       </div>
     </div>
   );

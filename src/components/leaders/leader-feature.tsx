@@ -6,6 +6,8 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { ellipsify } from "../ui/ui-layout";
 import { ExplorerLink } from "../cluster/cluster-ui";
 import { fromTokenAmount } from "@/utils";
+import { useAtomValue } from "jotai";
+import { balanceUpdateTriggerAtom } from "../dashboard/poa-ui";
 
 const MAX_TOP_HOLDERS = 5;
 
@@ -101,7 +103,7 @@ const LeaderFeature: React.FC = () => {
     };
 
     fetchTopHolders();
-  }, []);
+  }, [useAtomValue(balanceUpdateTriggerAtom)]);
 
   if (loading) {
     return <div className="text-center text-lg">Loading...</div>;
