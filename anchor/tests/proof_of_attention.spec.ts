@@ -51,8 +51,8 @@ describe('Proof of Attention', () => {
   let mintMetadataPDA: Pda;
 
   const timeoutSec = 1; // 1 second
-  const supply = 1_000_000;
-  const reward = 100;
+  const supply = 100_000;
+  const reward = 1;
   const tokenDecimals = 5;
   const timeoutInit = async () => await new Promise(resolve => setTimeout(resolve, timeoutSec * 1000)); // setTimeout uses milliseconds
 
@@ -119,7 +119,7 @@ describe('Proof of Attention', () => {
   it('Initializes the token pool', async () => {
     const totalSupply = new anchor.BN(toTokenAmount(supply, tokenDecimals));
     const rewardAmount = new anchor.BN(toTokenAmount(reward, tokenDecimals));
-    const poolFee = new anchor.BN(toLamports(0.01));
+    const poolFee = new anchor.BN(toLamports(0.001));
     const poaFeesBalanceBefore = await provider.connection.getBalance(poaFees);
 
     await program.methods
