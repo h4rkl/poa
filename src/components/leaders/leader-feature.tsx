@@ -115,7 +115,7 @@ const LeaderFeature: React.FC = () => {
           <li
             key={holder.address}
             className={`flex justify-between items-center border-b px-2 py-4 border-gray-600 ${
-              holder.isUser ? "bg-green-100 dark:bg-green-900" : ""
+              holder.isUser ? "bg-red-100 dark:bg-red-900" : ""
             }`}
           >
             <span className="font-medium">
@@ -123,7 +123,7 @@ const LeaderFeature: React.FC = () => {
                 ? "😊"
                 : `${index + 1}.`}
             </span>
-            <span className="text-green-500 hover:underline">
+            <span className="text-red-500 hover:underline">
               <ExplorerLink
                 label={ellipsify(holder.address)}
                 path={`account/${holder.address}`}

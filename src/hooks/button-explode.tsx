@@ -1,16 +1,16 @@
 // modified from https://codepen.io/jkantner/pen/oNjjEaJ
 
-import { useEffect, useRef, RefObject } from 'react';
+import { useEffect, useRef, RefObject } from "react";
 
-export function useExplosiveButton(): { 
-  buttonRef: RefObject<HTMLButtonElement>; 
+export function useExplosiveButton(): {
+  buttonRef: RefObject<HTMLButtonElement>;
   explode: () => Promise<void>;
 } {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const explosiveButtonRef = useRef<ExplosiveButton | null>(null);
 
   useEffect(() => {
-    if (buttonRef.current && typeof document.body.animate === 'function') {
+    if (buttonRef.current && typeof document.body.animate === "function") {
       explosiveButtonRef.current = new ExplosiveButton(buttonRef.current);
     }
     return () => {
@@ -59,30 +59,30 @@ class ExplosiveButton {
       this.animationTimeout = null;
     }
     this.element.className = this.originalClasses;
-    
+
     // Explicitly reset background color
-    this.element.style.backgroundColor = '';
-    this.element.style.borderColor = '';
-    this.element.style.color = '';
-    
+    this.element.style.backgroundColor = "";
+    this.element.style.borderColor = "";
+    this.element.style.color = "";
+
     // Remove all particle elements
-    this.element.querySelectorAll('.particle').forEach(el => el.remove());
+    this.element.querySelectorAll(".particle").forEach((el) => el.remove());
   }
 
   public explode(duration: number): Promise<void> {
     return new Promise((resolve) => {
       if (!this.element.classList.contains("exploding-button")) {
         this.hideContent();
-  
+
         this.createParticles("fire", 50, duration);
         this.createParticles("debris", this.piecesX * this.piecesY, duration);
-  
+
         // Resolve the promise after the animation is complete
         this.animationTimeout = setTimeout(() => {
           this.reset();
           resolve();
         }, duration);
-  
+
         // Failsafe: force reset after a slightly longer duration
         setTimeout(() => {
           this.reset();
@@ -245,10 +245,10 @@ class DebrisParticle extends Particle {
     const rotZ = randomInt(0, maxAngle);
 
     // Add a random shade of green to each debris particle
-    const greenHue = randomInt(100, 140); // Range of green hues
-    const greenSaturation = randomInt(60, 100);
-    const greenLightness = randomInt(30, 70);
-    this.div.style.backgroundColor = `hsl(${greenHue}, ${greenSaturation}%, ${greenLightness}%)`;
+    const redVariation = randomInt(-20, 20);
+    this.div.style.backgroundColor = `rgb(${189 + redVariation}, ${
+      29 + redVariation
+    }, ${29 + redVariation})`;
 
     this.runSequence(
       this.div,

@@ -9,14 +9,14 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Rubik', 'sans-serif'],
+        exo: ['Exo 2', 'sans-serif'],
       },
     },
   },
   plugins: [require('daisyui')],
   daisyui: {
     themes: [
-      "sunset"
+      "synthwave"
     ],
   },
 };
