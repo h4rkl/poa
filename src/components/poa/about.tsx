@@ -3,6 +3,12 @@ import React from "react";
 import { ExplorerLink } from "../cluster/cluster-ui";
 
 const About: React.FC = () => {
+  const winnerCount = 100;
+  const clickReward = "1 $CLICK";
+  const totalSupply = "100,000";
+  const coolDownSec = 10;
+  const totalRewardPool = "100 SOL";
+  const clickFee = "0.001 SOL";
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <section className="mb-12">
@@ -15,16 +21,16 @@ const About: React.FC = () => {
             Proof of Attention
           </li>
           <li>
-            Each click rewards you with 1 $CLICK and deposits a tiny amount of
+            Each click rewards you with {clickReward} and deposits a tiny amount of
             SOL into the reward pool
           </li>
           <li>
             Once the button is clicked there is an unbottable cooldown period of
-            10 seconds
+            {coolDownSec} seconds
           </li>
           <li>You can click the button as many times as you want</li>
           <li>
-            The top 100 holders of $CLICK will win a proportional share of the
+            The top {winnerCount} holders of $CLICK will win a proportional share of the
             reward pool based on their $CLICK balance
           </li>
           <li>
@@ -54,20 +60,20 @@ const About: React.FC = () => {
         </p>
 
         <ul className="space-y-2 list-disc pl-6">
-          <li>Initial supply: 100,000</li>
-          <li>Token airdrop per interaction: 1 $CLICK</li>
-          <li>Interaction cooldown period: 30 seconds</li>
-          <li>Total possible clicks: 100,000</li>
+          <li>Initial $CLICK supply: {totalSupply} </li>
+          <li>Token airdrop per interaction: {clickReward}</li>
+          <li>Interaction cooldown period: {coolDownSec} seconds</li>
+          <li>Total possible clicks: {totalSupply} </li>
           <li>
             Reward pool address: <ExplorerLink label={process.env.NEXT_PUBLIC_REWARDS_POOL!} path={`account/${process.env.NEXT_PUBLIC_REWARDS_POOL!}`} />
           </li>
-          <li>Reward pool collection per click: 0.001 SOL</li>
-          <li>Total potential reward pool: 100 SOL</li>
-          <li>Winner pool: Top 100 holders of $CLICK</li>
+          <li>Reward pool collection per click: {clickFee}</li>
+          <li>Total potential reward pool: {totalRewardPool}</li>
+          <li>Winner pool: Top {winnerCount} holders of $CLICK</li>
           <li>
             Winner pool distribution strategy: a percentage of the purse
             calculated proportionally by the $CLICK balance of each holder in
-            the top 100 against the total holdings of the top 100
+            the top {winnerCount} against the total holdings of the top {winnerCount}
           </li>
           <li>
             Pool will be seeded with 10 SOL which will be returned to the Pool
