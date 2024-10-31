@@ -8,17 +8,26 @@ import { fromTokenAmount } from "@/utils";
 import { ExplorerLink } from "../cluster/cluster-ui";
 import { ellipsify } from "../ui/ui-layout";
 import Tweet from "../ui/tweet";
+import { useAtomValue } from "jotai";
+import { balanceUpdateTriggerAtom } from "../dashboard/poa-ui";
 
 export const AccountPoa = () => {
-  const { publicKey } = useWallet();
   const [balance, setBalance] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [mintAcc, setMintAcc] = useState<string>("");
   const [tokenVault, setTokenVault] = useState<string>("");
   const [tokenVaultBalance, setTokenVaultBalance] = useState<string>("");
+
+  const { publicKey, connected } = useWallet();
   const { connection } = useConnection();
+  const balanceUpdateTrigger = useAtomValue(balanceUpdateTriggerAtom);
 
   useEffect(() => {
+    if (!publicKey) {
+      setBalance(0);
+      setMintAcc("");
+      return;
+    }
     const fetchAccountInfo = async () => {
       try {
         // Get mint address from env
@@ -37,10 +46,16 @@ export const AccountPoa = () => {
             mintPubkey,
             publicKey
           );
-          setMintAcc(tokenAddress.toString());
           // Get token account info
           const tokenAccount = await getAccount(connection, tokenAddress);
-          setBalance(Number(tokenAccount.amount) || 0);
+          tokenAccount.isInitialized;
+          if (tokenAccount.isInitialized) {
+            setMintAcc(tokenAddress.toString());
+            setBalance(Number(tokenAccount.amount) || 0);
+          } else {
+            setBalance(0);
+            setMintAcc("");
+          }
         }
       } catch (error) {
         console.error("Error fetching account info:", error);
@@ -50,7 +65,7 @@ export const AccountPoa = () => {
     };
 
     fetchAccountInfo();
-  }, [publicKey, connection]);
+  }, [publicKey, connected, connection, balanceUpdateTrigger]);
 
   if (loading) {
     return (
@@ -63,7 +78,7 @@ export const AccountPoa = () => {
   if (!publicKey) {
     return (
       <div className="rounded-lg shadow-md p-6 max-w-md mx-auto">
-        <p className="text-center text-gray-600">Please connect your wallet</p>
+        <p className="text-center text-gray-400">Please connect your wallet</p>
       </div>
     );
   }
@@ -86,7 +101,7 @@ export const AccountPoa = () => {
           </span>
         </div>
         <div className="flex items-center gap-2 justify-center mt-4">
-          <p className="text-sm break-all">{tokenVaultBalance}</p>
+          <p className="text-sm break-all">{tokenVaultBalance} $CLICK</p>
           <p className="text-sm text-gray-500">remaining in</p>
           <p className="text-sm break-all">
             <ExplorerLink
@@ -97,11 +112,11 @@ export const AccountPoa = () => {
         </div>
         <div className="mt-4 flex justify-center">
           <Tweet
-            text={`🚀 Stacked ${fromTokenAmount(
+            text={`Stacked ${fromTokenAmount(
               balance
             )} $CLICK so far by Exploding the Button at ${
               window.location.href
-            }`}
+            } 🚀🚀🚀`}
           />
         </div>
       </div>

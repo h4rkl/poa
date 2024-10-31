@@ -103,7 +103,7 @@ const LeaderFeature: React.FC = () => {
     };
 
     fetchTopHolders();
-  }, [useAtomValue(balanceUpdateTriggerAtom)]);
+  }, [publicKey, connection, useAtomValue(balanceUpdateTriggerAtom)]);
 
   if (loading) {
     return <div className="text-center text-lg">Loading...</div>;
