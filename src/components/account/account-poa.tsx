@@ -102,7 +102,7 @@ export const AccountPoa = () => {
         </div>
         <div className="flex items-center gap-2 justify-center mt-4">
           <p className="text-sm break-all">{tokenVaultBalance} $CLICK</p>
-          <p className="text-sm text-gray-500">remaining in</p>
+          <p className="text-sm text-gray-500">left in</p>
           <p className="text-sm break-all">
             <ExplorerLink
               label={ellipsify(tokenVault)}

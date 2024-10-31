@@ -9,7 +9,7 @@ import { fromTokenAmount } from "@/utils";
 import { useAtomValue } from "jotai";
 import { balanceUpdateTriggerAtom } from "../dashboard/poa-ui";
 
-const MAX_TOP_HOLDERS = 5;
+const MAX_TOP_HOLDERS = 10;
 
 interface TokenHolder {
   address: string;
@@ -62,7 +62,6 @@ const LeaderFeature: React.FC = () => {
             const userTokenBalance = Number(
               fromTokenAmount(Number(userBalance.value.amount))
             );
-            console.log("userTokenBalance:", userTokenBalance);
 
             if (userTokenBalance > 0) {
               const userHolder: TokenHolder = {
