@@ -70,9 +70,9 @@ export const AccountPoa = () => {
 
   return (
     <div className="rounded-lg p-6 mt-2 max-w-sm mx-auto border border-gray-600">
-      <h2 className="text-2xl font-bold mb-4 text-center">You have</h2>
+      <h2 className="text-2xl font-bold mb-2 text-center">You have</h2>
       <div className="flex items-center gap-2 justify-center">
-        <p className="font-mono text-sm break-all">
+        <p className="text-gray-500 text-sm break-all">
           <ExplorerLink
             label={ellipsify(mintAcc)}
             path={`account/${mintAcc}`}
@@ -86,9 +86,9 @@ export const AccountPoa = () => {
           </span>
         </div>
         <div className="flex items-center gap-2 justify-center mt-4">
-          <p className="font-mono text-sm break-all">{tokenVaultBalance}</p>
+          <p className="text-sm break-all">{tokenVaultBalance}</p>
           <p className="text-sm text-gray-500">remaining in</p>
-          <p className="font-mono text-sm break-all">
+          <p className="text-sm break-all">
             <ExplorerLink
               label={ellipsify(tokenVault)}
               path={`account/${tokenVault}`}

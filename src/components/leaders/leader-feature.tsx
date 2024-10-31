@@ -110,33 +110,38 @@ const LeaderFeature: React.FC = () => {
   }
 
   return (
-    <div className="leaderboard max-w-2xl mt-6 px-4 mx-auto py-6 shadow-md rounded-lg border border-gray-600">
-      <h2 className="text-2xl font-semibold text-center mb-4">Leaderboard</h2>
-      <ul>
-        {topHolders.map((holder, index) => (
-          <li
-            key={holder.address}
-            className={`flex justify-between items-center border-b px-2 py-4 border-gray-600 ${
-              holder.isUser ? "bg-purple-100 dark:bg-purple-900" : ""
-            }`}
-          >
-            <span className="font-medium">
-              {holder.isUser && index === topHolders.length - 1 && topHolders.length > MAX_TOP_HOLDERS
-                ? "😊"
-                : `${index + 1}.`}
-            </span>
-            <span className="text-pink-500 hover:underline">
-              <ExplorerLink
-                label={ellipsify(holder.address)}
-                path={`account/${holder.address}`}
-              />
-              {holder.isUser && " (You)"}
-            </span>
-            <span className="font-semibold">{holder.balance} $CLICK</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <div className="leaderboard max-w-2xl mt-6 px-4 mx-auto py-6 shadow-md rounded-lg border border-gray-600">
+        <h2 className="text-2xl font-semibold text-center mb-4">Leaderboard</h2>
+        <ul className="max-h-[20em] overflow-y-auto">
+          {topHolders.map((holder, index) => (
+            <li
+              key={holder.address}
+              className={`flex justify-between items-center border-b px-2 py-4 border-gray-600 ${
+                holder.isUser ? "bg-purple-100 dark:bg-purple-900" : ""
+              }`}
+            >
+              <span className="font-medium">
+                {holder.isUser &&
+                index === topHolders.length - 1 &&
+                topHolders.length > MAX_TOP_HOLDERS
+                  ? "😊"
+                  : `${index + 1}.`}
+              </span>
+              <span className="text-pink-500 hover:underline">
+                <ExplorerLink
+                  label={ellipsify(holder.address)}
+                  path={`account/${holder.address}`}
+                />
+                {holder.isUser && " (You)"}
+              </span>
+              <span className="font-semibold">{holder.balance} $CLICK</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="h-6"></div>
+    </>
   );
 };
 

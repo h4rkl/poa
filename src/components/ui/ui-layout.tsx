@@ -25,10 +25,14 @@ export function UiLayout({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="navbar bg-base-300 text-neutral-content flex-col md:flex-row space-y-2 md:space-y-0">
+      <div className="navbar bg-base-300 text-neutral-content flex-col md:flex-row space-y-2 md:space-y-0 fixed top-0 left-0 right-0 z-50">
         <div className="flex-1">
           <Link className="btn btn-ghost normal-case text-xl" href="/">
-            <img className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover" alt="Logo" src="/attn.png" />
+            <img
+              className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover"
+              alt="Logo"
+              src="/attn.png"
+            />
           </Link>
           <ul className="menu menu-horizontal px-1 space-x-2">
             {links.map(({ label, path }) => (
@@ -48,10 +52,11 @@ export function UiLayout({
           <ClusterUiSelect />
         </div>
       </div>
+      <div className="p-8"></div>
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>
-      <div className="flex-grow px-6">
+      <div className="flex-grow">
         <Suspense
           fallback={
             <div className="text-center my-32">
