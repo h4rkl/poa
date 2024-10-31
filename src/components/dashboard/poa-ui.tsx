@@ -1,16 +1,20 @@
 "use client";
 
+import "./poa-ui.css";
+
 import { useState, useEffect } from "react";
 import { attentionTokenMetadata } from "@/poa/constants";
 import { usePoaProgram } from "./poa-data-access";
 import { useExplosiveButton } from "@/hooks/button-explode";
+import { atom, useSetAtom } from "jotai";
 
-import "./poa-ui.css";
+export const balanceUpdateTriggerAtom = atom(0);
 
 export function POACreate() {
   const { attentionInteract } = usePoaProgram();
   const { buttonRef, explode } = useExplosiveButton();
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const setBalanceUpdateTrigger = useSetAtom(balanceUpdateTriggerAtom);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -35,6 +39,7 @@ export function POACreate() {
       setCooldownRemaining(
         Number(process.env.NEXT_PUBLIC_COOLDOWN_SECONDS) || 0
       );
+      setBalanceUpdateTrigger(prev => prev + 1);
     } catch (error) {
       console.error("Error during interaction:", error);
     }

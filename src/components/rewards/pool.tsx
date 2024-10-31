@@ -1,6 +1,8 @@
 import { useConnection } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import React, { useState, useEffect } from "react";
+import { useAtomValue } from 'jotai';
+import { balanceUpdateTriggerAtom } from '../dashboard/poa-ui';
 
 const RewardsPool: React.FC = () => {
   const [balance, setBalance] = useState<number>(0);
@@ -19,7 +21,7 @@ const RewardsPool: React.FC = () => {
     };
 
     fetchBalance();
-  }, []);
+  }, [useAtomValue(balanceUpdateTriggerAtom)]);
 
   return (
     <div className="rounded-lg p-6 max-w-sm mx-auto border border-gray-600">
