@@ -115,16 +115,16 @@ const About: React.FC = () => {
       <section id="proof-of-attention" className="mb-12">
         <h2 className="text-4xl font-bold mb-6">Proof of Attention (PoA)</h2>
         <p className="space-y-4">
-          Proof of Attention is a Solana program that attempts to solve fair
-          launch rewards and validate users for genuine engagement and
-          interaction with content or real-world activities. The program uses a
-          combination of variables that can be adjusted including cooldown
-          periods, reward pools, and fee collection to achieve this. Aiming to
-          incentivise engagement and making any application more expensive to
-          bot by removing high frequency transactions to line up with real world
-          interaction times. This is all made possible through Solana's Proof of
-          History mechanism which has an inbuilt clock in the block chain so we
-          can validate time.
+          Proof of Attention is a soon to be Open Source Solana program that
+          attempts to solve fair launch rewards and validate users for genuine
+          engagement and interaction with content or real-world activities. The
+          program uses a combination of variables that can be adjusted including
+          cooldown periods, reward pools, and fee collection to achieve this.
+          Aiming to incentivise engagement and making any application more
+          expensive to bot by removing high frequency transactions to line up
+          with real world interaction times. This is all made possible through
+          Solana's Proof of History mechanism which has an inbuilt clock in the
+          block chain so we can validate time.
         </p>
         <p className="mt-4">
           The ultimate aim of the program is not to completely stop bots from
@@ -145,6 +145,14 @@ const About: React.FC = () => {
           <li>Fair launch meme coins</li>
           <li>Mining tokens using interactions</li>
         </ul>
+        <p className="mt-4">
+          The plan to Open Source the application requires a short period of
+          testing before the releasing to the public via{" "}
+          <Link target="_blank" className="link" href="https://github.com/h4rkl/poa">
+            harkl's github
+          </Link>
+          .
+        </p>
       </section>
     </div>
   );
