@@ -123,7 +123,7 @@ const LeaderFeature: React.FC = () => {
                 ? "😊"
                 : `${index + 1}.`}
             </span>
-            <span className="text-red-500 hover:underline">
+            <span className="text-pink-500 hover:underline">
               <ExplorerLink
                 label={ellipsify(holder.address)}
                 path={`account/${holder.address}`}

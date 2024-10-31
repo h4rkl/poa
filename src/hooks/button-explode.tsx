@@ -246,9 +246,9 @@ class DebrisParticle extends Particle {
 
     // Add a random shade of green to each debris particle
     const redVariation = randomInt(-20, 20);
-    this.div.style.backgroundColor = `rgb(${189 + redVariation}, ${
-      29 + redVariation
-    }, ${29 + redVariation})`;
+    this.div.style.backgroundColor = `rgb(${219 + redVariation}, ${
+      39 + redVariation
+    }, ${119 + redVariation})`;
 
     this.runSequence(
       this.div,

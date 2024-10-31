@@ -52,7 +52,7 @@ export function POACreate() {
       <div className="w-full max-w-xs px-4">
         <button
           ref={buttonRef}
-          className="w-full bg-red-600 hover:bg-red-700 text-white font-sans text-xl py-4 px-8 rounded-full transition-colors duration-150 ease-linear focus:outline-none active:transform active:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-pink-600 hover:bg-pink-700 text-white font-sans text-xl py-4 px-8 rounded-full transition-colors duration-150 ease-linear focus:outline-none active:transform active:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleClick}
           disabled={isDisabled}
         >
