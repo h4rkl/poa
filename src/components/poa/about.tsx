@@ -45,12 +45,19 @@ const About: React.FC = () => {
           Tokenomics for $CLICK
         </h2>
         <p className="mb-4">
-          $CLICK is the first token to be minted using PoA. It is a fungible
-          token that represents the value of a single click on the PoA program.
-          The token is designed to reward and validate genuine attention through
-          a single interaction with a single button in the app. It is designed
-          to validate attention using a fair launch protocol and to level the
-          playing field between users and bots.
+          $CLICK is the first token to be minted using{" "}
+          <Link className="link" href="#proof-of-attention">
+            PoA
+          </Link>
+          . It is a fungible token that represents the value of a single click
+          on the{" "}
+          <Link className="link" href="#proof-of-attention">
+            PoA
+          </Link>{" "}
+          program. The token is designed to reward and validate genuine
+          attention through a single interaction with a single button in the
+          app. It is designed to validate attention using a fair launch protocol
+          and to level the playing field between users and bots.
         </p>
 
         <ul className="space-y-2 list-disc pl-6">
@@ -59,11 +66,13 @@ const About: React.FC = () => {
           <li>Interaction cooldown period: {coolDownSec} seconds</li>
           <li>Total possible clicks: {totalSupply} </li>
 
-          <li>$CLICK token address:{" "}
+          <li>
+            $CLICK token address:{" "}
             <ExplorerLink
               label={process.env.NEXT_PUBLIC_MINT!}
               path={`account/${process.env.NEXT_PUBLIC_MINT!}`}
-            /></li>
+            />
+          </li>
           <li>
             Reward pool address:{" "}
             <ExplorerLink
@@ -103,23 +112,39 @@ const About: React.FC = () => {
         </p>
       </section>
 
-      <section className="mb-12">
+      <section id="proof-of-attention" className="mb-12">
         <h2 className="text-4xl font-bold mb-6">Proof of Attention (PoA)</h2>
         <p className="space-y-4">
-          Proof of Attention is a Solana program that attempts to reward and
-          validate users for real world attention and interaction with content
-          or real-world activities. The system uses a combination of variables
-          that can be adjusted including cooldown periods, reward pools, and fee
-          collection to achieve this. Aiming to incentivise user engagement and
-          making any application more expensive to bot and removing high
-          frequency transactions to run the app at the target speed for
-          engagement.
+          Proof of Attention is a Solana program that attempts to solve fair
+          launch rewards and validate users for genuine engagement and
+          interaction with content or real-world activities. The program uses a
+          combination of variables that can be adjusted including cooldown
+          periods, reward pools, and fee collection to achieve this. Aiming to
+          incentivise engagement and making any application more expensive to
+          bot by removing high frequency transactions to line up with real world
+          interaction times. This is all made possible through Solana's Proof of
+          History mechanism which has an inbuilt clock in the block chain so we
+          can validate time.
         </p>
         <p className="mt-4">
           The ultimate aim of the program is not to completely stop bots from
           engaging, but rather to level the playing field so applications can be
           engaged at a human pace.
         </p>
+        <p className="mt-4">
+          The Exploding Button app and $CLICK memecoin are the first in a series
+          of experiments to proove the concept of PoA.
+        </p>
+        <h3 className="text-2xl font-semibold mt-4">
+          Some possible use cases:
+        </h3>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>Blinks</li>
+          <li>Advertising</li>
+          <li>Turn based games</li>
+          <li>Fair launch meme coins</li>
+          <li>Mining tokens using interactions</li>
+        </ul>
       </section>
     </div>
   );
