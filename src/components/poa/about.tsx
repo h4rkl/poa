@@ -49,7 +49,7 @@ const About: React.FC = () => {
       </section>
 
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-6">Tokenomics for $CLICK</h2>
+        <h2 id="tokenomics" className="text-3xl font-bold mb-6">Tokenomics for $CLICK</h2>
         <p className="mb-4">
           $CLICK is the first token to be minted on PoA. It is a fungible token
           that represents the value of a single click on the platform. The token
