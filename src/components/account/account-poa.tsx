@@ -14,6 +14,7 @@ export const AccountPoa = () => {
   const [balance, setBalance] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [mintAcc, setMintAcc] = useState<string>("");
+  const [tokenVault, setTokenVault] = useState<string>("");
   const [tokenVaultBalance, setTokenVaultBalance] = useState<string>("");
   const { connection } = useConnection();
 
@@ -23,16 +24,12 @@ export const AccountPoa = () => {
         // Get mint address from env
         const mint = process.env.NEXT_PUBLIC_MINT!;
         const tokenVault = process.env.NEXT_PUBLIC_TOKEN_VAULT!;
+        setTokenVault(tokenVault);
         const tokenVaultBalance = await getAccount(
           connection,
           new PublicKey(tokenVault)
         );
         setTokenVaultBalance(fromTokenAmount(Number(tokenVaultBalance.amount)));
-        const rewardPubKey = new PublicKey(
-          process.env.NEXT_PUBLIC_REWARDS_POOL!
-        );
-        const rewardsBalance = await connection.getBalance(rewardPubKey);
-
         if (publicKey && mint) {
           // Get the associated token account address
           const mintPubkey = new PublicKey(mint);
@@ -74,18 +71,27 @@ export const AccountPoa = () => {
   return (
     <div className="rounded-lg p-6 mt-2 max-w-sm mx-auto border border-gray-600">
       <h2 className="text-2xl font-bold mb-4 text-center">You have</h2>
+      <div className="flex items-center gap-2 justify-center">
+        <p className="font-mono text-sm break-all">
+          <ExplorerLink
+            label={ellipsify(mintAcc)}
+            path={`account/${mintAcc}`}
+          />
+        </p>
+      </div>
       <div className="space-y-4">
         <div className="flex items-center w-full justify-center">
           <span className="text-3xl font-bold">
             {fromTokenAmount(balance)} $CLICK
           </span>
         </div>
-        <div className="flex items-center gap-2 justify-center">
-          <p className="text-gray-500">Acc:</p>
+        <div className="flex items-center gap-2 justify-center mt-4">
+          <p className="font-mono text-sm break-all">{tokenVaultBalance}</p>
+          <p className="text-sm text-gray-500">remaining in</p>
           <p className="font-mono text-sm break-all">
             <ExplorerLink
-              label={ellipsify(mintAcc)}
-              path={`account/${mintAcc}`}
+              label={ellipsify(tokenVault)}
+              path={`account/${tokenVault}`}
             />
           </p>
         </div>
