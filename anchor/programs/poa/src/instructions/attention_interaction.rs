@@ -173,35 +173,36 @@ fn process_attention_proof(
     );
 
     // Verify that the timeout has passed since the last proof attempt or if it's the first proof
-    if proof.last_proof_at != 0 && timestamp - proof.last_proof_at < token_pool_acc.timeout_sec.into() {
+    if proof.last_proof_at != 0
+        && timestamp - proof.last_proof_at < token_pool_acc.timeout_sec.into()
+    {
         return Err(CustomError::CooldownNotMet.into());
     }
 
     // Calculate reward based on token pool configuration and difficulty
     let reward = token_pool_acc.reward_amount;
 
-    // Create instruction data
-    let ix_to_fee_vault = transfer(
-        &accs.attention_authority.key(),
-        &accs.fee_vault.key(),
-        token_pool_acc.pool_fee,
-    );
+    if token_pool_acc.pool_fee > 0 {
+        let ix_to_fee_vault = transfer(
+            &accs.attention_authority.key(),
+            &accs.fee_vault.key(),
+            token_pool_acc.pool_fee,
+        );
+        invoke(
+            &ix_to_fee_vault,
+            &[
+                accs.attention_authority.to_account_info(),
+                accs.fee_vault.to_account_info(),
+                accs.system_program.to_account_info(),
+            ],
+        )?;
+    }
+
     let ix_to_poa_fees = transfer(
         &accs.attention_authority.key(),
         &accs.poa_fees.key(),
         TX_FEE,
     );
-
-    // Invoke both transfers
-    invoke(
-        &ix_to_fee_vault,
-        &[
-            accs.attention_authority.to_account_info(),
-            accs.fee_vault.to_account_info(),
-            accs.system_program.to_account_info(),
-        ],
-    )?;
-
     invoke(
         &ix_to_poa_fees,
         &[
