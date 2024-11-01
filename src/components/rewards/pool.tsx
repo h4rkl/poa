@@ -22,7 +22,7 @@ const RewardsPool: React.FC = () => {
     };
 
     fetchBalance();
-  }, [useAtomValue(balanceUpdateTriggerAtom)]);
+  }, [connection, publicKey, useAtomValue(balanceUpdateTriggerAtom)]);
 
   return (
     <div className="rounded-lg p-6 max-w-sm mx-auto border border-gray-600">
