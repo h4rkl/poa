@@ -4,15 +4,15 @@ import * as anchor from '@coral-xyz/anchor';
 import fs from 'fs';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { Command } from 'commander';
-import { PublicKey, Keypair, SystemProgram } from '@solana/web3.js';
+import { PublicKey, Keypair, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { createBundlrUploader } from '@metaplex-foundation/umi-uploader-bundlr';
 import { createGenericFile, keypairIdentity, Umi } from '@metaplex-foundation/umi';
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
-import { findMetadataPda, mplTokenMetadata } from '@metaplex-foundation/mpl-token-metadata';
+import { findMetadataPda, MPL_TOKEN_METADATA_PROGRAM_ID, mplTokenMetadata } from '@metaplex-foundation/mpl-token-metadata';
+import chalk from 'chalk';
 
 // Import these from your project
 import {
-    attentionTokenMetadata,
     CONFIG_SEED,
     FEE_VAULT_SEED,
     MINT_SEED,
@@ -46,7 +46,7 @@ program
     .option('--reward <number>', 'Reward amount', '1')
     .option('--decimals <number>', 'Token decimals', '5')
     .action(async (options) => {
-        const { umi, anchorProgram, wallet } = setupAnchor(options.connection, options.keypair);
+        const { umi, anchorProgram } = setupAnchor(options.connection, options.keypair);
         const signerKeyArray = Uint8Array.from(JSON.parse(fs.readFileSync(options.keypair, 'utf-8')));
         umi.use(keypairIdentity(umi.eddsa.createKeypairFromSecretKey(signerKeyArray)));
         try {
@@ -63,11 +63,9 @@ program
                 options.symbol,
                 options.description
             );
-            console.log("*****************metadataUri:", metadataUri);
-
 
             const [mint] = PublicKey.findProgramAddressSync(
-                [MINT_SEED, Buffer.from(attentionTokenMetadata.name)],
+                [MINT_SEED, Buffer.from(metadata.name)],
                 POA_PROGRAM_ID
             );
 
@@ -118,7 +116,15 @@ program
                 .signers([poolOwner])
                 .rpc();
 
-            console.log('Token pool initialized successfully!');
+            // Log all accounts
+            console.log(chalk.green('Token pool initialized successfully!'));
+            console.log(chalk.blue('Mint:'), chalk.yellow(mint.toBase58()));
+            console.log(chalk.blue('Metadata:'), chalk.yellow(metadataUri));
+            console.log(chalk.blue('Token vault:'), chalk.yellow(tokenPoolVault.toBase58()));
+            console.log(chalk.blue('Fee vault:'), chalk.yellow(feeVault.toBase58()));
+            console.log(chalk.blue('POA fees:'), chalk.yellow(poaFees.toBase58()));
+            console.log(chalk.blue('Pool owner:'), chalk.yellow(poolOwner.publicKey.toBase58()));
+            console.log(chalk.blue('Pool owner token account:'), chalk.yellow(tokenPoolVault.toBase58()));
         } catch (error) {
             console.error('Error initializing token pool:', error);
         }
@@ -130,6 +136,7 @@ program
     .requiredOption('--user-keypair <path>', 'Path to user keypair file')
     .requiredOption('--pool-keypair <path>', 'Path to pool owner keypair file')
     .requiredOption('--connection <url>', 'The Solana RPC connection URL')
+    .requiredOption('--name <string>', 'Token name')
     .action(async (options) => {
         const { anchorProgram } = setupAnchor(options.connection, options.keypair);
         try {
@@ -141,7 +148,7 @@ program
             );
 
             const [mint] = PublicKey.findProgramAddressSync(
-                [MINT_SEED, Buffer.from(attentionTokenMetadata.name)],
+                [MINT_SEED, Buffer.from(options.name)],
                 POA_PROGRAM_ID
             );
 
@@ -172,7 +179,7 @@ program
 
             await anchorProgram.methods
                 .attentionInteract({
-                    tokenName: attentionTokenMetadata.name,
+                    tokenName: options.name,
                 })
                 .accountsStrict({
                     tokenPoolAuthority: poolOwner.publicKey,
@@ -228,7 +235,7 @@ function setupAnchor(url: string, keypairPath: string) {
     const idl = JSON.parse(fs.readFileSync('./idl.json', 'utf8'));
     const anchorProgram = new anchor.Program(idl, anchorProvider);
 
-    return { anchorProvider, umi, anchorProgram, wallet };
+    return { anchorProvider, umi, anchorProgram };
 }
 
 async function uploadToArweave(

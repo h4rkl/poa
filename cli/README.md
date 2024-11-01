@@ -1,1 +1,1 @@
-pnpm dev init --keypair ~/.config/solana/id.json --image ../public/attn.png --name "Blag" --symbol "BLAG" --description "A token for attention" --connection http://localhost:8899 --timeout 7 --supply 100000 --reward 10 --decimals 5
+pnpm dev init --keypair ~/.config/solana/id.json --image ../public/attn.png --name "Holy" --symbol "HAM" --description "A token for attention" --connection http://localhost:8899 --timeout 7 --supply 100000 --reward 10 --decimals 5
