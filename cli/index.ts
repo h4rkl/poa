@@ -123,8 +123,8 @@ program
             console.log(chalk.blue('Token vault:'), chalk.yellow(tokenPoolVault.toBase58()));
             console.log(chalk.blue('Fee vault:'), chalk.yellow(feeVault.toBase58()));
             console.log(chalk.blue('POA fees:'), chalk.yellow(poaFees.toBase58()));
-            console.log(chalk.blue('Pool owner:'), chalk.yellow(poolOwner.publicKey.toBase58()));
-            console.log(chalk.blue('Pool owner token account:'), chalk.yellow(tokenPoolVault.toBase58()));
+            console.log(chalk.blue('Authority/Pool owner:'), chalk.yellow(poolOwner.publicKey.toBase58()));
+            console.log(chalk.blue('Pool token account:'), chalk.yellow(tokenPoolAcc.toBase58()));
         } catch (error) {
             console.error('Error initializing token pool:', error);
         }
