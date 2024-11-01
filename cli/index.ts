@@ -27,15 +27,6 @@ import { publicKey } from '@metaplex-foundation/umi';
 
 const program = new Command();
 
-// Configure anchor provider
-const provider = anchor.AnchorProvider.env();
-anchor.setProvider(provider);
-const umi = createUmi(provider.connection).use(mplTokenMetadata());
-
-// Load your program ID and IDL here
-const idl = JSON.parse(fs.readFileSync('./idl.json', 'utf8'));
-const anchorProgram = new anchor.Program(idl, provider);
-
 program
     .name('poa-cli')
     .description('CLI for Proof of Attention Protocol')
@@ -49,11 +40,13 @@ program
     .requiredOption('--name <string>', 'Token name')
     .requiredOption('--symbol <string>', 'Token symbol')
     .requiredOption('--description <string>', 'Token description')
+    .requiredOption('--connection <url>', 'The Solana RPC connection URL')
     .option('--timeout <seconds>', 'Timeout in seconds', '1')
     .option('--supply <number>', 'Total supply', '100000')
     .option('--reward <number>', 'Reward amount', '1')
     .option('--decimals <number>', 'Token decimals', '5')
     .action(async (options) => {
+        const { umi, anchorProgram } = setupAnchor(options.connection, options.keypair);
         try {
             const poolOwner = Keypair.fromSecretKey(
                 Uint8Array.from(JSON.parse(fs.readFileSync(options.keypair, 'utf-8')))
@@ -132,7 +125,9 @@ program
     .description('Submit an attention interaction')
     .requiredOption('--user-keypair <path>', 'Path to user keypair file')
     .requiredOption('--pool-keypair <path>', 'Path to pool owner keypair file')
+    .requiredOption('--connection <url>', 'The Solana RPC connection URL')
     .action(async (options) => {
+        const { anchorProgram } = setupAnchor(options.connection, options.keypair);
         try {
             const userAccount = Keypair.fromSecretKey(
                 Uint8Array.from(JSON.parse(fs.readFileSync(options.userKeypair, 'utf-8')))
@@ -200,6 +195,28 @@ program
     });
 
 program.parse();
+
+function setupAnchor(url: string, keypairPath: string) {
+    const idl = JSON.parse(fs.readFileSync('./idl.json', 'utf8'));
+    const wallet = new anchor.Wallet(
+        Keypair.fromSecretKey(
+            Uint8Array.from(JSON.parse(fs.readFileSync(keypairPath, 'utf-8')))
+        )
+    );
+
+    const anchorProvider = new anchor.AnchorProvider(
+        new anchor.web3.Connection(url),
+        wallet,
+        { commitment: "confirmed" }
+    );
+    
+    anchor.setProvider(anchorProvider);
+    
+    const umi = createUmi(anchorProvider.connection).use(mplTokenMetadata());
+    const anchorProgram = new anchor.Program(idl, anchorProvider);
+
+    return { anchorProvider, umi, anchorProgram };
+}
 
 async function uploadToArweave(
     umi: Umi,
