@@ -4,11 +4,11 @@ import * as anchor from '@coral-xyz/anchor';
 import fs from 'fs';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { Command } from 'commander';
-import { PublicKey, Keypair, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
+import { PublicKey, Keypair, SystemProgram } from '@solana/web3.js';
 import { createBundlrUploader } from '@metaplex-foundation/umi-uploader-bundlr';
-import { createGenericFile, Umi } from '@metaplex-foundation/umi';
+import { createGenericFile, keypairIdentity, Umi } from '@metaplex-foundation/umi';
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
-import { findMetadataPda, mplTokenMetadata, MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
+import { findMetadataPda, mplTokenMetadata } from '@metaplex-foundation/mpl-token-metadata';
 
 // Import these from your project
 import {
@@ -46,7 +46,9 @@ program
     .option('--reward <number>', 'Reward amount', '1')
     .option('--decimals <number>', 'Token decimals', '5')
     .action(async (options) => {
-        const { umi, anchorProgram } = setupAnchor(options.connection, options.keypair);
+        const { umi, anchorProgram, wallet } = setupAnchor(options.connection, options.keypair);
+        const signerKeyArray = Uint8Array.from(JSON.parse(fs.readFileSync(options.keypair, 'utf-8')));
+        umi.use(keypairIdentity(umi.eddsa.createKeypairFromSecretKey(signerKeyArray)));
         try {
             const poolOwner = Keypair.fromSecretKey(
                 Uint8Array.from(JSON.parse(fs.readFileSync(options.keypair, 'utf-8')))
@@ -61,6 +63,8 @@ program
                 options.symbol,
                 options.description
             );
+            console.log("*****************metadataUri:", metadataUri);
+
 
             const [mint] = PublicKey.findProgramAddressSync(
                 [MINT_SEED, Buffer.from(attentionTokenMetadata.name)],
@@ -85,7 +89,7 @@ program
 
             const totalSupply = new anchor.BN(toTokenAmount(Number(options.supply), Number(options.decimals)));
             const rewardAmount = new anchor.BN(toTokenAmount(Number(options.reward), Number(options.decimals)));
-            const poolFee = new anchor.BN(toLamports(0.001));
+            const poolFee = new anchor.BN(toLamports(options.poolFee));
 
             await anchorProgram.methods
                 .tokenPoolInitialise({
@@ -197,25 +201,34 @@ program
 program.parse();
 
 function setupAnchor(url: string, keypairPath: string) {
-    const idl = JSON.parse(fs.readFileSync('./idl.json', 'utf8'));
-    const wallet = new anchor.Wallet(
-        Keypair.fromSecretKey(
-            Uint8Array.from(JSON.parse(fs.readFileSync(keypairPath, 'utf-8')))
-        )
+    // Read and parse the keypair file
+    const secretKey = Uint8Array.from(
+        JSON.parse(fs.readFileSync(keypairPath, 'utf-8'))
     );
+    const keypair = Keypair.fromSecretKey(secretKey);
 
+    // Create Anchor wallet from keypair
+    const wallet = new anchor.Wallet(keypair);
+
+    // Setup Anchor provider
+    const connection = new anchor.web3.Connection(url);
     const anchorProvider = new anchor.AnchorProvider(
-        new anchor.web3.Connection(url),
+        connection,
         wallet,
         { commitment: "confirmed" }
     );
-    
+
     anchor.setProvider(anchorProvider);
-    
-    const umi = createUmi(anchorProvider.connection).use(mplTokenMetadata());
+
+    // Create UMI instance with the same keypair
+    const umi = createUmi(connection)
+        .use(mplTokenMetadata())
+
+    // Setup Anchor program
+    const idl = JSON.parse(fs.readFileSync('./idl.json', 'utf8'));
     const anchorProgram = new anchor.Program(idl, anchorProvider);
 
-    return { anchorProvider, umi, anchorProgram };
+    return { anchorProvider, umi, anchorProgram, wallet };
 }
 
 async function uploadToArweave(
@@ -228,7 +241,7 @@ async function uploadToArweave(
     const bundlrUploader = createBundlrUploader(umi);
 
     // Upload image first
-    const imageFile = createGenericFile(new Uint8Array(imageBuffer), `${name}.png`);
+    const imageFile = createGenericFile(new Uint8Array(imageBuffer), `${name}.png`, { contentType: "image/png" });
     const [imageUri] = await bundlrUploader.upload([imageFile]);
 
     // Create and upload metadata
@@ -241,7 +254,8 @@ async function uploadToArweave(
 
     const metadataFile = createGenericFile(
         new Uint8Array(Buffer.from(JSON.stringify(metadata))),
-        'metadata.json'
+        'metadata.json',
+        { contentType: "application/json" }
     );
 
     const [metadataUri] = await bundlrUploader.upload([metadataFile]);
