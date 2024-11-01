@@ -5,10 +5,10 @@ import { ExplorerLink } from "../cluster/cluster-ui";
 const About: React.FC = () => {
   const clickFee = "0.001 SOL";
   const clickReward = "1 $CLICK";
-  const coolDownSec = 10;
+  const coolDownSec = 5;
   const totalRewardPool = "100 SOL";
   const totalSupply = "100,000";
-  const winnerCount = 100;
+  const winnerCount = 10;
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <section className="mb-12">
