@@ -1,8 +1,8 @@
 // Here we export some useful types and functions for interacting with the Anchor program.
 import { AnchorProvider, Program } from '@coral-xyz/anchor';
 import { Cluster, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
-import poaIDL from './poa.json';
-import type { Poa } from './poa';
+import poaIDL from './idl.json';
+import type { Poa } from './types';
 
 // Re-export the generated IDL and type
 export { Poa, poaIDL };

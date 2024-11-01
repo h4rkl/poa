@@ -8,8 +8,8 @@
   },
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
-    "copy-anchor-types": "cp -R ../anchor/target/types/poa.ts ./poa.ts && cp -R ../anchor/target/idl/poa.json ./poa.json && cp -R ../anchor/src/poa-exports.ts constants.ts && sed -i '' 's|../target/types/poa|./poa|g; s|../target/idl/poa.json|./poa.json|g' constants.ts",
+    "dev": "ts-node index.ts",
+    "copy-anchor-types": "cp -R ../anchor/target/types/poa.ts ./types.ts && cp -R ../anchor/target/idl/poa.json ./idl.json && cp -R ../anchor/src/poa-exports.ts constants.ts && sed -i '' 's|../target/types/poa|./types|g; s|../target/idl/poa.json|./idl.json|g' constants.ts",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,0 +1,1 @@
+pnpm dev init --keypair ~/.config/solana/id.json --image ../public/attn.png --name "Attention Token" --symbol "ATN" --description "A token for attention" --timeout 7 --supply 100000 --reward 10 --decimals 5
