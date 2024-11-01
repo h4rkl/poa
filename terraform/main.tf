@@ -40,7 +40,7 @@ resource "aws_amplify_app" "explode_btn_app" {
   name         = "explode-btn-nextjs-app"
   repository   = "https://github.com/h4rkl/poa"
   access_token = var.github_token
-  platform     = "WEB"
+  platform     = "WEB_COMPUTE"
 
   iam_service_role_arn = aws_iam_role.amplify_role.arn
 
