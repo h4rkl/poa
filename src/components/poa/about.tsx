@@ -5,7 +5,7 @@ import { ExplorerLink } from "../cluster/cluster-ui";
 const About: React.FC = () => {
   const clickFee = "0.001 SOL";
   const clickReward = "1 $CLICK";
-  const coolDownSec = 5;
+  const coolDownSec = 7;
   const totalRewardPool = "100 SOL";
   const totalSupply = "100,000";
   const winnerCount = 10;
@@ -18,7 +18,7 @@ const About: React.FC = () => {
           <li>Approve the transaction</li>
           <li>First click will setup your accs for $CLICK</li>
           <li>
-            All clicks send you {clickReward} and {clickFee} the reward pool
+            All clicks send you {clickReward} and {clickFee} to the reward pool
           </li>
           <li>You can click once every {coolDownSec} seconds</li>
           <li>You can click the button as many times as you want</li>
@@ -54,10 +54,9 @@ const About: React.FC = () => {
           <Link className="link" href="#proof-of-attention">
             PoA
           </Link>{" "}
-          program. The token is designed to reward and validate genuine
-          attention through a single interaction with a single button in the
-          app. It is designed to validate attention using a fair launch protocol
-          and to level the playing field between users and bots.
+          program. The token rewards and verifies real attention with a single
+          button tap in the app. This system uses a fair launch protocol to
+          ensure equal chances for both users and bots.
         </p>
 
         <ul className="space-y-2 list-disc pl-6">
@@ -103,12 +102,13 @@ const About: React.FC = () => {
         </ul>
 
         <p className="mt-4">
-          The program is designed to create fair launch tokens on Solana, with
-          transparent authorities and actions. Because each program instance
-          launches with all tokens held by the contract no pre-mine can be done.
-          And because there is a built-in cooldown for token release, it makes
-          it much more difficult for a single person to manipulate the token
-          supply.
+          The program creates fair launch tokens on Solana which can be mapped
+          to different stores of attention value, using transparent authorities
+          and actions to ensure fairness. Each instance starts with all tokens
+          held by the contract, preventing pre-mining. Additionally, a cooldown
+          period for token release discourages manipulation, and a
+          single-button interaction in the app validates genuine attention,
+          leveling the playing field between users and bots.
         </p>
       </section>
 
@@ -123,8 +123,8 @@ const About: React.FC = () => {
           Aiming to incentivise engagement and making any application more
           expensive to bot by removing high frequency transactions to line up
           with real world interaction times. This is all made possible through
-          Solana&lsquo;s Proof of History mechanism which has an inbuilt clock in the
-          block chain so we can validate time.
+          Solana&lsquo;s Proof of History mechanism which has an inbuilt clock
+          in the block chain so we can validate time.
         </p>
         <p className="mt-4">
           The ultimate aim of the program is not to completely stop bots from
@@ -133,12 +133,12 @@ const About: React.FC = () => {
         </p>
         <p className="mt-4">
           The Exploding Button app and $CLICK memecoin are the first in a series
-          of experiments to proove the concept of PoA.
+          of experiments to prove the concept of PoA.
         </p>
         <h3 className="text-2xl font-semibold mt-4">
-          Some possible use cases:
+          Some possible PoA future use cases:
         </h3>
-        <ul className="list-disc pl-6 space-y-2">
+        <ul className="list-disc pl-6 space-y-2 mt-4">
           <li>Blinks</li>
           <li>Advertising</li>
           <li>Turn based games</li>
@@ -148,11 +148,22 @@ const About: React.FC = () => {
         <p className="mt-4">
           The plan to Open Source the application requires a short period of
           testing before the releasing to the public via{" "}
-          <Link target="_blank" className="link" href="https://github.com/h4rkl/poa">
+          <Link
+            target="_blank"
+            className="link"
+            href="https://github.com/h4rkl/poa"
+          >
             harkl&lsquo;s github
           </Link>
           .
         </p>
+        <div className="mt-8">
+          <Link href="/">
+            <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
+              Go to Exploding Button
+            </button>
+          </Link>
+        </div>
       </section>
     </div>
   );
