@@ -48,7 +48,7 @@ resource "aws_amplify_app" "explode_btn_app" {
     NODE_VERSION = "20.11.1"
   }
 
-  build_spec = <<-EOT
+build_spec = <<-EOT
 version: 1
 frontend:
   phases:
@@ -63,6 +63,7 @@ frontend:
     baseDirectory: .next
     files:
       - '**/*'
+    discard-paths: no
   cache:
     paths:
       - node_modules/**/*

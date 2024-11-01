@@ -123,7 +123,7 @@ const About: React.FC = () => {
           Aiming to incentivise engagement and making any application more
           expensive to bot by removing high frequency transactions to line up
           with real world interaction times. This is all made possible through
-          Solana's Proof of History mechanism which has an inbuilt clock in the
+          Solana&lsquo;s Proof of History mechanism which has an inbuilt clock in the
           block chain so we can validate time.
         </p>
         <p className="mt-4">
@@ -149,7 +149,7 @@ const About: React.FC = () => {
           The plan to Open Source the application requires a short period of
           testing before the releasing to the public via{" "}
           <Link target="_blank" className="link" href="https://github.com/h4rkl/poa">
-            harkl's github
+            harkl&lsquo;s github
           </Link>
           .
         </p>
