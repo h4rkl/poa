@@ -32,6 +32,7 @@ import {
   getAssociatedTokenAddress,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
+import { load } from "@fingerprintjs/botd";
 
 export function usePoaProgram() {
   const { connection } = useConnection();
@@ -77,6 +78,11 @@ export function usePoaProgram() {
   const attentionInteract = useMutation({
     mutationKey: ["poa", "attentionInteract", { cluster }],
     mutationFn: async (args: { tokenName: string }) => {
+      const botd = await load();
+      const { bot } = botd.detect();
+      if (bot) {
+        throw new Error("Unexpected error n69420");
+      }
       if (
         !rewardVaultQuery.data ||
         !proofAccount ||
@@ -118,9 +124,11 @@ export function usePoaProgram() {
       const partiallySignedTx = await signTransaction(tx);
 
       // Serialize the partially signed transaction
-      const serializedTx = partiallySignedTx.serialize({
-        requireAllSignatures: false,
-      }).toString("base64");
+      const serializedTx = partiallySignedTx
+        .serialize({
+          requireAllSignatures: false,
+        })
+        .toString("base64");
 
       const response = await fetch("/api/attention-interact", {
         method: "POST",
