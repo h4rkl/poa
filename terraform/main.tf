@@ -63,6 +63,9 @@ frontend:
     baseDirectory: .next
     files:
       - '**/*'
+      - '../public/**/*'
+      - '../package.json'
+      - '../pnpm-lock.yaml'
   cache:
     paths:
       - node_modules/**/*
