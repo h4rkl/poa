@@ -49,24 +49,25 @@ resource "aws_amplify_app" "explode_btn_app" {
   }
 
   build_spec = <<-EOT
-        version: 1
-        frontend:
-        phases:
-            preBuild:
-            commands:
-                - npm ci
-            build:
-            commands:
-                - npm run build
-        artifacts:
-            baseDirectory: .next
-            files:
-            - '**/*'
-        cache:
-            paths:
-            - node_modules/**/*
-            - .next/cache/**/*
-        EOT
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm install -g pnpm
+        - pnpm install --frozen-lockfile
+    build:
+      commands:
+        - pnpm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*
+EOT
 }
 
 # Amplify branch
