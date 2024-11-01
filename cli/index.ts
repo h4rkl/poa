@@ -40,6 +40,7 @@ program
     .requiredOption('--name <string>', 'Token name')
     .requiredOption('--symbol <string>', 'Token symbol')
     .requiredOption('--description <string>', 'Token description')
+    .requiredOption('--pool-fee <number>', 'Pool fee', '0.001')
     .requiredOption('--connection <url>', 'The Solana RPC connection URL')
     .option('--timeout <seconds>', 'Timeout in seconds', '1')
     .option('--supply <number>', 'Total supply', '100000')
