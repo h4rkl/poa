@@ -3,8 +3,6 @@ import { AnchorProvider, Program } from '@coral-xyz/anchor';
 import { Cluster, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import poaIDL from '../target/idl/poa.json';
 import type { Poa } from '../target/types/poa';
-// import poaIDL from './idl.json';
-// import type { Poa } from './types';
 
 // Re-export the generated IDL and type
 export { Poa, poaIDL };
