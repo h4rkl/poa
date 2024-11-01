@@ -63,7 +63,6 @@ frontend:
     baseDirectory: .next
     files:
       - '**/*'
-    discard-paths: no
   cache:
     paths:
       - node_modules/**/*
