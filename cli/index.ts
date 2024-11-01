@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander';
 import * as anchor from '@coral-xyz/anchor';
-import { PublicKey, Keypair, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
+import fs from 'fs';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { Command } from 'commander';
+import { PublicKey, Keypair, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
+import { createBundlrUploader } from '@metaplex-foundation/umi-uploader-bundlr';
+import { createGenericFile, Umi } from '@metaplex-foundation/umi';
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { findMetadataPda, mplTokenMetadata, MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
-import fs from 'fs';
 
 // Import these from your project
 import {
@@ -43,6 +45,10 @@ program
     .command('init')
     .description('Initialize a new token pool')
     .requiredOption('--keypair <path>', 'Path to keypair file')
+    .requiredOption('--image <path>', 'Path to token image file')
+    .requiredOption('--name <string>', 'Token name')
+    .requiredOption('--symbol <string>', 'Token symbol')
+    .requiredOption('--description <string>', 'Token description')
     .option('--timeout <seconds>', 'Timeout in seconds', '1')
     .option('--supply <number>', 'Total supply', '100000')
     .option('--reward <number>', 'Reward amount', '1')
@@ -51,6 +57,16 @@ program
         try {
             const poolOwner = Keypair.fromSecretKey(
                 Uint8Array.from(JSON.parse(fs.readFileSync(options.keypair, 'utf-8')))
+            );
+
+            // Upload image and metadata to Arweave
+            const imageBuffer = fs.readFileSync(options.image);
+            const { metadataUri, metadata } = await uploadToArweave(
+                umi,
+                imageBuffer,
+                options.name,
+                options.symbol,
+                options.description
             );
 
             const [mint] = PublicKey.findProgramAddressSync(
@@ -80,9 +96,9 @@ program
 
             await anchorProgram.methods
                 .tokenPoolInitialise({
-                    tokenName: attentionTokenMetadata.name,
-                    uri: attentionTokenMetadata.uri,
-                    symbol: attentionTokenMetadata.symbol,
+                    tokenName: metadata.name,
+                    uri: metadataUri,
+                    symbol: metadata.symbol,
                     timeoutSec: Number(options.timeout),
                     tokenDecimals: Number(options.decimals),
                     rewardAmount,
@@ -184,3 +200,38 @@ program
     });
 
 program.parse();
+
+async function uploadToArweave(
+    umi: Umi,
+    imageBuffer: Buffer,
+    name: string,
+    symbol: string,
+    description: string
+) {
+    const bundlrUploader = createBundlrUploader(umi);
+
+    // Upload image first
+    const imageFile = createGenericFile(new Uint8Array(imageBuffer), `${name}.png`);
+    const [imageUri] = await bundlrUploader.upload([imageFile]);
+
+    // Create and upload metadata
+    const metadata = {
+        name,
+        symbol,
+        description,
+        image: imageUri,
+    };
+
+    const metadataFile = createGenericFile(
+        new Uint8Array(Buffer.from(JSON.stringify(metadata))),
+        'metadata.json'
+    );
+
+    const [metadataUri] = await bundlrUploader.upload([metadataFile]);
+
+    return {
+        imageUri,
+        metadataUri,
+        metadata
+    };
+}

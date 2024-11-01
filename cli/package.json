@@ -22,7 +22,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@metaplex-foundation/umi-uploader-bundlr": "^0.9.2",
     "@solana/spl-token": "^0.4.9",
+    "arweave": "^1.15.5",
     "chalk": "^4.1.2",
     "commander": "^11.0.0"
   },
