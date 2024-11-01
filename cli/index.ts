@@ -138,7 +138,7 @@ program
     .requiredOption('--connection <url>', 'The Solana RPC connection URL')
     .requiredOption('--name <string>', 'Token name')
     .action(async (options) => {
-        const { anchorProgram } = setupAnchor(options.connection, options.keypair);
+        const { anchorProgram } = setupAnchor(options.connection, options.userKeypair);
         try {
             const userAccount = Keypair.fromSecretKey(
                 Uint8Array.from(JSON.parse(fs.readFileSync(options.userKeypair, 'utf-8')))
@@ -177,7 +177,7 @@ program
                 POA_PROGRAM_ID
             );
 
-            await anchorProgram.methods
+            const signature = await anchorProgram.methods
                 .attentionInteract({
                     tokenName: options.name,
                 })
@@ -199,7 +199,7 @@ program
                 .signers([userAccount, poolOwner])
                 .rpc();
 
-            console.log('Attention interaction submitted successfully!');
+            console.log(`Attention interaction submitted successfully! ${chalk.blue('Transaction hash:')} ${chalk.yellow(signature)}`);
         } catch (error) {
             console.error('Error submitting attention interaction:', error);
         }
