@@ -8,6 +8,9 @@ skip-lint = false
 [programs.localnet]
 poa = "attn9Nw2iXDoW2guYwdtmh4xagadhhXqYcnbHTyfK5r"
 
+[programs.devnet]
+poa = "attn9Nw2iXDoW2guYwdtmh4xagadhhXqYcnbHTyfK5r"
+
 [registry]
 url = "https://api.apr.dev"
 
