@@ -11,4 +11,4 @@ pub const TX_FEE: u64 = 150_000; // 0.00015 SOL in lamports
 pub const POA_FEE_ACC: &str = "CLiCKaKS3DZUCr9WazTnXSM1Tky7kgrKy6tDQ2tSeZ9P";
 pub const MAX_NAME_LENGTH: usize = 32;
 pub const MAX_SYMBOL_LENGTH: usize = 10;
-pub const MAX_URI_LENGTH: usize = 1000;
+pub const MAX_URI_LENGTH: usize = 400;

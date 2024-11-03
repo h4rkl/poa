@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/poa.json`.
  */
 export type Poa = {
-  "address": "attn9Nw2iXDoW2guYwdtmh4xagadhhXqYcnbHTyfK5r",
+  "address": "attnSvJ4JWmqnRT6Hx1rWDtpKRgthJBhXeGQigcC1Mi",
   "metadata": {
     "name": "poa",
     "version": "0.1.0",

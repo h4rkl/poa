@@ -38,7 +38,7 @@ pub struct TokenPoolInit<'info> {
     #[account(
         init,
         payer = authority,
-        space = 8 + std::mem::size_of::<TokenPoolAcc>(),
+        space = TokenPoolAcc::size(&args.token_name),
         seeds = [CONFIG_SEED, &mint.key().as_ref()],
         bump
     )]
@@ -90,6 +90,27 @@ pub struct TokenPoolAcc {
     pub timeout_sec: u32,
 }
 
+impl TokenPoolAcc {
+    pub fn size(token_name: &String) -> usize {
+        8 +  // discriminator
+        32 + // authority
+        4 + token_name.len() + // token_name (String has 4-byte length prefix)
+        32 + // mint_address
+        32 + // pool_fee_vault
+        8 +  // reward_amount
+        8 +  // pool_fee
+        4 // timeout_sec
+    }
+
+    pub fn validate(&self) -> Result<()> {
+        require!(
+            self.token_name.len() <= MAX_NAME_LENGTH,
+            CustomError::StringTooLong
+        );
+        Ok(())
+    }
+}
+
 #[account]
 pub struct FeeVault {
     pub token_pool_acc: Pubkey,
@@ -107,26 +128,33 @@ pub struct TokenPoolInitArgs {
     uri: String,
 }
 
+impl TokenPoolInitArgs {
+    pub fn validate(&self) -> Result<()> {
+        if self.token_name.len() > MAX_NAME_LENGTH
+            || self.symbol.len() > MAX_SYMBOL_LENGTH
+            || self.uri.len() > MAX_URI_LENGTH
+        {
+            return Err(CustomError::StringTooLong.into());
+        }
+        Ok(())
+    }
+}
+
 pub fn token_pool_init(ctx: Context<TokenPoolInit>, args: TokenPoolInitArgs) -> Result<()> {
+    let token_pool_acc = &mut ctx.accounts.token_pool_acc;
+    token_pool_acc.validate()?;
+
     let TokenPoolInitArgs {
         reward_amount,
         pool_fee,
         timeout_sec,
-        symbol,
+        ref symbol,
         token_decimals: _,
-        token_name,
+        ref token_name,
         total_supply,
-        uri,
+        ref uri,
     } = args;
-
-    if token_name.len() > MAX_NAME_LENGTH
-        || symbol.len() > MAX_SYMBOL_LENGTH
-        || uri.len() > MAX_URI_LENGTH
-    {
-        return Err(CustomError::StringTooLong.into());
-    }
-
-    let token_pool_acc = &mut ctx.accounts.token_pool_acc;
+    args.validate()?;
 
     // Check poa_fees address is equal to POA_FEE_ACC
     if ctx.accounts.poa_fees.key()
@@ -169,8 +197,8 @@ pub fn token_pool_init(ctx: Context<TokenPoolInit>, args: TokenPoolInitArgs) -> 
     // On-chain token metadata for the mint
     let data_v2 = DataV2 {
         name: token_name.clone(),
-        symbol,
-        uri,
+        symbol: symbol.to_string(),
+        uri: uri.to_string(),
         seller_fee_basis_points: 0,
         creators: None,
         collection: None,
