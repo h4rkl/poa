@@ -90,6 +90,27 @@ program
             const rewardAmount = new anchor.BN(toTokenAmount(Number(options.reward), Number(options.decimals)));
             const poolFee = new anchor.BN(toLamports(options.poolFee));
 
+            // Log the exact values being passed
+            console.log('Initializing with params:', {
+                tokenName: metadata.name,
+                uri: metadataUri,
+                symbol: metadata.symbol,
+                timeoutSec: Number(options.timeout),
+                tokenDecimals: Number(options.decimals),
+                rewardAmount: rewardAmount.toString(),
+                poolFee: poolFee.toString(),
+                totalSupply: totalSupply.toString()
+            });
+
+            // Log the PDAs being used
+            console.log('PDAs:', {
+                mint: mint.toBase58(),
+                tokenPoolAcc: tokenPoolAcc.toBase58(),
+                tokenPoolVault: tokenPoolVault.toBase58(),
+                feeVault: feeVault.toBase58(),
+                metadataPDA: mintMetadataPDA[0]
+            });
+
             await anchorProgram.methods
                 .tokenPoolInitialise({
                     tokenName: metadata.name,
