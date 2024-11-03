@@ -1,18 +1,18 @@
-use anchor_lang::{prelude::*, solana_program::{program::invoke, system_instruction::transfer}};
+use anchor_lang::{
+    prelude::*,
+    solana_program::{program::invoke, system_instruction::transfer},
+};
 use anchor_spl::{
     metadata::{
-        create_metadata_accounts_v3, 
-        mpl_token_metadata::types::DataV2, 
-        CreateMetadataAccountsV3, 
-        mpl_token_metadata::accounts::Metadata as MetadataAccount, 
-        Metadata
+        create_metadata_accounts_v3, mpl_token_metadata::accounts::Metadata as MetadataAccount,
+        mpl_token_metadata::types::DataV2, CreateMetadataAccountsV3, Metadata,
     },
-    token::{self, Mint, Token, TokenAccount},
     token::spl_token::instruction::AuthorityType::MintTokens,
+    token::{self, Mint, Token, TokenAccount},
 };
 
-use crate::state::*;
 use crate::errors::*;
+use crate::state::*;
 
 #[derive(Accounts)]
 #[instruction(args: TokenPoolInitArgs)]
@@ -107,10 +107,7 @@ pub struct TokenPoolInitArgs {
     uri: String,
 }
 
-pub fn token_pool_init(
-    ctx: Context<TokenPoolInit>,
-    args: TokenPoolInitArgs,
-) -> Result<()> {
+pub fn token_pool_init(ctx: Context<TokenPoolInit>, args: TokenPoolInitArgs) -> Result<()> {
     let TokenPoolInitArgs {
         reward_amount,
         pool_fee,
@@ -121,6 +118,13 @@ pub fn token_pool_init(
         total_supply,
         uri,
     } = args;
+
+    if token_name.len() > MAX_NAME_LENGTH
+        || symbol.len() > MAX_SYMBOL_LENGTH
+        || uri.len() > MAX_URI_LENGTH
+    {
+        return Err(CustomError::StringTooLong.into());
+    }
 
     let token_pool_acc = &mut ctx.accounts.token_pool_acc;
 

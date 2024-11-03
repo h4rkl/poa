@@ -604,6 +604,11 @@
       "code": 6006,
       "name": "InsufficientFeeVaultBalance",
       "msg": "Insufficient fee vault balance."
+    },
+    {
+      "code": 6007,
+      "name": "StringTooLong",
+      "msg": "Input string too long."
     }
   ],
   "types": [

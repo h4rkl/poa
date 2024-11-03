@@ -16,4 +16,6 @@ pub enum CustomError {
     WithdrawNotApproved,
     #[msg("Insufficient fee vault balance.")]
     InsufficientFeeVaultBalance,
+    #[msg("Input string too long.")]
+    StringTooLong,
 }
