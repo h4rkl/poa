@@ -615,11 +615,6 @@ export type Poa = {
       "code": 6007,
       "name": "stringTooLong",
       "msg": "Input string too long."
-    },
-    {
-      "code": 6008,
-      "name": "validationFailed",
-      "msg": "Validation failed."
     }
   ],
   "types": [

@@ -18,6 +18,4 @@ pub enum CustomError {
     InsufficientFeeVaultBalance,
     #[msg("Input string too long.")]
     StringTooLong,
-    #[msg("Validation failed.")]
-    ValidationFailed,
 }
