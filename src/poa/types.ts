@@ -610,6 +610,16 @@ export type Poa = {
       "code": 6006,
       "name": "insufficientFeeVaultBalance",
       "msg": "Insufficient fee vault balance."
+    },
+    {
+      "code": 6007,
+      "name": "stringTooLong",
+      "msg": "Input string too long."
+    },
+    {
+      "code": 6008,
+      "name": "validationFailed",
+      "msg": "Validation failed."
     }
   ],
   "types": [

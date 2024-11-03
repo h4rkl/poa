@@ -38,9 +38,10 @@ pub struct TokenPoolInit<'info> {
     #[account(
         init,
         payer = authority,
-        space = 8 + std::mem::size_of::<TokenPoolAcc>(),
+        space = TokenPoolAcc::size(&args.token_name),
         seeds = [CONFIG_SEED, &mint.key().as_ref()],
-        bump
+        bump,
+        constraint = token_pool_acc.validate().is_ok() @ CustomError::ValidationFailed
     )]
     pub token_pool_acc: Box<Account<'info, TokenPoolAcc>>,
 
@@ -90,6 +91,27 @@ pub struct TokenPoolAcc {
     pub timeout_sec: u32,
 }
 
+impl TokenPoolAcc {
+    pub fn size(token_name: &str) -> usize {
+        8 +  // discriminator
+        32 + // authority
+        4 + token_name.len() + // token_name (String has 4-byte length prefix)
+        32 + // mint_address
+        32 + // pool_fee_vault
+        8 +  // reward_amount
+        8 +  // pool_fee
+        4    // timeout_sec
+    }
+    
+    pub fn validate(&self) -> Result<()> {
+        require!(
+            self.token_name.len() <= MAX_NAME_LENGTH,
+            CustomError::StringTooLong
+        );
+        Ok(())
+    }
+}
+
 #[account]
 pub struct FeeVault {
     pub token_pool_acc: Pubkey,
@@ -108,6 +130,7 @@ pub struct TokenPoolInitArgs {
 }
 
 pub fn token_pool_init(ctx: Context<TokenPoolInit>, args: TokenPoolInitArgs) -> Result<()> {
+    let token_pool_acc = &mut ctx.accounts.token_pool_acc;
     let TokenPoolInitArgs {
         reward_amount,
         pool_fee,
@@ -118,6 +141,8 @@ pub fn token_pool_init(ctx: Context<TokenPoolInit>, args: TokenPoolInitArgs) -> 
         total_supply,
         uri,
     } = args;
+
+    token_pool_acc.validate()?;
 
     if token_name.len() > MAX_NAME_LENGTH
         || symbol.len() > MAX_SYMBOL_LENGTH
