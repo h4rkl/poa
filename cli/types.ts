@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/poa.json`.
  */
 export type Poa = {
-  "address": "attn9Nw2iXDoW2guYwdtmh4xagadhhXqYcnbHTyfK5r",
+  "address": "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV",
   "metadata": {
     "name": "poa",
     "version": "0.1.0",
@@ -610,6 +610,11 @@ export type Poa = {
       "code": 6006,
       "name": "insufficientFeeVaultBalance",
       "msg": "Insufficient fee vault balance."
+    },
+    {
+      "code": 6007,
+      "name": "stringTooLong",
+      "msg": "Input string too long."
     }
   ],
   "types": [
@@ -749,20 +754,20 @@ export type Poa = {
         "kind": "struct",
         "fields": [
           {
-            "name": "rewardAmount",
-            "type": "u64"
-          },
-          {
             "name": "poolFee",
             "type": "u64"
           },
           {
-            "name": "timeoutSec",
-            "type": "u32"
+            "name": "rewardAmount",
+            "type": "u64"
           },
           {
             "name": "symbol",
             "type": "string"
+          },
+          {
+            "name": "timeoutSec",
+            "type": "u32"
           },
           {
             "name": "tokenDecimals",

@@ -57,7 +57,7 @@ pub struct TokenPoolInit<'info> {
     #[account(
         init,
         payer = authority,
-        space = 8 + std::mem::size_of::<FeeVault>(),
+        space = 8 + 32,
         seeds = [FEE_VAULT_SEED, &token_pool_acc.key().as_ref()],
         bump
     )]
@@ -93,13 +93,13 @@ pub struct TokenPoolAcc {
 impl TokenPoolAcc {
     pub fn size(token_name: &String) -> usize {
         8 +  // discriminator
-        32 + // authority
+        32 + // authority (Pubkey)
         4 + token_name.len() + // token_name (String has 4-byte length prefix)
-        32 + // mint_address
-        32 + // pool_fee_vault
-        8 +  // reward_amount
-        8 +  // pool_fee
-        4 // timeout_sec
+        32 + // mint_address (Pubkey)
+        32 + // pool_fee_vault (Pubkey)
+        8 +  // reward_amount (u64)
+        8 +  // pool_fee (u64)
+        4 // timeout_sec (u32)
     }
 
     pub fn validate(&self) -> Result<()> {
@@ -113,7 +113,7 @@ impl TokenPoolAcc {
 
 #[account]
 pub struct FeeVault {
-    pub token_pool_acc: Pubkey,
+    pub token_pool_acc: Pubkey, // 32 bytes
 }
 
 #[derive(Clone, AnchorSerialize, AnchorDeserialize)]

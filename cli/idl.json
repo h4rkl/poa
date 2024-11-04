@@ -1,5 +1,5 @@
 {
-  "address": "attn9Nw2iXDoW2guYwdtmh4xagadhhXqYcnbHTyfK5r",
+  "address": "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV",
   "metadata": {
     "name": "poa",
     "version": "0.1.0",
@@ -604,6 +604,11 @@
       "code": 6006,
       "name": "InsufficientFeeVaultBalance",
       "msg": "Insufficient fee vault balance."
+    },
+    {
+      "code": 6007,
+      "name": "StringTooLong",
+      "msg": "Input string too long."
     }
   ],
   "types": [
@@ -743,20 +748,20 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "reward_amount",
-            "type": "u64"
-          },
-          {
             "name": "pool_fee",
             "type": "u64"
           },
           {
-            "name": "timeout_sec",
-            "type": "u32"
+            "name": "reward_amount",
+            "type": "u64"
           },
           {
             "name": "symbol",
             "type": "string"
+          },
+          {
+            "name": "timeout_sec",
+            "type": "u32"
           },
           {
             "name": "token_decimals",
