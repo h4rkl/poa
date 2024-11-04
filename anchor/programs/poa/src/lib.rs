@@ -5,7 +5,7 @@ pub mod errors;
 pub mod instructions;
 pub mod state;
 
-declare_id!("attnSvJ4JWmqnRT6Hx1rWDtpKRgthJBhXeGQigcC1Mi");
+declare_id!("attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV");
 
 #[program]
 pub mod poa {

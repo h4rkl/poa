@@ -6,10 +6,10 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-poa = "attnSvJ4JWmqnRT6Hx1rWDtpKRgthJBhXeGQigcC1Mi"
+poa = "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV"
 
 [programs.devnet]
-poa = "attnSvJ4JWmqnRT6Hx1rWDtpKRgthJBhXeGQigcC1Mi"
+poa = "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV"
 
 [registry]
 url = "https://api.apr.dev"
