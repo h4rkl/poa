@@ -117,15 +117,21 @@ pub struct FeeVault {
 }
 
 #[derive(Clone, AnchorSerialize, AnchorDeserialize)]
+pub struct TokenMetadataArgs {
+    pub symbol: String,
+    pub uri: String,
+}
+
+#[derive(Clone, AnchorSerialize, AnchorDeserialize)]
 pub struct TokenPoolInitArgs {
-    reward_amount: u64,
-    pool_fee: u64,
-    timeout_sec: u32,
-    symbol: String,
+    pub pool_fee: u64,
+    pub reward_amount: u64,
+    pub symbol: Box<String>,
+    pub timeout_sec: u32,
     pub token_decimals: u8,
-    pub token_name: String,
-    total_supply: u64,
-    uri: String,
+    pub token_name: Box<String>,
+    pub total_supply: u64,
+    pub uri: Box<String>,
 }
 
 impl TokenPoolInitArgs {
@@ -141,21 +147,8 @@ impl TokenPoolInitArgs {
 }
 
 pub fn token_pool_init(ctx: Context<TokenPoolInit>, args: TokenPoolInitArgs) -> Result<()> {
-    let token_pool_acc = &mut ctx.accounts.token_pool_acc;
-    token_pool_acc.validate()?;
-
-    let TokenPoolInitArgs {
-        reward_amount,
-        pool_fee,
-        timeout_sec,
-        ref symbol,
-        token_decimals: _,
-        ref token_name,
-        total_supply,
-        ref uri,
-    } = args;
+    ctx.accounts.token_pool_acc.validate()?;
     args.validate()?;
-
     // Check poa_fees address is equal to POA_FEE_ACC
     if ctx.accounts.poa_fees.key()
         != POA_FEE_ACC
@@ -165,25 +158,24 @@ pub fn token_pool_init(ctx: Context<TokenPoolInit>, args: TokenPoolInitArgs) -> 
         return Err(CustomError::InvalidPOAAcc.into());
     }
 
-    // Creating token pool account
-    token_pool_acc.set_inner(TokenPoolAcc {
+    // Set token pool account data directly without intermediate variables
+    ctx.accounts.token_pool_acc.set_inner(TokenPoolAcc {
         authority: ctx.accounts.authority.key(),
-        token_name: token_name.clone(),
+        token_name: *args.token_name.clone(),
         mint_address: ctx.accounts.mint.key(),
         pool_fee_vault: ctx.accounts.fee_vault.key(),
-        reward_amount,
-        pool_fee,
-        timeout_sec,
+        reward_amount: args.reward_amount,
+        pool_fee: args.pool_fee,
+        timeout_sec: args.timeout_sec,
     });
 
-    // Transfer account fee from authority to poa_fees
-    let transfer_ix = transfer(
-        &ctx.accounts.authority.key(),
-        &ctx.accounts.poa_fees.key(),
-        BASE_FEE,
-    );
+    // Process fee transfer
     invoke(
-        &transfer_ix,
+        &transfer(
+            &ctx.accounts.authority.key(),
+            &ctx.accounts.poa_fees.key(),
+            BASE_FEE,
+        ),
         &[
             ctx.accounts.authority.to_account_info(),
             ctx.accounts.poa_fees.to_account_info(),
@@ -191,36 +183,40 @@ pub fn token_pool_init(ctx: Context<TokenPoolInit>, args: TokenPoolInitArgs) -> 
         ],
     )?;
 
-    // Mint the total supply to the token_pool authority
-    let mint_signer_seeds: &[&[&[u8]]] = &[&[MINT_SEED, &token_name.as_ref(), &[ctx.bumps.mint]]];
+    // Create mint signer seeds without intermediate string allocations
+    let mint_signer_seeds: &[&[&[u8]]] =
+        &[&[MINT_SEED, args.token_name.as_bytes(), &[ctx.bumps.mint]]];
 
-    // On-chain token metadata for the mint
-    let data_v2 = DataV2 {
-        name: token_name.clone(),
-        symbol: symbol.to_string(),
-        uri: uri.to_string(),
-        seller_fee_basis_points: 0,
-        creators: None,
-        collection: None,
-        uses: None,
-    };
-
-    // CPI Context
-    let cpi_ctx = CpiContext::new_with_signer(
-        ctx.accounts.token_metadata_program.to_account_info(),
-        CreateMetadataAccountsV3 {
-            metadata: ctx.accounts.metadata_account.to_account_info(),
-            mint: ctx.accounts.mint.to_account_info(),
-            mint_authority: ctx.accounts.mint.to_account_info(),
-            payer: ctx.accounts.authority.to_account_info(),
-            update_authority: ctx.accounts.mint.to_account_info(),
-            system_program: ctx.accounts.system_program.to_account_info(),
-            rent: ctx.accounts.rent.to_account_info(),
+    // Create metadata directly without intermediate variables
+    create_metadata_accounts_v3(
+        CpiContext::new_with_signer(
+            ctx.accounts.token_metadata_program.to_account_info(),
+            CreateMetadataAccountsV3 {
+                metadata: ctx.accounts.metadata_account.to_account_info(),
+                mint: ctx.accounts.mint.to_account_info(),
+                mint_authority: ctx.accounts.mint.to_account_info(),
+                payer: ctx.accounts.authority.to_account_info(),
+                update_authority: ctx.accounts.mint.to_account_info(),
+                system_program: ctx.accounts.system_program.to_account_info(),
+                rent: ctx.accounts.rent.to_account_info(),
+            },
+            mint_signer_seeds,
+        ),
+        DataV2 {
+            name: *args.token_name.clone(),
+            symbol: *args.symbol.clone(),
+            uri: *args.uri.clone(),
+            seller_fee_basis_points: 0,
+            creators: None,
+            collection: None,
+            uses: None,
         },
-        mint_signer_seeds,
-    );
-    create_metadata_accounts_v3(cpi_ctx, data_v2, false, true, None)?;
+        false,
+        true,
+        None,
+    )?;
 
+    // Mint tokens
     token::mint_to(
         CpiContext::new_with_signer(
             ctx.accounts.token_program.to_account_info(),
@@ -231,7 +227,7 @@ pub fn token_pool_init(ctx: Context<TokenPoolInit>, args: TokenPoolInitArgs) -> 
             },
             mint_signer_seeds,
         ),
-        total_supply,
+        args.total_supply,
     )?;
 
     token::set_authority(

@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/poa.json`.
  */
 export type Poa = {
-  "address": "attnSvJ4JWmqnRT6Hx1rWDtpKRgthJBhXeGQigcC1Mi",
+  "address": "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV",
   "metadata": {
     "name": "poa",
     "version": "0.1.0",
@@ -754,20 +754,20 @@ export type Poa = {
         "kind": "struct",
         "fields": [
           {
-            "name": "rewardAmount",
-            "type": "u64"
-          },
-          {
             "name": "poolFee",
             "type": "u64"
           },
           {
-            "name": "timeoutSec",
-            "type": "u32"
+            "name": "rewardAmount",
+            "type": "u64"
           },
           {
             "name": "symbol",
             "type": "string"
+          },
+          {
+            "name": "timeoutSec",
+            "type": "u32"
           },
           {
             "name": "tokenDecimals",

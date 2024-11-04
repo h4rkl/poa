@@ -1,5 +1,5 @@
 {
-  "address": "attnSvJ4JWmqnRT6Hx1rWDtpKRgthJBhXeGQigcC1Mi",
+  "address": "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV",
   "metadata": {
     "name": "poa",
     "version": "0.1.0",
@@ -748,20 +748,20 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "reward_amount",
-            "type": "u64"
-          },
-          {
             "name": "pool_fee",
             "type": "u64"
           },
           {
-            "name": "timeout_sec",
-            "type": "u32"
+            "name": "reward_amount",
+            "type": "u64"
           },
           {
             "name": "symbol",
             "type": "string"
+          },
+          {
+            "name": "timeout_sec",
+            "type": "u32"
           },
           {
             "name": "token_decimals",
