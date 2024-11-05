@@ -65,7 +65,7 @@ pub struct TokenPoolInit<'info> {
 
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut)]
-    pub poa_fees: AccountInfo<'info>,
+    pub poa_fees: UncheckedAccount<'info>,
 
     pub token_metadata_program: Program<'info, Metadata>,
     pub token_program: Program<'info, Token>,
