@@ -30,7 +30,7 @@ export function POACreate() {
     try {
       // First run the mutation
       await attentionInteract.mutateAsync({
-        tokenName: attentionTokenMetadata.name,
+        tokenPoolName: attentionTokenMetadata.name,
       });
       // Add a small delay to ensure DOM is ready
       await new Promise((resolve) => setTimeout(resolve, 50));

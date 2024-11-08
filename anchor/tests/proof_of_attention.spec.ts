@@ -66,7 +66,7 @@ describe("Proof of Attention", () => {
   const tokenDecimals = 5;
   const timeoutInit = async () =>
     await new Promise((resolve) => setTimeout(resolve, timeoutSec * 1000)); // setTimeout uses milliseconds
-  const tokenPoolName = "my-pool";
+  const tokenPoolName = "Click";
 
   jest.setTimeout(30000);
 

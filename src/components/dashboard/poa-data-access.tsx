@@ -46,7 +46,7 @@ export function usePoaProgram() {
     process.env.NEXT_PUBLIC_SIGNING_AUTHORITY_ATA!
   );
   const [tokenPoolAcc] = PublicKey.findProgramAddressSync(
-    [CONFIG_SEED, mint.toBuffer()],
+    [CONFIG_SEED, mint.toBuffer(), Buffer.from(attentionTokenMetadata.name)],
     program.programId
   );
   const [tokenPoolVault] = PublicKey.findProgramAddressSync(
@@ -76,7 +76,7 @@ export function usePoaProgram() {
 
   const attentionInteract = useMutation({
     mutationKey: ["poa", "attentionInteract", { cluster }],
-    mutationFn: async (args: { tokenName: string }) => {
+    mutationFn: async (args: { tokenPoolName: string }) => {      
       const botd = await load();
       const { bot } = botd.detect();
       if (bot) {
@@ -95,11 +95,11 @@ export function usePoaProgram() {
       tx.add(
         await program.methods
           .attentionInteract({
-            tokenPoolName: args.tokenName,
+            tokenPoolName: args.tokenPoolName,
           })
           .accountsStrict({
             tokenPoolAuthority: process.env.NEXT_PUBLIC_SIGNING_AUTHORITY!,
-            attentionAuthority: poolOwnerAta,
+            attentionAuthority: userAccount,
             proofAccount,
             tokenMint: mint,
             tokenPoolAcc,
