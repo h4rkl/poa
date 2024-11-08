@@ -74,7 +74,7 @@ export function AccountButtons({ address }: { address: PublicKey }) {
       <ModalSend address={address} show={showSendModal} hide={() => setShowSendModal(false)} />
       <div className="space-x-2">
         <button
-          disabled={cluster.network?.includes('mainnet')}
+          disabled={cluster.name?.includes('mainnet')}
           className="btn btn-xs lg:btn-md btn-outline"
           onClick={() => setShowAirdropModal(true)}
         >

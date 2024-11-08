@@ -1,9 +1,8 @@
 "use client";
 
 import { useWallet } from "@solana/wallet-adapter-react";
-import { ExplorerLink } from "../cluster/cluster-ui";
 import { WalletButton } from "../solana/solana-provider";
-import { AppHero, ellipsify } from "../ui/ui-layout";
+import { AppHero } from "../ui/ui-layout";
 import { usePoaProgram } from "./poa-data-access";
 import { POACreate } from "./poa-ui";
 import RewardsPool from "../rewards/pool";
@@ -16,12 +15,6 @@ export default function POAFeature() {
     <div>
       <AppHero title="Push the Button" subtitle={"An Unbottable Exploding Button Game Built On-Chain With Solana"}>
         <POACreate />
-        {/* <p className="mt-6">
-          <ExplorerLink
-            path={`account/${programId}`}
-            label={ellipsify(programId.toString())}
-          />
-        </p> */}
         <RewardsPool />
       </AppHero>
     </div>

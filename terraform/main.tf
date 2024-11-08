@@ -11,6 +11,8 @@ variable "aws_secret_access_key" {}
 variable "aws_region" {}
 variable "github_token" {}
 variable "solana_rpc_endpoint" {}
+variable "next_public_solana_rpc" {}
+variable "next_public_solana_rpc_name" {}
 variable "poa_signing_authority" {}
 variable "poa_fees_acc" {}
 variable "next_public_signing_authority" {}
@@ -57,7 +59,6 @@ resource "aws_amplify_app" "explode_btn_app" {
     NODE_VERSION = "20.11.1"
 
     # Private vars
-    SOLANA_RPC_ENDPOINT   = var.solana_rpc_endpoint
     POA_SIGNING_AUTHORITY = var.poa_signing_authority
     POA_FEES_ACC          = var.poa_fees_acc
 
@@ -68,6 +69,11 @@ resource "aws_amplify_app" "explode_btn_app" {
     NEXT_PUBLIC_TOKEN_POOL_VAULT      = var.next_public_token_pool_vault
     NEXT_PUBLIC_TOKEN_FEE_VAULT       = var.next_public_token_fee_vault
     NEXT_PUBLIC_COOLDOWN_SECONDS      = var.next_public_cooldown_seconds
+
+    # Endpoints
+    NEXT_PUBLIC_SOLANA_RPC      = var.next_public_solana_rpc
+    SOLANA_RPC_ENDPOINT         = var.solana_rpc_endpoint
+    NEXT_PUBLIC_SOLANA_RPC_NAME = var.next_public_solana_rpc_name
   }
 
   build_spec = <<-EOT
@@ -82,6 +88,7 @@ frontend:
       commands:
         - echo "NODE_VERSION=$NODE_VERSION" >> .env.local
         - echo "SOLANA_RPC_ENDPOINT=$SOLANA_RPC_ENDPOINT" >> .env.local
+        - echo "NEXT_PUBLIC_SOLANA_RPC=$NEXT_PUBLIC_SOLANA_RPC" >> .env.local
         - echo "POA_SIGNING_AUTHORITY=$POA_SIGNING_AUTHORITY" >> .env.local 
         - echo "POA_FEES_ACC=$POA_FEES_ACC" >> .env.local
         - echo "NEXT_PUBLIC_SIGNING_AUTHORITY=$NEXT_PUBLIC_SIGNING_AUTHORITY" >> .env.local

@@ -9,7 +9,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { AccountChecker } from "../account/account-ui";
 import {
   ClusterChecker,
-  ClusterUiSelect,
   ExplorerLink,
 } from "../cluster/cluster-ui";
 import { WalletButton } from "../solana/solana-provider";
@@ -49,7 +48,6 @@ export function UiLayout({
         </div>
         <div className="flex-none space-x-2">
           <WalletButton />
-          <ClusterUiSelect />
         </div>
       </div>
       <div className="p-8"></div>
