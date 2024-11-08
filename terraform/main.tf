@@ -80,6 +80,16 @@ frontend:
         - pnpm install --frozen-lockfile
     build:
       commands:
+        - echo "NODE_VERSION=$NODE_VERSION" >> .env.local
+        - echo "SOLANA_RPC_ENDPOINT=$SOLANA_RPC_ENDPOINT" >> .env.local
+        - echo "POA_SIGNING_AUTHORITY=$POA_SIGNING_AUTHORITY" >> .env.local 
+        - echo "POA_FEES_ACC=$POA_FEES_ACC" >> .env.local
+        - echo "NEXT_PUBLIC_SIGNING_AUTHORITY=$NEXT_PUBLIC_SIGNING_AUTHORITY" >> .env.local
+        - echo "NEXT_PUBLIC_SIGNING_AUTHORITY_ATA=$NEXT_PUBLIC_SIGNING_AUTHORITY_ATA" >> .env.local
+        - echo "NEXT_PUBLIC_MINT=$NEXT_PUBLIC_MINT" >> .env.local
+        - echo "NEXT_PUBLIC_TOKEN_POOL_VAULT=$NEXT_PUBLIC_TOKEN_POOL_VAULT" >> .env.local
+        - echo "NEXT_PUBLIC_TOKEN_FEE_VAULT=$NEXT_PUBLIC_TOKEN_FEE_VAULT" >> .env.local
+        - echo "NEXT_PUBLIC_COOLDOWN_SECONDS=$NEXT_PUBLIC_COOLDOWN_SECONDS" >> .env.local
         - pnpm run build
   artifacts:
     baseDirectory: .next
