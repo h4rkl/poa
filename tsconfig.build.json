@@ -5,5 +5,5 @@
     "noEmit": false,
     "sourceMap": false
   },
-  "exclude": ["node_modules", "build", ".next", "out"]
+  "exclude": ["node_modules", "build", ".next", "out", "terraform", "cli"]
 }
