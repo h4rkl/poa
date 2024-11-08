@@ -4,11 +4,11 @@ import * as anchor from '@coral-xyz/anchor';
 import fs from 'fs';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { Command } from 'commander';
-import { PublicKey, Keypair, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
+import { PublicKey, Keypair, SystemProgram } from '@solana/web3.js';
 import { createBundlrUploader } from '@metaplex-foundation/umi-uploader-bundlr';
-import { createGenericFile, createSignerFromKeypair, generateSigner, keypairIdentity, percentAmount, signerIdentity, Umi } from '@metaplex-foundation/umi';
+import { createGenericFile, createSignerFromKeypair, generateSigner, percentAmount, signerIdentity, Umi } from '@metaplex-foundation/umi';
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
-import { createV1, findMetadataPda, mintV1, MPL_TOKEN_METADATA_PROGRAM_ID, mplTokenMetadata, TokenStandard } from '@metaplex-foundation/mpl-token-metadata';
+import { createV1, mintV1, mplTokenMetadata, TokenStandard } from '@metaplex-foundation/mpl-token-metadata';
 import chalk from 'chalk';
 
 // Import these from your project
@@ -22,7 +22,6 @@ import {
     toTokenAmount,
     POA_PROGRAM_ID
 } from './constants';
-import { publicKey } from '@metaplex-foundation/umi';
 
 const program = new Command();
 
@@ -128,7 +127,7 @@ program
     .requiredOption('--user-keypair <path>', 'Path to user keypair file')
     .requiredOption('--pool-keypair <path>', 'Path to pool owner keypair file')
     .requiredOption('--connection <url>', 'The Solana RPC connection URL')
-    .requiredOption('--name <string>', 'Token name')
+    .requiredOption('--name <string>', 'Token pool name')
     .requiredOption('--mint <string>', 'Mint address')
     .action(async (options) => {
         const { anchorProgram } = setupAnchor(options.connection, options.userKeypair);
@@ -169,7 +168,7 @@ program
 
             const signature = await anchorProgram.methods
                 .attentionInteract({
-                    tokenName: options.name,
+                    tokenPoolName: options.name,
                 })
                 .accountsStrict({
                     tokenPoolAuthority: poolOwner.publicKey,
