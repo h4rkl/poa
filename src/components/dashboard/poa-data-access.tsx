@@ -21,7 +21,6 @@ import {
   attentionTokenMetadata,
   CONFIG_SEED,
   FEE_VAULT_SEED,
-  MINT_SEED,
   poaFees,
   PROOF_ACC_SEED,
   TOKEN_VAULT_SEED,
@@ -42,9 +41,9 @@ export function usePoaProgram() {
   const provider = useAnchorProvider();
   const program = new anchor.Program(IDL as Poa, provider);
 
-  const [mint] = PublicKey.findProgramAddressSync(
-    [MINT_SEED, Buffer.from(attentionTokenMetadata.name)],
-    program.programId
+  const mint = new PublicKey(process.env.NEXT_PUBLIC_MINT!);
+  const poolOwnerAta = new PublicKey(
+    process.env.NEXT_PUBLIC_SIGNING_AUTHORITY_ATA!
   );
   const [tokenPoolAcc] = PublicKey.findProgramAddressSync(
     [CONFIG_SEED, mint.toBuffer()],
@@ -96,11 +95,11 @@ export function usePoaProgram() {
       tx.add(
         await program.methods
           .attentionInteract({
-            tokenName: args.tokenName,
+            tokenPoolName: args.tokenName,
           })
           .accountsStrict({
             tokenPoolAuthority: process.env.NEXT_PUBLIC_SIGNING_AUTHORITY!,
-            attentionAuthority: userAccount,
+            attentionAuthority: poolOwnerAta,
             proofAccount,
             tokenMint: mint,
             tokenPoolAcc,
@@ -156,7 +155,6 @@ export function usePoaProgram() {
     mutationKey: ["poa", "tokenPoolInitialise", { cluster }],
     mutationFn: (args: {
       authority: PublicKey;
-      custodian: PublicKey;
       feeVault: PublicKey;
       metadataAccount: PublicKey;
       mint: PublicKey;
@@ -164,28 +162,24 @@ export function usePoaProgram() {
       poolFee: anchor.BN;
       poolOwner: Keypair;
       rewardAmount: anchor.BN;
-      symbol: string;
       timeoutSec: number;
       tokenDecimals: number;
-      tokenName: string;
       tokenPoolAcc: PublicKey;
+      tokenPoolName: string;
       tokenPoolVault: PublicKey;
       totalSupply: anchor.BN;
-      uri: string;
     }) =>
       program.methods
         .tokenPoolInitialise(args)
         .accountsStrict({
           authority: args.authority,
+          authorityTokenAccount: poolOwnerAta,
           feeVault: args.feeVault,
-          metadataAccount: args.metadataAccount,
           mint: args.mint,
           poaFees: args.poaFees,
           tokenPoolAcc: args.tokenPoolAcc,
           tokenPoolVault: args.tokenPoolVault,
-          rent: SYSVAR_RENT_PUBKEY,
           systemProgram: SystemProgram.programId,
-          tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
           tokenProgram: TOKEN_PROGRAM_ID,
         })
         .rpc(),

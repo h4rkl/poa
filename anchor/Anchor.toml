@@ -18,7 +18,7 @@ poa = "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

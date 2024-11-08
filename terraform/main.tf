@@ -14,8 +14,9 @@ variable "solana_rpc_endpoint" {}
 variable "poa_signing_authority" {}
 variable "poa_fees_acc" {}
 variable "next_public_signing_authority" {}
+variable "next_public_signing_authority_ata" {}
 variable "next_public_mint" {}
-variable "next_public_token_vault" {}
+variable "next_public_token_pool_vault" {}
 variable "next_public_rewards_pool" {}
 variable "next_public_cooldown_seconds" {}
 
@@ -54,21 +55,22 @@ resource "aws_amplify_app" "explode_btn_app" {
 
   environment_variables = {
     NODE_VERSION = "20.11.1"
-    
+
     # Private vars
-    SOLANA_RPC_ENDPOINT      = var.solana_rpc_endpoint
-    POA_SIGNING_AUTHORITY    = var.poa_signing_authority
-    POA_FEES_ACC            = var.poa_fees_acc
-    
+    SOLANA_RPC_ENDPOINT   = var.solana_rpc_endpoint
+    POA_SIGNING_AUTHORITY = var.poa_signing_authority
+    POA_FEES_ACC          = var.poa_fees_acc
+
     # Public vars
-    NEXT_PUBLIC_SIGNING_AUTHORITY = var.next_public_signing_authority
-    NEXT_PUBLIC_MINT             = var.next_public_mint
-    NEXT_PUBLIC_TOKEN_VAULT      = var.next_public_token_vault
-    NEXT_PUBLIC_REWARDS_POOL     = var.next_public_rewards_pool
-    NEXT_PUBLIC_COOLDOWN_SECONDS = var.next_public_cooldown_seconds
+    NEXT_PUBLIC_SIGNING_AUTHORITY     = var.next_public_signing_authority
+    NEXT_PUBLIC_SIGNING_AUTHORITY_ATA = var.next_public_signing_authority_ata
+    NEXT_PUBLIC_MINT                  = var.next_public_mint
+    NEXT_PUBLIC_TOKEN_POOL_VAULT      = var.next_public_token_pool_vault
+    NEXT_PUBLIC_USER_REWARD_VAULT     = var.next_public_rewards_pool
+    NEXT_PUBLIC_COOLDOWN_SECONDS      = var.next_public_cooldown_seconds
   }
 
-build_spec = <<-EOT
+  build_spec = <<-EOT
 version: 1
 frontend:
   phases:

@@ -29,7 +29,7 @@ const LeaderFeature: React.FC = () => {
       try {
         const tokenAddress = process.env.NEXT_PUBLIC_MINT!;
         const tokenPublicKey = new PublicKey(tokenAddress);
-        const tokenVaultAddress = process.env.NEXT_PUBLIC_TOKEN_VAULT!;
+        const tokenVaultAddress = process.env.NEXT_PUBLIC_TOKEN_POOL_VAULT!;
 
         const largestAccounts = await connection.getTokenLargestAccounts(
           tokenPublicKey

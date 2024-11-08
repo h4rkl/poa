@@ -32,7 +32,7 @@ export const AccountPoa = () => {
       try {
         // Get mint address from env
         const mint = process.env.NEXT_PUBLIC_MINT!;
-        const tokenVault = process.env.NEXT_PUBLIC_TOKEN_VAULT!;
+        const tokenVault = process.env.NEXT_PUBLIC_TOKEN_POOL_VAULT!;
         setTokenVault(tokenVault);
         const tokenVaultBalance = await getAccount(
           connection,

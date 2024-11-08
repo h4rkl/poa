@@ -9,7 +9,7 @@ import Tweet from "../ui/tweet";
 const RewardsPool: React.FC = () => {
   const [balance, setBalance] = useState<number>(0);
   const { connection } = useConnection();
-  const publicKey = new PublicKey(process.env.NEXT_PUBLIC_REWARDS_POOL!);
+  const publicKey = new PublicKey(process.env.NEXT_PUBLIC_USER_REWARD_VAULT!);
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -22,7 +22,7 @@ const RewardsPool: React.FC = () => {
     };
 
     fetchBalance();
-  }, [connection, publicKey, useAtomValue(balanceUpdateTriggerAtom)]);
+  }, [connection, useAtomValue(balanceUpdateTriggerAtom)]);
 
   return (
     <div className="rounded-lg p-6 max-w-sm mx-auto border border-gray-600">

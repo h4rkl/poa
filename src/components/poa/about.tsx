@@ -75,8 +75,8 @@ const About: React.FC = () => {
           <li>
             Reward pool address:{" "}
             <ExplorerLink
-              label={process.env.NEXT_PUBLIC_REWARDS_POOL!}
-              path={`account/${process.env.NEXT_PUBLIC_REWARDS_POOL!}`}
+              label={process.env.NEXT_PUBLIC_USER_REWARD_VAULT!}
+              path={`account/${process.env.NEXT_PUBLIC_USER_REWARD_VAULT!}`}
             />
           </li>
           <li>Reward pool collection per click: {clickFee}</li>
@@ -85,8 +85,8 @@ const About: React.FC = () => {
           <li>
             Token vault address:{" "}
             <ExplorerLink
-              label={process.env.NEXT_PUBLIC_TOKEN_VAULT!}
-              path={`account/${process.env.NEXT_PUBLIC_TOKEN_VAULT!}`}
+              label={process.env.NEXT_PUBLIC_TOKEN_POOL_VAULT!}
+              path={`account/${process.env.NEXT_PUBLIC_TOKEN_POOL_VAULT!}`}
             />
           </li>
           <li>
