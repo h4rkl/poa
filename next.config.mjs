@@ -2,15 +2,17 @@
 const nextConfig = {
   // Enable build cache
   experimental: {
-    forceSwcTransforms: true
+    forceSwcTransforms: true,
   },
-  exclude: ['cli/**'],
+  buildExclude: {
+    exclude: ["cli", "terraform", "test-keys", ".archive"],
+  },
   // Configure cache settings
-  distDir: '.next',
+  distDir: ".next",
   onDemandEntries: {
     maxInactiveAge: 60 * 60 * 1000,
-    pagesBufferLength: 2
-  }
+    pagesBufferLength: 2,
+  },
 };
 
 export default nextConfig;
