@@ -75,8 +75,8 @@ const About: React.FC = () => {
           <li>
             Reward pool address:{" "}
             <ExplorerLink
-              label={process.env.NEXT_PUBLIC_USER_REWARD_VAULT!}
-              path={`account/${process.env.NEXT_PUBLIC_USER_REWARD_VAULT!}`}
+              label={process.env.NEXT_PUBLIC_TOKEN_FEE_VAULT!}
+              path={`account/${process.env.NEXT_PUBLIC_TOKEN_FEE_VAULT!}`}
             />
           </li>
           <li>Reward pool collection per click: {clickFee}</li>
@@ -160,7 +160,7 @@ const About: React.FC = () => {
         <div className="mt-8">
           <Link href="/">
             <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
-              Go to Exploding Button
+              Go Play Exploding Button
             </button>
           </Link>
         </div>

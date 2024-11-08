@@ -9,12 +9,12 @@ import Tweet from "../ui/tweet";
 const RewardsPool: React.FC = () => {
   const [balance, setBalance] = useState<number>(0);
   const { connection } = useConnection();
-  const publicKey = new PublicKey(process.env.NEXT_PUBLIC_USER_REWARD_VAULT!);
+  const feeVault = new PublicKey(process.env.NEXT_PUBLIC_TOKEN_FEE_VAULT!);
 
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        const balance = await connection.getBalance(publicKey);
+        const balance = await connection.getBalance(feeVault);
         setBalance(balance / LAMPORTS_PER_SOL);
       } catch (error) {
         console.error("Failed to fetch balance:", error);
