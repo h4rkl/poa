@@ -4,6 +4,16 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true
   },
+  webpack: (config) => {
+    if (process.env.NEXT_OUTPUT_MODE !== "export" || !config.module) {
+      return config;
+    }
+    config.module.rules?.push({
+      test: /cli\/terraform\/.archive\/test-keys\/anchor/,
+      loader: "ignore-loader",
+    });
+    return config;
+  },
   // Configure cache settings
   distDir: '.next',
   onDemandEntries: {
