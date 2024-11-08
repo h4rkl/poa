@@ -18,8 +18,11 @@ export async function POST(request: Request) {
     try {
       // Parse the JSON string to an array of numbers
       const secretKeyArray = JSON.parse(signingAuthoritySecret);
-      if (!Array.isArray(secretKeyArray) || secretKeyArray.length !== 64) {
-        throw new Error('Invalid secret key format');
+      if (!Array.isArray(secretKeyArray)) {
+        throw new Error('Secret key must be an array');
+      }
+      if (secretKeyArray.length !== 64) {
+        throw new Error(`Secret key must have 64 elements (got ${secretKeyArray.length})`);
       }
       // Convert the array of numbers to Uint8Array
       const secretKeyUint8Array = new Uint8Array(secretKeyArray);
