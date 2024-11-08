@@ -35,7 +35,7 @@ program
     .command('init')
     .description('Initialize a new token pool')
     .requiredOption('--keypair <path>', 'Path to keypair file')
-    .requiredOption('--name <string>', 'Token name')
+    .requiredOption('--name <string>', 'Token pool name')
     .requiredOption('--mint <string>', 'Mint address')
     .requiredOption('--pool-fee <number>', 'Pool fee', '0.001')
     .requiredOption('--connection <url>', 'The Solana RPC connection URL')
@@ -44,9 +44,7 @@ program
     .option('--reward <number>', 'Reward amount', '1')
     .option('--decimals <number>', 'Token decimals', '5')
     .action(async (options) => {
-        const { umi, anchorProgram } = setupAnchor(options.connection, options.keypair);
-        const signerKeyArray = Uint8Array.from(JSON.parse(fs.readFileSync(options.keypair, 'utf-8')));
-        umi.use(keypairIdentity(umi.eddsa.createKeypairFromSecretKey(signerKeyArray)));
+        const { anchorProgram } = setupAnchor(options.connection, options.keypair);
         try {
             const poolOwner = Keypair.fromSecretKey(
                 Uint8Array.from(JSON.parse(fs.readFileSync(options.keypair, 'utf-8')))
@@ -54,7 +52,6 @@ program
             const mint = new PublicKey(options.mint);
             const poolOwnerAta = await getAssociatedTokenAddress(mint, poolOwner.publicKey);
 
-            const mintMetadataPDA = findMetadataPda(umi, { mint: publicKey(mint.toString()) });
             const [tokenPoolAcc] = PublicKey.findProgramAddressSync(
                 [CONFIG_SEED, mint.toBuffer(), Buffer.from(options.name)],
                 POA_PROGRAM_ID
@@ -74,9 +71,8 @@ program
             const rewardAmount = new anchor.BN(toTokenAmount(Number(options.reward), Number(options.decimals)));
             const poolFee = new anchor.BN(toLamports(options.poolFee));
 
-            // Log the exact values being passed
             console.log('Initializing with params:', {
-                tokenName: options.name,
+                tokenPoolName: options.name,
                 timeoutSec: Number(options.timeout),
                 tokenDecimals: Number(options.decimals),
                 rewardAmount: rewardAmount.toString(),
@@ -84,18 +80,16 @@ program
                 totalSupply: totalSupply.toString()
             });
 
-            // Log the PDAs being used
             console.log('PDAs:', {
                 mint: mint.toBase58(),
                 tokenPoolAcc: tokenPoolAcc.toBase58(),
                 tokenPoolVault: tokenPoolVault.toBase58(),
-                feeVault: feeVault.toBase58(),
-                metadataPDA: mintMetadataPDA[0]
+                feeVault: feeVault.toBase58()
             });
 
             await anchorProgram.methods
                 .tokenPoolInitialise({
-                    tokenName: options.name,
+                    tokenPoolName: options.name,
                     timeoutSec: Number(options.timeout),
                     tokenDecimals: Number(options.decimals),
                     rewardAmount,
@@ -106,20 +100,16 @@ program
                     authority: poolOwner.publicKey,
                     authorityTokenAccount: poolOwnerAta,
                     mint,
-                    metadataAccount: mintMetadataPDA[0],
                     tokenPoolAcc,
                     tokenPoolVault,
                     feeVault,
                     poaFees,
-                    tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
                     tokenProgram: TOKEN_PROGRAM_ID,
                     systemProgram: SystemProgram.programId,
-                    rent: SYSVAR_RENT_PUBKEY,
                 })
                 .signers([poolOwner])
                 .rpc();
 
-            // Log all accounts
             console.log(chalk.green('Token pool initialized successfully!'));
             console.log(chalk.blue('Mint:'), chalk.yellow(mint.toBase58()));
             console.log(chalk.blue('Token vault:'), chalk.yellow(tokenPoolVault.toBase58()));
