@@ -4,6 +4,12 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true
   },
+  /**
+   *
+   * @param {import('webpack').Configuration} config
+   * @param {import('next/dist/server/config-shared').WebpackConfigContext} context
+   * @returns {import('webpack').Configuration}
+   */
   webpack: (config) => {
     if (process.env.NEXT_OUTPUT_MODE !== "export" || !config.module) {
       return config;
