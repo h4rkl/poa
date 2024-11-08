@@ -14,7 +14,7 @@ pub struct FeeVaultWithdraw<'info> {
     #[account(mut)]
     pub mint: Box<Account<'info, Mint>>,
 
-    #[account( mut, seeds = [CONFIG_SEED, &mint.key().as_ref()], bump, )]
+    #[account( mut, seeds = [CONFIG_SEED, &mint.key().as_ref(), &args.token_pool_name.as_bytes()], bump )]
     pub token_pool_acc: Box<Account<'info, TokenPoolAcc>>,
 
     #[account(mut, seeds = [FEE_VAULT_SEED, &token_pool_acc.key().as_ref()], bump )]

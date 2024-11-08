@@ -89,6 +89,10 @@ export type Poa = {
               {
                 "kind": "account",
                 "path": "tokenMint"
+              },
+              {
+                "kind": "arg",
+                "path": "args.token_pool_name"
               }
             ]
           }
@@ -314,6 +318,10 @@ export type Poa = {
               {
                 "kind": "account",
                 "path": "mint"
+              },
+              {
+                "kind": "arg",
+                "path": "args.token_pool_name"
               }
             ]
           }

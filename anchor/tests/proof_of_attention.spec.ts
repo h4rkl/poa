@@ -17,6 +17,7 @@ import {
   SystemProgram,
 } from "@solana/web3.js";
 import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
   getAccount,
   getAssociatedTokenAddress,
@@ -24,6 +25,7 @@ import {
 import {
   CONFIG_SEED,
   FEE_VAULT_SEED,
+  PROOF_ACC_SEED,
   TOKEN_VAULT_SEED,
   attentionTokenMetadata,
   poaFees,
@@ -57,7 +59,6 @@ describe("Proof of Attention", () => {
   let tokenPoolVault: PublicKey;
   let tokenPoolAcc: PublicKey;
   let feeVault: PublicKey;
-  let mintMetadataPDA: Pda;
 
   const timeoutSec = 1; // 1 second
   const supply = 100_000;
@@ -91,10 +92,7 @@ describe("Proof of Attention", () => {
         [poolOwner, userAccount, poaFees].map(async (account) => {
           const publicKey = "publicKey" in account ? account.publicKey : account;
           await provider.connection.confirmTransaction(
-            await provider.connection.requestAirdrop(
-              publicKey,
-              LAMPORTS_PER_SOL * 5
-            )
+            await provider.connection.requestAirdrop(publicKey, LAMPORTS_PER_SOL)
           );
         })
       );
@@ -130,8 +128,6 @@ describe("Proof of Attention", () => {
 
     poolOwnerAta = await getAssociatedTokenAddress(mint, poolOwner.publicKey);
 
-    // Create metadata PDA
-    mintMetadataPDA = findMetadataPda(umi, { mint: publicKey(mint) });
     [tokenPoolAcc] = PublicKey.findProgramAddressSync(
       [CONFIG_SEED, mint.toBuffer(), Buffer.from(tokenPoolName)],
       program.programId
@@ -211,284 +207,284 @@ describe("Proof of Attention", () => {
     expect(poaFeesBalanceAfter - poaFeesBalanceBefore).toBe(1_500_000);
   });
 
-  // describe("Attention Interactions", () => {
-  //   let proofAccount: PublicKey;
-  //   let rewardVault: PublicKey;
+  describe("Attention Interactions", () => {
+    let proofAccount: PublicKey;
+    let rewardVault: PublicKey;
 
-  //   beforeAll(async () => {
-  //     rewardVault = await getAssociatedTokenAddress(
-  //       mint,
-  //       userAccount.publicKey
-  //     );
-  //     [proofAccount] = PublicKey.findProgramAddressSync(
-  //       [PROOF_ACC_SEED, userAccount.publicKey.toBuffer(), mint.toBuffer()],
-  //       program.programId
-  //     );
-  //     console.log("proofAccount:", proofAccount.toBase58());
-  //     console.log("rewardVault:", rewardVault.toBase58());
-  //   });
+    beforeAll(async () => {
+      rewardVault = await getAssociatedTokenAddress(
+        mint,
+        userAccount.publicKey
+      );
+      [proofAccount] = PublicKey.findProgramAddressSync(
+        [PROOF_ACC_SEED, userAccount.publicKey.toBuffer(), mint.toBuffer()],
+        program.programId
+      );
+      console.log("proofAccount:", proofAccount.toBase58());
+      console.log("rewardVault:", rewardVault.toBase58());
+    });
 
-  //   it("Initializes attention proof", async () => {
-  //     await timeoutInit();
-  //     await program.methods
-  //       .attentionInteract({
-  //         tokenName: attentionTokenMetadata.name,
-  //       })
-  //       .accountsStrict({
-  //         tokenPoolAuthority: poolOwner.publicKey,
-  //         attentionAuthority: userAccount.publicKey,
-  //         proofAccount,
-  //         tokenMint: mint,
-  //         tokenPoolAcc,
-  //         tokenPoolVault,
-  //         feeVault,
-  //         rewardVault,
-  //         poaFees,
-  //         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-  //         tokenProgram: TOKEN_PROGRAM_ID,
-  //         systemProgram: SystemProgram.programId,
-  //         clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-  //       })
-  //       .signers([userAccount, poolOwner])
-  //       .rpc()
-  //       .catch((e) => console.error("***attention init error***", e));
+    it("Initializes attention proof", async () => {
+      await timeoutInit();
+      await program.methods
+        .attentionInteract({
+          tokenPoolName,
+        })
+        .accountsStrict({
+          tokenPoolAuthority: poolOwner.publicKey,
+          attentionAuthority: userAccount.publicKey,
+          proofAccount,
+          tokenMint: mint,
+          tokenPoolAcc,
+          tokenPoolVault,
+          feeVault,
+          rewardVault,
+          poaFees,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        })
+        .signers([userAccount, poolOwner])
+        .rpc()
+        .catch((e) => console.error("***attention init error***", e));
 
-  //     // Fetch and verify the proof account
-  //     const proofAccData = await program.account.proofAcc.fetch(proofAccount);
-  //     expect(proofAccData.authority.equals(userAccount.publicKey)).toBe(true);
-  //     expect(proofAccData.balance.toNumber()).toBe(0);
-  //     expect(proofAccData.tokenMint.equals(mint)).toBe(true);
-  //     expect(proofAccData.tokenRewardVault.equals(rewardVault)).toBe(true);
-  //     expect(proofAccData.totalProofs.toNumber()).toBe(1);
-  //     expect(proofAccData.totalRewards.toNumber()).toBe(
-  //       toTokenAmount(reward, tokenDecimals)
-  //     );
+      // Fetch and verify the proof account
+      const proofAccData = await program.account.proofAcc.fetch(proofAccount);
+      expect(proofAccData.authority.equals(userAccount.publicKey)).toBe(true);
+      expect(proofAccData.balance.toNumber()).toBe(0);
+      expect(proofAccData.tokenMint.equals(mint)).toBe(true);
+      expect(proofAccData.tokenRewardVault.equals(rewardVault)).toBe(true);
+      expect(proofAccData.totalProofs.toNumber()).toBe(1);
+      expect(proofAccData.totalRewards.toNumber()).toBe(
+        toTokenAmount(reward, tokenDecimals)
+      );
 
-  //     // Verify that the reward vault was created
-  //     const rewardVaultInfo = await getAccount(
-  //       provider.connection,
-  //       rewardVault
-  //     );
-  //     expect(rewardVaultInfo.mint.equals(mint)).toBe(true);
-  //     expect(rewardVaultInfo.owner.equals(userAccount.publicKey)).toBe(true);
+      // Verify that the reward vault was created
+      const rewardVaultInfo = await getAccount(
+        provider.connection,
+        rewardVault
+      );
+      expect(rewardVaultInfo.mint.equals(mint)).toBe(true);
+      expect(rewardVaultInfo.owner.equals(userAccount.publicKey)).toBe(true);
 
-  //     // Verify that the attention account has the correct fees
-  //     const attentionAccInfo = await provider.connection.getAccountInfo(
-  //       poaFees
-  //     );
-  //     attentionAccInfo && expect(attentionAccInfo.lamports).toBe(1_003_150_000);
-  //   });
+      // Verify that the attention account has the correct fees
+      const attentionAccInfo = await provider.connection.getAccountInfo(
+        poaFees
+      );
+      attentionAccInfo && expect(attentionAccInfo.lamports).toBe(1_003_150_000);
+    });
 
-  //   it("Successfully submits a successive attention proof", async () => {
-  //     // Wait for the timeout period which was set on initialization
-  //     await timeoutInit(); // setTimeout uses milliseconds
+    it("Successfully submits a successive attention proof", async () => {
+      // Wait for the timeout period which was set on initialization
+      await timeoutInit(); // setTimeout uses milliseconds
 
-  //     const initialProofAccount = await program.account.proofAcc.fetch(
-  //       proofAccount
-  //     );
-  //     const initialRewardVaultBalance = (
-  //       await getAccount(provider.connection, rewardVault)
-  //     ).amount;
-  //     const initialTokenPoolVaultBalance = (
-  //       await getAccount(provider.connection, tokenPoolVault)
-  //     ).amount;
+      const initialProofAccount = await program.account.proofAcc.fetch(
+        proofAccount
+      );
+      const initialRewardVaultBalance = (
+        await getAccount(provider.connection, rewardVault)
+      ).amount;
+      const initialTokenPoolVaultBalance = (
+        await getAccount(provider.connection, tokenPoolVault)
+      ).amount;
 
-  //     await program.methods
-  //       .attentionInteract({
-  //         tokenName: attentionTokenMetadata.name,
-  //       })
-  //       .accountsStrict({
-  //         tokenPoolAuthority: poolOwner.publicKey,
-  //         attentionAuthority: userAccount.publicKey,
-  //         proofAccount,
-  //         tokenMint: mint,
-  //         tokenPoolAcc,
-  //         tokenPoolVault,
-  //         feeVault,
-  //         rewardVault,
-  //         poaFees,
-  //         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-  //         tokenProgram: TOKEN_PROGRAM_ID,
-  //         systemProgram: SystemProgram.programId,
-  //         clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-  //       })
-  //       .signers([userAccount, poolOwner])
-  //       .rpc()
-  //       .catch((e) => console.error("***attention prove error***", e));
+      await program.methods
+        .attentionInteract({
+          tokenPoolName,
+        })
+        .accountsStrict({
+          tokenPoolAuthority: poolOwner.publicKey,
+          attentionAuthority: userAccount.publicKey,
+          proofAccount,
+          tokenMint: mint,
+          tokenPoolAcc,
+          tokenPoolVault,
+          feeVault,
+          rewardVault,
+          poaFees,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        })
+        .signers([userAccount, poolOwner])
+        .rpc()
+        .catch((e) => console.error("***attention prove error***", e));
 
-  //     const updatedProofAccount = await program.account.proofAcc.fetch(
-  //       proofAccount
-  //     );
-  //     const updatedRewardVaultBalance = (
-  //       await getAccount(provider.connection, rewardVault)
-  //     ).amount;
-  //     const updatedTokenPoolVaultBalance = (
-  //       await getAccount(provider.connection, tokenPoolVault)
-  //     ).amount;
+      const updatedProofAccount = await program.account.proofAcc.fetch(
+        proofAccount
+      );
+      const updatedRewardVaultBalance = (
+        await getAccount(provider.connection, rewardVault)
+      ).amount;
+      const updatedTokenPoolVaultBalance = (
+        await getAccount(provider.connection, tokenPoolVault)
+      ).amount;
 
-  //     expect(updatedProofAccount.totalProofs.toNumber()).toEqual(
-  //       initialProofAccount.totalProofs.toNumber() + 1
-  //     );
-  //     expect(updatedProofAccount.totalRewards.toNumber()).toBeGreaterThan(
-  //       initialProofAccount.totalRewards.toNumber()
-  //     );
-  //     expect(updatedProofAccount.lastProofAt.toNumber()).toBeGreaterThan(
-  //       initialProofAccount.lastProofAt.toNumber()
-  //     );
-  //     expect(updatedRewardVaultBalance).toBe(
-  //       initialRewardVaultBalance + BigInt(toTokenAmount(reward, tokenDecimals))
-  //     );
-  //     expect(updatedTokenPoolVaultBalance).toBe(
-  //       initialTokenPoolVaultBalance -
-  //       BigInt(toTokenAmount(reward, tokenDecimals))
-  //     );
-  //   });
+      expect(updatedProofAccount.totalProofs.toNumber()).toEqual(
+        initialProofAccount.totalProofs.toNumber() + 1
+      );
+      expect(updatedProofAccount.totalRewards.toNumber()).toBeGreaterThan(
+        initialProofAccount.totalRewards.toNumber()
+      );
+      expect(updatedProofAccount.lastProofAt.toNumber()).toBeGreaterThan(
+        initialProofAccount.lastProofAt.toNumber()
+      );
+      expect(updatedRewardVaultBalance).toBe(
+        initialRewardVaultBalance + BigInt(toTokenAmount(reward, tokenDecimals))
+      );
+      expect(updatedTokenPoolVaultBalance).toBe(
+        initialTokenPoolVaultBalance -
+        BigInt(toTokenAmount(reward, tokenDecimals))
+      );
+    });
 
-  //   it("Fails to submit attention proof before timeout", async () => {
-  //     await expect(
-  //       program.methods
-  //         .attentionInteract({
-  //           tokenName: attentionTokenMetadata.name,
-  //         })
-  //         .accountsStrict({
-  //           tokenPoolAuthority: poolOwner.publicKey,
-  //           attentionAuthority: userAccount.publicKey,
-  //           proofAccount,
-  //           tokenMint: mint,
-  //           tokenPoolAcc,
-  //           tokenPoolVault,
-  //           feeVault,
-  //           rewardVault,
-  //           poaFees,
-  //           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-  //           tokenProgram: TOKEN_PROGRAM_ID,
-  //           systemProgram: SystemProgram.programId,
-  //           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-  //         })
-  //         .signers([userAccount, poolOwner])
-  //         .rpc()
-  //     ).rejects.toThrow(/CooldownNotMet/);
-  //   });
+    it("Fails to submit attention proof before timeout", async () => {
+      await expect(
+        program.methods
+          .attentionInteract({
+            tokenPoolName,
+          })
+          .accountsStrict({
+            tokenPoolAuthority: poolOwner.publicKey,
+            attentionAuthority: userAccount.publicKey,
+            proofAccount,
+            tokenMint: mint,
+            tokenPoolAcc,
+            tokenPoolVault,
+            feeVault,
+            rewardVault,
+            poaFees,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          })
+          .signers([userAccount, poolOwner])
+          .rpc()
+      ).rejects.toThrow(/CooldownNotMet/);
+    });
 
-  //   it("Fails to submit attention proof with invalid token name", async () => {
-  //     await timeoutInit();
-  //     await expect(
-  //       program.methods
-  //         .attentionInteract({
-  //           tokenName: "InvalidToken",
-  //         })
-  //         .accountsStrict({
-  //           tokenPoolAuthority: poolOwner.publicKey,
-  //           attentionAuthority: userAccount.publicKey,
-  //           proofAccount,
-  //           tokenMint: mint,
-  //           tokenPoolAcc,
-  //           tokenPoolVault,
-  //           feeVault,
-  //           rewardVault,
-  //           poaFees,
-  //           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-  //           tokenProgram: TOKEN_PROGRAM_ID,
-  //           systemProgram: SystemProgram.programId,
-  //           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-  //         })
-  //         .signers([userAccount, poolOwner])
-  //         .rpc()
-  //     ).rejects.toThrow();
-  //   });
+    it("Fails to submit attention proof with invalid token name", async () => {
+      await timeoutInit();
+      await expect(
+        program.methods
+          .attentionInteract({
+            tokenPoolName: "InvalidToken",
+          })
+          .accountsStrict({
+            tokenPoolAuthority: poolOwner.publicKey,
+            attentionAuthority: userAccount.publicKey,
+            proofAccount,
+            tokenMint: mint,
+            tokenPoolAcc,
+            tokenPoolVault,
+            feeVault,
+            rewardVault,
+            poaFees,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          })
+          .signers([userAccount, poolOwner])
+          .rpc()
+      ).rejects.toThrow();
+    });
 
-  //   it("Fails to submit attention proof with incorrect authority", async () => {
-  //     await timeoutInit();
-  //     const incorrectUser = Keypair.generate();
-  //     await provider.connection.confirmTransaction(
-  //       await provider.connection.requestAirdrop(
-  //         incorrectUser.publicKey,
-  //         LAMPORTS_PER_SOL
-  //       )
-  //     );
+    it("Fails to submit attention proof with incorrect authority", async () => {
+      await timeoutInit();
+      const incorrectUser = Keypair.generate();
+      await provider.connection.confirmTransaction(
+        await provider.connection.requestAirdrop(
+          incorrectUser.publicKey,
+          LAMPORTS_PER_SOL
+        )
+      );
 
-  //     await expect(
-  //       program.methods
-  //         .attentionInteract({
-  //           tokenName: attentionTokenMetadata.name,
-  //         })
-  //         .accountsStrict({
-  //           tokenPoolAuthority: poolOwner.publicKey,
-  //           attentionAuthority: incorrectUser.publicKey,
-  //           proofAccount,
-  //           tokenMint: mint,
-  //           tokenPoolAcc,
-  //           tokenPoolVault,
-  //           feeVault,
-  //           rewardVault,
-  //           poaFees,
-  //           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-  //           tokenProgram: TOKEN_PROGRAM_ID,
-  //           systemProgram: SystemProgram.programId,
-  //           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-  //         })
-  //         .signers([incorrectUser, poolOwner])
-  //         .rpc()
-  //     ).rejects.toThrow();
-  //   });
+      await expect(
+        program.methods
+          .attentionInteract({
+            tokenPoolName,
+          })
+          .accountsStrict({
+            tokenPoolAuthority: poolOwner.publicKey,
+            attentionAuthority: incorrectUser.publicKey,
+            proofAccount,
+            tokenMint: mint,
+            tokenPoolAcc,
+            tokenPoolVault,
+            feeVault,
+            rewardVault,
+            poaFees,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          })
+          .signers([incorrectUser, poolOwner])
+          .rpc()
+      ).rejects.toThrow();
+    });
 
-  //   it("Fails to submit attention proof with incorrect token mint", async () => {
-  //     const incorrectMint = Keypair.generate().publicKey;
-  //     await timeoutInit();
+    it("Fails to submit attention proof with incorrect token mint", async () => {
+      const incorrectMint = Keypair.generate().publicKey;
+      await timeoutInit();
 
-  //     await expect(
-  //       program.methods
-  //         .attentionInteract({
-  //           tokenName: attentionTokenMetadata.name,
-  //         })
-  //         .accountsStrict({
-  //           tokenPoolAuthority: poolOwner.publicKey,
-  //           attentionAuthority: userAccount.publicKey,
-  //           proofAccount,
-  //           tokenMint: incorrectMint,
-  //           tokenPoolAcc,
-  //           tokenPoolVault,
-  //           feeVault,
-  //           rewardVault,
-  //           poaFees,
-  //           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-  //           tokenProgram: TOKEN_PROGRAM_ID,
-  //           systemProgram: SystemProgram.programId,
-  //           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-  //         })
-  //         .signers([userAccount, poolOwner])
-  //         .rpc()
-  //     ).rejects.toThrow();
-  //   });
+      await expect(
+        program.methods
+          .attentionInteract({
+            tokenPoolName,
+          })
+          .accountsStrict({
+            tokenPoolAuthority: poolOwner.publicKey,
+            attentionAuthority: userAccount.publicKey,
+            proofAccount,
+            tokenMint: incorrectMint,
+            tokenPoolAcc,
+            tokenPoolVault,
+            feeVault,
+            rewardVault,
+            poaFees,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          })
+          .signers([userAccount, poolOwner])
+          .rpc()
+      ).rejects.toThrow();
+    });
 
-  //   it("Fails to submit attention proof without the token pool authority", async () => {
-  //     await timeoutInit(); // setTimeout uses milliseconds
-  //     const incorrectTokenPoolAuthority = Keypair.generate();
-  //     await expect(
-  //       program.methods
-  //         .attentionInteract({
-  //           tokenName: attentionTokenMetadata.name,
-  //         })
-  //         .accountsStrict({
-  //           tokenPoolAuthority: incorrectTokenPoolAuthority.publicKey,
-  //           attentionAuthority: userAccount.publicKey,
-  //           proofAccount,
-  //           tokenMint: mint,
-  //           tokenPoolAcc,
-  //           tokenPoolVault,
-  //           feeVault,
-  //           rewardVault,
-  //           poaFees,
-  //           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-  //           tokenProgram: TOKEN_PROGRAM_ID,
-  //           systemProgram: SystemProgram.programId,
-  //           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-  //         })
-  //         .signers([userAccount, incorrectTokenPoolAuthority])
-  //         .rpc()
-  //     ).rejects.toThrow(/InvalidTokenPoolAccount/);
-  //   });
-  // });
+    it("Fails to submit attention proof without the token pool authority", async () => {
+      await timeoutInit(); // setTimeout uses milliseconds
+      const incorrectTokenPoolAuthority = Keypair.generate();
+      await expect(
+        program.methods
+          .attentionInteract({
+            tokenPoolName,
+          })
+          .accountsStrict({
+            tokenPoolAuthority: incorrectTokenPoolAuthority.publicKey,
+            attentionAuthority: userAccount.publicKey,
+            proofAccount,
+            tokenMint: mint,
+            tokenPoolAcc,
+            tokenPoolVault,
+            feeVault,
+            rewardVault,
+            poaFees,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+          })
+          .signers([userAccount, incorrectTokenPoolAuthority])
+          .rpc()
+      ).rejects.toThrow(/InvalidTokenPoolAccount/);
+    });
+  });
 
   // describe("Fee Vault Withdraw", () => {
   //   beforeAll(async () => {
@@ -508,7 +504,7 @@ describe("Proof of Attention", () => {
 
   //     await program.methods
   //       .feeVaultWithdrawFunds({
-  //         tokenName: attentionTokenMetadata.name,
+  //         tokenPoolName,
   //         amount: withdrawAmount,
   //       })
   //       .accountsStrict({
@@ -542,7 +538,7 @@ describe("Proof of Attention", () => {
   //     await expect(
   //       program.methods
   //         .feeVaultWithdrawFunds({
-  //           tokenName: attentionTokenMetadata.name,
+  //           tokenPoolName,
   //           amount: excessiveAmount,
   //         })
   //         .accountsStrict({
@@ -571,7 +567,7 @@ describe("Proof of Attention", () => {
   //     await expect(
   //       program.methods
   //         .feeVaultWithdrawFunds({
-  //           tokenName: attentionTokenMetadata.name,
+  //           tokenPoolName,
   //           amount: withdrawAmount,
   //         })
   //         .accountsStrict({
@@ -592,7 +588,7 @@ describe("Proof of Attention", () => {
   //     await expect(
   //       program.methods
   //         .feeVaultWithdrawFunds({
-  //           tokenName: "IncorrectTokenName",
+  //           tokenPoolName: "IncorrectTokenName",
   //           amount: withdrawAmount,
   //         })
   //         .accountsStrict({

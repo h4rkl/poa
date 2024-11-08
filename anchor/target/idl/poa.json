@@ -83,6 +83,10 @@
               {
                 "kind": "account",
                 "path": "token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "args.token_pool_name"
               }
             ]
           }
@@ -308,6 +312,10 @@
               {
                 "kind": "account",
                 "path": "mint"
+              },
+              {
+                "kind": "arg",
+                "path": "args.token_pool_name"
               }
             ]
           }

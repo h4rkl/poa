@@ -28,6 +28,7 @@ pub struct ProofAcc {
 }
 
 #[derive(Accounts)]
+#[instruction(args: AttentionInteractionArgs)]
 pub struct AttentionInteraction<'info> {
     // The authority is the account that signs on behalf of the PoA application (typically via the API)
     #[account(mut)]
@@ -44,17 +45,17 @@ pub struct AttentionInteraction<'info> {
         seeds = [PROOF_ACC_SEED, &attention_authority.key().as_ref(), &token_mint.key().as_ref()],
         bump
     )]
-    pub proof_account: Account<'info, ProofAcc>,
+    pub proof_account: Box<Account<'info, ProofAcc>>,
 
     #[account(mut)]
     pub token_mint: Account<'info, Mint>,
 
     #[account(
         mut,
-        seeds = [CONFIG_SEED, &token_mint.key().as_ref()],
+        seeds = [CONFIG_SEED, &token_mint.key().as_ref(), &args.token_pool_name.as_bytes()],
         bump
     )]
-    pub token_pool_acc: Account<'info, TokenPoolAcc>,
+    pub token_pool_acc: Box<Account<'info, TokenPoolAcc>>,
 
     #[account(
         mut,
@@ -65,7 +66,7 @@ pub struct AttentionInteraction<'info> {
 
     // The fee vault where the rewards are collected for the project
     #[account( mut, seeds = [FEE_VAULT_SEED, &token_pool_acc.key().as_ref()], bump )]
-    pub fee_vault: Account<'info, FeeVault>,
+    pub fee_vault: Box<Account<'info, FeeVault>>,
 
     // The ATA where the attention token reward tokens will be sent
     #[account(
@@ -113,7 +114,7 @@ pub fn attention_interaction(
     }
 
     // Proceed with attention proof logic
-    process_attention_proof(accs, bumps)?;
+    process_attention_proof(accs, args, bumps)?;
 
     Ok(())
 }
@@ -159,6 +160,7 @@ fn initialize_proof_account(accs: &mut AttentionInteraction) -> Result<()> {
 
 fn process_attention_proof(
     accs: &mut AttentionInteraction,
+    args: AttentionInteractionArgs,
     bumps: &mut AttentionInteractionBumps,
 ) -> Result<()> {
     let clock = Clock::get()?;
@@ -218,7 +220,12 @@ fn process_attention_proof(
     proof.total_rewards += reward;
 
     // Transfer reward from token pool vault to attention's reward vault
-    let token_pool_acc_seeds = &[CONFIG_SEED, &mint.as_ref(), &[bumps.token_pool_acc]];
+    let token_pool_acc_seeds = &[
+        CONFIG_SEED,
+        &mint.as_ref(),
+        &args.token_pool_name.as_bytes(),
+        &[bumps.token_pool_acc]
+    ];
     let signer_seeds = &[&token_pool_acc_seeds[..]];
 
     let cpi_accounts = token::Transfer {
