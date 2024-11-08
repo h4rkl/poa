@@ -6,16 +6,15 @@ import { ASSOCIATED_TOKEN_PROGRAM_ID, getAssociatedTokenAddress, TOKEN_PROGRAM_I
 import { Command } from 'commander';
 import { PublicKey, Keypair, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { createBundlrUploader } from '@metaplex-foundation/umi-uploader-bundlr';
-import { createGenericFile, keypairIdentity, Umi } from '@metaplex-foundation/umi';
+import { createGenericFile, createSignerFromKeypair, generateSigner, keypairIdentity, percentAmount, signerIdentity, Umi } from '@metaplex-foundation/umi';
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
-import { findMetadataPda, MPL_TOKEN_METADATA_PROGRAM_ID, mplTokenMetadata } from '@metaplex-foundation/mpl-token-metadata';
+import { createV1, findMetadataPda, mintV1, MPL_TOKEN_METADATA_PROGRAM_ID, mplTokenMetadata, TokenStandard } from '@metaplex-foundation/mpl-token-metadata';
 import chalk from 'chalk';
 
 // Import these from your project
 import {
     CONFIG_SEED,
     FEE_VAULT_SEED,
-    MINT_SEED,
     PROOF_ACC_SEED,
     TOKEN_VAULT_SEED,
     toLamports,
@@ -36,10 +35,8 @@ program
     .command('init')
     .description('Initialize a new token pool')
     .requiredOption('--keypair <path>', 'Path to keypair file')
-    .requiredOption('--image <path>', 'Path to token image file')
     .requiredOption('--name <string>', 'Token name')
-    .requiredOption('--symbol <string>', 'Token symbol')
-    .requiredOption('--description <string>', 'Token description')
+    .requiredOption('--mint <string>', 'Mint address')
     .requiredOption('--pool-fee <number>', 'Pool fee', '0.001')
     .requiredOption('--connection <url>', 'The Solana RPC connection URL')
     .option('--timeout <seconds>', 'Timeout in seconds', '1')
@@ -54,25 +51,12 @@ program
             const poolOwner = Keypair.fromSecretKey(
                 Uint8Array.from(JSON.parse(fs.readFileSync(options.keypair, 'utf-8')))
             );
+            const mint = new PublicKey(options.mint);
+            const poolOwnerAta = await getAssociatedTokenAddress(mint, poolOwner.publicKey);
 
-            // Upload image and metadata to Arweave
-            const imageBuffer = fs.readFileSync(options.image);
-            const { metadataUri, metadata } = await uploadToArweave(
-                umi,
-                imageBuffer,
-                options.name,
-                options.symbol,
-                options.description
-            );
-
-            const [mint] = PublicKey.findProgramAddressSync(
-                [MINT_SEED, Buffer.from(metadata.name)],
-                POA_PROGRAM_ID
-            );
-
-            const mintMetadataPDA = findMetadataPda(umi, { mint: publicKey(mint) });
+            const mintMetadataPDA = findMetadataPda(umi, { mint: publicKey(mint.toString()) });
             const [tokenPoolAcc] = PublicKey.findProgramAddressSync(
-                [CONFIG_SEED, mint.toBuffer()],
+                [CONFIG_SEED, mint.toBuffer(), Buffer.from(options.name)],
                 POA_PROGRAM_ID
             );
 
@@ -92,9 +76,7 @@ program
 
             // Log the exact values being passed
             console.log('Initializing with params:', {
-                tokenName: metadata.name,
-                uri: metadataUri,
-                symbol: metadata.symbol,
+                tokenName: options.name,
                 timeoutSec: Number(options.timeout),
                 tokenDecimals: Number(options.decimals),
                 rewardAmount: rewardAmount.toString(),
@@ -113,9 +95,7 @@ program
 
             await anchorProgram.methods
                 .tokenPoolInitialise({
-                    tokenName: metadata.name,
-                    uri: metadataUri,
-                    symbol: metadata.symbol,
+                    tokenName: options.name,
                     timeoutSec: Number(options.timeout),
                     tokenDecimals: Number(options.decimals),
                     rewardAmount,
@@ -124,6 +104,7 @@ program
                 })
                 .accountsStrict({
                     authority: poolOwner.publicKey,
+                    authorityTokenAccount: poolOwnerAta,
                     mint,
                     metadataAccount: mintMetadataPDA[0],
                     tokenPoolAcc,
@@ -141,7 +122,6 @@ program
             // Log all accounts
             console.log(chalk.green('Token pool initialized successfully!'));
             console.log(chalk.blue('Mint:'), chalk.yellow(mint.toBase58()));
-            console.log(chalk.blue('Metadata:'), chalk.yellow(metadataUri));
             console.log(chalk.blue('Token vault:'), chalk.yellow(tokenPoolVault.toBase58()));
             console.log(chalk.blue('Fee vault:'), chalk.yellow(feeVault.toBase58()));
             console.log(chalk.blue('POA fees:'), chalk.yellow(poaFees.toBase58()));
@@ -159,6 +139,7 @@ program
     .requiredOption('--pool-keypair <path>', 'Path to pool owner keypair file')
     .requiredOption('--connection <url>', 'The Solana RPC connection URL')
     .requiredOption('--name <string>', 'Token name')
+    .requiredOption('--mint <string>', 'Mint address')
     .action(async (options) => {
         const { anchorProgram } = setupAnchor(options.connection, options.userKeypair);
         try {
@@ -169,13 +150,10 @@ program
                 Uint8Array.from(JSON.parse(fs.readFileSync(options.poolKeypair, 'utf-8')))
             );
 
-            const [mint] = PublicKey.findProgramAddressSync(
-                [MINT_SEED, Buffer.from(options.name)],
-                POA_PROGRAM_ID
-            );
+            const mint = new PublicKey(options.mint);
 
             const [tokenPoolAcc] = PublicKey.findProgramAddressSync(
-                [CONFIG_SEED, mint.toBuffer()],
+                [CONFIG_SEED, mint.toBuffer(), Buffer.from(options.name)],
                 POA_PROGRAM_ID
             );
 
@@ -226,6 +204,64 @@ program
             console.error('Error submitting attention interaction:', error);
         }
     });
+
+program
+    .command('create_token')
+    .description('Create a new SPL token')
+    .requiredOption('--keypair <path>', 'Path to keypair file')
+    .requiredOption('--name <string>', 'Token name')
+    .requiredOption('--symbol <string>', 'Token symbol')
+    .requiredOption('--description <string>', 'Token description')
+    .requiredOption('--image <path>', 'Path to token image file')
+    .requiredOption('--connection <url>', 'The Solana RPC connection URL')
+    .option('--amount <number>', 'Initial token supply', '100000')
+    .option('--decimals <number>', 'Token decimals', '9')
+    .action(async (options) => {
+        const { umi } = setupAnchor(options.connection, options.keypair);
+        const signerKeyArray = Uint8Array.from(JSON.parse(fs.readFileSync(options.keypair, 'utf-8')));
+        const umiAuthority = umi.eddsa.createKeypairFromSecretKey(signerKeyArray)
+        const umiSigner = createSignerFromKeypair(umi, umiAuthority);
+        umi.use(signerIdentity(umiSigner));
+
+        try {
+            const imageBuffer = fs.readFileSync(options.image);
+            const { metadataUri } = await uploadToArweave(
+                umi,
+                imageBuffer,
+                options.name,
+                options.symbol,
+                options.description
+            );
+
+            const mint = generateSigner(umi);
+
+            await createV1(umi, {
+                mint,
+                authority: umiSigner,
+                name: options.name,
+                symbol: options.symbol,
+                uri: metadataUri,
+                sellerFeeBasisPoints: percentAmount(0),
+                decimals: options.decimals,
+                tokenStandard: TokenStandard.Fungible,
+            }).sendAndConfirm(umi);
+
+            await mintV1(umi, {
+                mint: mint.publicKey,
+                authority: umiSigner,
+                amount: toTokenAmount(options.amount, options.decimals),
+                tokenOwner: umiSigner.publicKey,
+                tokenStandard: TokenStandard.Fungible,
+            }).sendAndConfirm(umi);
+
+            console.log(chalk.green('Token created successfully!'));
+            console.log(chalk.blue('Mint address:'), chalk.yellow(mint.publicKey));
+            console.log(chalk.blue('Metadata:'), chalk.yellow(metadataUri));
+            console.log(chalk.blue('Authority:'), chalk.yellow(umi.identity.publicKey));
+        } catch (error) {
+            console.error('Error creating token:', error);
+        }
+    })
 
 program.parse();
 
