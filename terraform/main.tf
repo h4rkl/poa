@@ -88,9 +88,6 @@ frontend:
       - '../public/**/*'
       - '../package.json'
       - '../pnpm-lock.yaml'
-    excludePaths:
-      - 'cli/**'
-      - '.archive/**'
   cache:
     paths:
       - node_modules/**/*
