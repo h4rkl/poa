@@ -12,13 +12,6 @@ export async function POST(request: Request) {
     // Deserialize the transaction from base64
     const deserializedTx = Transaction.from(Buffer.from(transaction, 'base64'));
 
-    console.log('Environment variables:', {
-      POA_SIGNING_AUTHORITY_EXISTS: !!process.env.POA_SIGNING_AUTHORITY,
-      POA_SIGNING_AUTHORITY_TYPE: typeof process.env.POA_SIGNING_AUTHORITY,
-      POA_SIGNING_AUTHORITY_VALUE: process.env.POA_SIGNING_AUTHORITY
-    });
-
-
     // Create a Keypair from the POA_SIGNING_AUTHORITY
     const signingAuthoritySecret = process.env.POA_SIGNING_AUTHORITY!;
     let signingAuthority: Keypair;
