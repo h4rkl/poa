@@ -486,121 +486,121 @@ describe("Proof of Attention", () => {
     });
   });
 
-  // describe("Fee Vault Withdraw", () => {
-  //   beforeAll(async () => {
-  //     // Get the fee vault balance before tests
-  //     const feeVaultBalance = await provider.connection.getBalance(feeVault);
-  //     console.log("Initial fee vault balance:", feeVaultBalance);
-  //   });
+  describe("Fee Vault Withdraw", () => {
+    beforeAll(async () => {
+      // Get the fee vault balance before tests
+      const feeVaultBalance = await provider.connection.getBalance(feeVault);
+      console.log("Initial fee vault balance:", feeVaultBalance);
+    });
 
-  //   it("Successfully withdraws fees from the fee vault", async () => {
-  //     const withdrawAmount = new anchor.BN(toLamports(0.0006942)); // Withdraw 0.00069420 SOL
-  //     const initialPoolOwnerBalance = await provider.connection.getBalance(
-  //       poolOwner.publicKey
-  //     );
-  //     const initialFeeVaultBalance = await provider.connection.getBalance(
-  //       feeVault
-  //     );
+    it("Successfully withdraws fees from the fee vault", async () => {
+      const withdrawAmount = new anchor.BN(toLamports(0.0006942)); // Withdraw 0.00069420 SOL
+      const initialPoolOwnerBalance = await provider.connection.getBalance(
+        poolOwner.publicKey
+      );
+      const initialFeeVaultBalance = await provider.connection.getBalance(
+        feeVault
+      );
 
-  //     await program.methods
-  //       .feeVaultWithdrawFunds({
-  //         tokenPoolName,
-  //         amount: withdrawAmount,
-  //       })
-  //       .accountsStrict({
-  //         authority: poolOwner.publicKey,
-  //         mint,
-  //         tokenPoolAcc,
-  //         feeVault,
-  //         systemProgram: SystemProgram.programId,
-  //       })
-  //       .signers([poolOwner])
-  //       .rpc();
+      await program.methods
+        .feeVaultWithdrawFunds({
+          tokenPoolName,
+          amount: withdrawAmount,
+        })
+        .accountsStrict({
+          authority: poolOwner.publicKey,
+          mint,
+          tokenPoolAcc,
+          feeVault,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([poolOwner])
+        .rpc();
 
-  //     const finalPoolOwnerBalance = await provider.connection.getBalance(
-  //       poolOwner.publicKey
-  //     );
-  //     const finalFeeVaultBalance = await provider.connection.getBalance(
-  //       feeVault
-  //     );
+      const finalPoolOwnerBalance = await provider.connection.getBalance(
+        poolOwner.publicKey
+      );
+      const finalFeeVaultBalance = await provider.connection.getBalance(
+        feeVault
+      );
 
-  //     expect(finalPoolOwnerBalance).toBeGreaterThan(initialPoolOwnerBalance);
-  //     expect(finalFeeVaultBalance).toBeLessThan(initialFeeVaultBalance);
-  //     expect(initialFeeVaultBalance - finalFeeVaultBalance).toBe(
-  //       withdrawAmount.toNumber()
-  //     );
-  //   });
+      expect(finalPoolOwnerBalance).toBeGreaterThan(initialPoolOwnerBalance);
+      expect(finalFeeVaultBalance).toBeLessThan(initialFeeVaultBalance);
+      expect(initialFeeVaultBalance - finalFeeVaultBalance).toBe(
+        withdrawAmount.toNumber()
+      );
+    });
 
-  //   it("Fails to withdraw more than the fee vault balance", async () => {
-  //     const feeVaultBalance = await provider.connection.getBalance(feeVault);
-  //     const excessiveAmount = new anchor.BN(feeVaultBalance + toLamports(1)); // Try to withdraw more than available
+    it("Fails to withdraw more than the fee vault balance", async () => {
+      const feeVaultBalance = await provider.connection.getBalance(feeVault);
+      const excessiveAmount = new anchor.BN(feeVaultBalance + toLamports(1)); // Try to withdraw more than available
 
-  //     await expect(
-  //       program.methods
-  //         .feeVaultWithdrawFunds({
-  //           tokenPoolName,
-  //           amount: excessiveAmount,
-  //         })
-  //         .accountsStrict({
-  //           authority: poolOwner.publicKey,
-  //           mint,
-  //           tokenPoolAcc,
-  //           feeVault,
-  //           systemProgram: SystemProgram.programId,
-  //         })
-  //         .signers([poolOwner])
-  //         .rpc()
-  //     ).rejects.toThrow(/InsufficientFeeVaultBalance/);
-  //   });
+      await expect(
+        program.methods
+          .feeVaultWithdrawFunds({
+            tokenPoolName,
+            amount: excessiveAmount,
+          })
+          .accountsStrict({
+            authority: poolOwner.publicKey,
+            mint,
+            tokenPoolAcc,
+            feeVault,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([poolOwner])
+          .rpc()
+      ).rejects.toThrow(/InsufficientFeeVaultBalance/);
+    });
 
-  //   it("Fails when non-poolOwner tries to withdraw", async () => {
-  //     const nonPoolOwner = Keypair.generate();
-  //     await provider.connection.confirmTransaction(
-  //       await provider.connection.requestAirdrop(
-  //         nonPoolOwner.publicKey,
-  //         LAMPORTS_PER_SOL
-  //       )
-  //     );
+    it("Fails when non-poolOwner tries to withdraw", async () => {
+      const nonPoolOwner = Keypair.generate();
+      await provider.connection.confirmTransaction(
+        await provider.connection.requestAirdrop(
+          nonPoolOwner.publicKey,
+          LAMPORTS_PER_SOL
+        )
+      );
 
-  //     const withdrawAmount = new anchor.BN(toLamports(0.1));
+      const withdrawAmount = new anchor.BN(toLamports(0.1));
 
-  //     await expect(
-  //       program.methods
-  //         .feeVaultWithdrawFunds({
-  //           tokenPoolName,
-  //           amount: withdrawAmount,
-  //         })
-  //         .accountsStrict({
-  //           authority: nonPoolOwner.publicKey,
-  //           mint,
-  //           tokenPoolAcc,
-  //           feeVault,
-  //           systemProgram: SystemProgram.programId,
-  //         })
-  //         .signers([nonPoolOwner])
-  //         .rpc()
-  //     ).rejects.toThrow(/WithdrawNotApproved/);
-  //   });
+      await expect(
+        program.methods
+          .feeVaultWithdrawFunds({
+            tokenPoolName,
+            amount: withdrawAmount,
+          })
+          .accountsStrict({
+            authority: nonPoolOwner.publicKey,
+            mint,
+            tokenPoolAcc,
+            feeVault,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([nonPoolOwner])
+          .rpc()
+      ).rejects.toThrow(/WithdrawNotApproved/);
+    });
 
-  //   it("Fails when trying to withdraw with incorrect token name", async () => {
-  //     const withdrawAmount = new anchor.BN(toLamports(0.1));
+    it("Fails when trying to withdraw with incorrect token name", async () => {
+      const withdrawAmount = new anchor.BN(toLamports(0.1));
 
-  //     await expect(
-  //       program.methods
-  //         .feeVaultWithdrawFunds({
-  //           tokenPoolName: "IncorrectTokenName",
-  //           amount: withdrawAmount,
-  //         })
-  //         .accountsStrict({
-  //           authority: poolOwner.publicKey,
-  //           mint,
-  //           tokenPoolAcc,
-  //           feeVault,
-  //           systemProgram: SystemProgram.programId,
-  //         })
-  //         .signers([poolOwner])
-  //         .rpc()
-  //     ).rejects.toThrow();
-  //   });
-  // });
+      await expect(
+        program.methods
+          .feeVaultWithdrawFunds({
+            tokenPoolName: "IncorrectTokenName",
+            amount: withdrawAmount,
+          })
+          .accountsStrict({
+            authority: poolOwner.publicKey,
+            mint,
+            tokenPoolAcc,
+            feeVault,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([poolOwner])
+          .rpc()
+      ).rejects.toThrow();
+    });
+  });
 });
