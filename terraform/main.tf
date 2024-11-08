@@ -66,7 +66,7 @@ resource "aws_amplify_app" "explode_btn_app" {
     NEXT_PUBLIC_SIGNING_AUTHORITY_ATA = var.next_public_signing_authority_ata
     NEXT_PUBLIC_MINT                  = var.next_public_mint
     NEXT_PUBLIC_TOKEN_POOL_VAULT      = var.next_public_token_pool_vault
-    NEXT_PUBLIC_TOKEN_FEE_VAULT     = var.next_public_token_fee_vault
+    NEXT_PUBLIC_TOKEN_FEE_VAULT       = var.next_public_token_fee_vault
     NEXT_PUBLIC_COOLDOWN_SECONDS      = var.next_public_cooldown_seconds
   }
 
