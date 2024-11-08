@@ -5,7 +5,6 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import {
   TokenStandard,
   createV1,
-  findMetadataPda,
   mintV1,
   mplTokenMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
@@ -34,11 +33,9 @@ import {
 } from "../src";
 import { Poa } from "../target/types/poa";
 import {
-  Pda,
   createSignerFromKeypair,
   generateSigner,
   percentAmount,
-  publicKey,
   signerIdentity,
 } from "@metaplex-foundation/umi";
 
@@ -66,7 +63,7 @@ describe("Proof of Attention", () => {
   const tokenDecimals = 5;
   const timeoutInit = async () =>
     await new Promise((resolve) => setTimeout(resolve, timeoutSec * 1000)); // setTimeout uses milliseconds
-  const tokenPoolName = "Click";
+  const tokenPoolName = attentionTokenMetadata.name;
 
   jest.setTimeout(30000);
 
