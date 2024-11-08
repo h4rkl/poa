@@ -11,7 +11,7 @@ pub struct FeeVaultWithdraw<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
 
-    #[account( mut, seeds = [MINT_SEED, &args.token_name.as_bytes()], bump, )]
+    #[account(mut)]
     pub mint: Box<Account<'info, Mint>>,
 
     #[account( mut, seeds = [CONFIG_SEED, &mint.key().as_ref()], bump, )]
@@ -25,7 +25,7 @@ pub struct FeeVaultWithdraw<'info> {
 
 #[account]
 pub struct FeeVaultWithdrawArgs {
-    pub token_name: String,
+    pub token_pool_name: String,
     pub amount: u64,
 }
 

@@ -11,6 +11,9 @@ poa = "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV"
 [programs.devnet]
 poa = "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV"
 
+[programs.testnet]
+poa = "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV"
+
 [registry]
 url = "https://api.apr.dev"
 

@@ -26,7 +26,6 @@ export function getpoaProgramId(cluster: Cluster) {
   }
 }
 
-export const MINT_SEED = Buffer.from("mint");
 export const CONFIG_SEED = Buffer.from("config");
 export const TOKEN_VAULT_SEED = Buffer.from("token_vault");
 export const FEE_VAULT_SEED = Buffer.from("fee_vault");

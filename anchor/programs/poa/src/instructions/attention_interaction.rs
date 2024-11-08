@@ -11,7 +11,7 @@ use crate::state::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct AttentionInteractionArgs {
-    pub token_name: String,
+    pub token_pool_name: String,
 }
 
 #[account]
@@ -103,7 +103,7 @@ pub fn attention_interaction(
     }
 
     // Require token name to match the token pool account
-    if accs.token_pool_acc.token_name.as_str() != args.token_name.as_str() {
+    if accs.token_pool_acc.token_pool_name.as_str() != args.token_pool_name.as_str() {
         return Err(CustomError::InvalidTokenPoolAccount.into());
     }
 

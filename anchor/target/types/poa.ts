@@ -293,24 +293,7 @@ export type Poa = {
         },
         {
           "name": "mint",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  105,
-                  110,
-                  116
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "args.token_name"
-              }
-            ]
-          }
+          "writable": true
         },
         {
           "name": "tokenPoolAcc",
@@ -396,28 +379,11 @@ export type Poa = {
           "signer": true
         },
         {
-          "name": "mint",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  105,
-                  110,
-                  116
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "args.token_name"
-              }
-            ]
-          }
+          "name": "authorityTokenAccount",
+          "writable": true
         },
         {
-          "name": "metadataAccount",
+          "name": "mint",
           "writable": true
         },
         {
@@ -439,6 +405,10 @@ export type Poa = {
               {
                 "kind": "account",
                 "path": "mint"
+              },
+              {
+                "kind": "arg",
+                "path": "args.token_pool_name"
               }
             ]
           }
@@ -506,20 +476,12 @@ export type Poa = {
           "writable": true
         },
         {
-          "name": "tokenMetadataProgram",
-          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
-        },
-        {
           "name": "tokenProgram",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
-        },
-        {
-          "name": "rent",
-          "address": "SysvarRent111111111111111111111111111111111"
         }
       ],
       "args": [
@@ -624,7 +586,7 @@ export type Poa = {
         "kind": "struct",
         "fields": [
           {
-            "name": "tokenName",
+            "name": "tokenPoolName",
             "type": "string"
           }
         ]
@@ -648,7 +610,7 @@ export type Poa = {
         "kind": "struct",
         "fields": [
           {
-            "name": "tokenName",
+            "name": "tokenPoolName",
             "type": "string"
           },
           {
@@ -722,7 +684,7 @@ export type Poa = {
             "type": "pubkey"
           },
           {
-            "name": "tokenName",
+            "name": "tokenPoolName",
             "type": "string"
           },
           {
@@ -762,10 +724,6 @@ export type Poa = {
             "type": "u64"
           },
           {
-            "name": "symbol",
-            "type": "string"
-          },
-          {
             "name": "timeoutSec",
             "type": "u32"
           },
@@ -774,16 +732,12 @@ export type Poa = {
             "type": "u8"
           },
           {
-            "name": "tokenName",
+            "name": "tokenPoolName",
             "type": "string"
           },
           {
             "name": "totalSupply",
             "type": "u64"
-          },
-          {
-            "name": "uri",
-            "type": "string"
           }
         ]
       }
