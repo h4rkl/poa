@@ -47,6 +47,9 @@ importers:
       '@tanstack/react-query-next-experimental':
         specifier: ^5.51.11
         version: 5.51.11(@tanstack/react-query@5.51.11(react@18.3.1))(next@14.2.5(@babel/core@7.24.9)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
       daisyui:
         specifier: ^4.12.10
         version: 4.12.10(postcss@8.4.39)
@@ -81,9 +84,6 @@ importers:
       '@types/react-dom':
         specifier: ^18
         version: 18.3.0
-      commander:
-        specifier: ^12.1.0
-        version: 12.1.0
       eslint:
         specifier: ^8
         version: 8.57.0
