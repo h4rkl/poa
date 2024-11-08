@@ -11,7 +11,8 @@
     "dev": "pnpm copy-anchor-types && next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "tf:apply": "cd terraform && terraform apply -var-file=terraform.tfvars"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.1",
