@@ -110,12 +110,12 @@ program
                 .rpc();
 
             console.log(chalk.green('Token pool initialized successfully!'));
-            console.log(chalk.blue('Mint:'), chalk.yellow(mint.toBase58()));
-            console.log(chalk.blue('Token vault:'), chalk.yellow(tokenPoolVault.toBase58()));
-            console.log(chalk.blue('Fee vault:'), chalk.yellow(feeVault.toBase58()));
-            console.log(chalk.blue('POA fees:'), chalk.yellow(poaFees.toBase58()));
-            console.log(chalk.blue('Authority/Pool owner:'), chalk.yellow(poolOwner.publicKey.toBase58()));
-            console.log(chalk.blue('Pool token account:'), chalk.yellow(tokenPoolAcc.toBase58()));
+            console.log(chalk.blue(`NEXT_PUBLIC_SIGNING_AUTHORITY=${poolOwner.publicKey.toBase58()}`));
+            console.log(chalk.blue(`NEXT_PUBLIC_SIGNING_AUTHORITY_ATA=${poolOwnerAta.toBase58()}`));
+            console.log(chalk.blue(`NEXT_PUBLIC_MINT=${mint.toBase58()}`));
+            console.log(chalk.blue(`NEXT_PUBLIC_TOKEN_POOL_VAULT=${tokenPoolVault.toBase58()}`));
+            console.log(chalk.blue(`NEXT_PUBLIC_TOKEN_FEE_VAULT=${feeVault.toBase58()}`));
+            console.log(chalk.blue(`NEXT_PUBLIC_COOLDOWN_SECONDS=${options.timeoutSec}`));
         } catch (error) {
             console.error('Error initializing token pool:', error);
         }
@@ -203,6 +203,7 @@ program
     .requiredOption('--description <string>', 'Token description')
     .requiredOption('--image <path>', 'Path to token image file')
     .requiredOption('--connection <url>', 'The Solana RPC connection URL')
+    .requiredOption('--metadataUri <url>', 'Path to token metadata file')
     .option('--amount <number>', 'Initial token supply', '100000')
     .option('--decimals <number>', 'Token decimals', '9')
     .action(async (options) => {
@@ -213,14 +214,14 @@ program
         umi.use(signerIdentity(umiSigner));
 
         try {
-            const imageBuffer = fs.readFileSync(options.image);
-            const { metadataUri } = await uploadToArweave(
-                umi,
-                imageBuffer,
-                options.name,
-                options.symbol,
-                options.description
-            );
+            // const imageBuffer = fs.readFileSync(options.image);
+            // const { metadataUri } = await uploadToArweave(
+            //     umi,
+            //     imageBuffer,
+            //     options.name,
+            //     options.symbol,
+            //     options.description
+            // );
 
             const mint = generateSigner(umi);
 
@@ -229,7 +230,7 @@ program
                 authority: umiSigner,
                 name: options.name,
                 symbol: options.symbol,
-                uri: metadataUri,
+                uri: options.metadataUri,
                 sellerFeeBasisPoints: percentAmount(0),
                 decimals: options.decimals,
                 tokenStandard: TokenStandard.Fungible,
@@ -245,7 +246,7 @@ program
 
             console.log(chalk.green('Token created successfully!'));
             console.log(chalk.blue('Mint address:'), chalk.yellow(mint.publicKey));
-            console.log(chalk.blue('Metadata:'), chalk.yellow(metadataUri));
+            console.log(chalk.blue('Metadata:'), chalk.yellow(options.metadataUri));
             console.log(chalk.blue('Authority:'), chalk.yellow(umi.identity.publicKey));
         } catch (error) {
             console.error('Error creating token:', error);

@@ -9,7 +9,7 @@
     "anchor-test": "cd anchor && anchor test --provider.cluster localnet",
     "copy-anchor-types": "cp -R anchor/target/types/poa.ts src/poa/types.ts && cp -R anchor/target/idl/poa.json src/poa/idl.json && cp -R anchor/src/poa-exports.ts src/poa/constants.ts && sed -i '' 's|../target/idl/poa.json|./idl.json|g' src/poa/*.ts && sed -i '' 's|../target/types/poa|./types|g' src/poa/*.ts",
     "dev": "pnpm copy-anchor-types && next dev",
-    "build": "next build",
+    "build": "TS_NODE_PROJECT=tsconfig.build.json next build",
     "start": "next start",
     "lint": "next lint",
     "tf:apply": "cd terraform && terraform apply -var-file=terraform.tfvars"

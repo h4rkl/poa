@@ -1,0 +1,15 @@
+{
+    "id": "T_Q3yn_a56Kldg3bmm2CP4OO4fMkhHlbuqbilMnG-KA",
+    "status": "Submitted",
+    "file_paths": {
+        "/Users/bowie/SitesC/poa/public/attn.png": {
+            "id": "4w3YvT20h8B5Ji89er8EJZpyzfGP_dKpjAHh1Cm5jqY",
+            "content_type": "image/png"
+        }
+    },
+    "number_of_files": 1,
+    "data_size": 452076,
+    "created_at": "2024-11-08T17:09:26.530735Z",
+    "last_modified": "2024-11-08T17:09:26.530737Z",
+    "reward": 367804064
+}

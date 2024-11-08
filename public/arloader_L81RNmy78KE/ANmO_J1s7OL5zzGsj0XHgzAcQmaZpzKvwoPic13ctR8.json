@@ -1,0 +1,15 @@
+{
+    "id": "ANmO_J1s7OL5zzGsj0XHgzAcQmaZpzKvwoPic13ctR8",
+    "status": "Submitted",
+    "file_paths": {
+        "/Users/bowie/SitesC/poa/public/metadata.json": {
+            "id": "l2pbSXx3CuCWSKjyx7kJsnDgVdhf8jitUCnAzMJfr_c",
+            "content_type": "application/json"
+        }
+    },
+    "number_of_files": 1,
+    "data_size": 190,
+    "created_at": "2024-11-08T17:18:23.875094Z",
+    "last_modified": "2024-11-08T17:18:23.875094Z",
+    "reward": 185021136
+}
