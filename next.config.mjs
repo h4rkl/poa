@@ -4,9 +4,6 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true,
   },
-  buildExclude: {
-    exclude: ["cli", "terraform", "test-keys", ".archive"],
-  },
   // Configure cache settings
   distDir: ".next",
   onDemandEntries: {
