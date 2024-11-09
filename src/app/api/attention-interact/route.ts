@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     };
 
     // Wait for confirmation
-    const confirmation = await connection.confirmTransaction(confirmationStrategy);
+    const confirmation = await connection.confirmTransaction(confirmationStrategy, 'processed');
 
     if (confirmation.value.err) {
       throw new Error(`Transaction failed: ${confirmation.value.err.toString()}`);
