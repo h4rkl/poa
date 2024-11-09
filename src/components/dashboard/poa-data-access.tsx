@@ -11,6 +11,7 @@ import { useAnchorProvider } from "../solana/solana-provider";
 import { useTransactionToast } from "../ui/ui-layout";
 import * as anchor from "@coral-xyz/anchor";
 import {
+  ComputeBudgetProgram,
   Keypair,
   PublicKey,
   SystemProgram,
@@ -117,6 +118,13 @@ export function usePoaProgram() {
       const { blockhash } = await connection.getLatestBlockhash();
       tx.recentBlockhash = blockhash;
       tx.feePayer = userAccount;
+
+      // Add priority fee
+      tx.instructions.unshift(
+        ComputeBudgetProgram.setComputeUnitPrice({
+          microLamports: 50000,
+        })
+      );
 
       // Partially sign the transaction
       const partiallySignedTx = await signTransaction(tx);
