@@ -20,6 +20,8 @@ variable "next_public_mint" {}
 variable "next_public_token_pool_vault" {}
 variable "next_public_token_fee_vault" {}
 variable "next_public_cooldown_seconds" {}
+# variable "cloudflare_api_token" {}
+# variable "cloudflare_zone_id" {}
 
 # IAM role for Amplify
 resource "aws_iam_role" "amplify_role" {
@@ -43,6 +45,22 @@ resource "aws_iam_role" "amplify_role" {
 resource "aws_iam_role_policy_attachment" "amplify_policy_attachment" {
   role       = aws_iam_role.amplify_role.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess-Amplify"
+}
+
+# Add custom domain to Amplify app
+resource "aws_amplify_domain_association" "attnlol" {
+  app_id      = aws_amplify_app.explode_btn_app.id
+  domain_name = "attn.lol"
+
+  sub_domain {
+    branch_name = aws_amplify_branch.main.branch_name
+    prefix      = ""
+  }
+
+  sub_domain {
+    branch_name = aws_amplify_branch.main.branch_name
+    prefix      = "www"
+  }
 }
 
 # Amplify app
@@ -84,17 +102,8 @@ frontend:
         - pnpm install --frozen-lockfile
     build:
       commands:
-        - echo "NODE_VERSION=$NODE_VERSION" >> .env.local
-        - echo "SOLANA_RPC_ENDPOINT=$SOLANA_RPC_ENDPOINT" >> .env.local
-        - echo "NEXT_PUBLIC_SOLANA_RPC=$NEXT_PUBLIC_SOLANA_RPC" >> .env.local
-        - echo "NEXT_PUBLIC_SOLANA_RPC_NAME=$NEXT_PUBLIC_SOLANA_RPC_NAME" >> .env.local
-        - echo "POA_SIGNING_AUTHORITY=$POA_SIGNING_AUTHORITY" >> .env.local
-        - echo "NEXT_PUBLIC_SIGNING_AUTHORITY=$NEXT_PUBLIC_SIGNING_AUTHORITY" >> .env.local
-        - echo "NEXT_PUBLIC_SIGNING_AUTHORITY_ATA=$NEXT_PUBLIC_SIGNING_AUTHORITY_ATA" >> .env.local
-        - echo "NEXT_PUBLIC_MINT=$NEXT_PUBLIC_MINT" >> .env.local
-        - echo "NEXT_PUBLIC_TOKEN_POOL_VAULT=$NEXT_PUBLIC_TOKEN_POOL_VAULT" >> .env.local
-        - echo "NEXT_PUBLIC_TOKEN_FEE_VAULT=$NEXT_PUBLIC_TOKEN_FEE_VAULT" >> .env.local
-        - echo "NEXT_PUBLIC_COOLDOWN_SECONDS=$NEXT_PUBLIC_COOLDOWN_SECONDS" >> .env.local
+        - env | grep -e NODE_VERSION -e POA_SIGNING_AUTHORITY -e SOLANA_RPC_ENDPOINT >> .env.production
+        - env | grep -e NEXT_PUBLIC_ >> .env.production
         - pnpm run build
   artifacts:
     baseDirectory: .next
