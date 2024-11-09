@@ -25,7 +25,6 @@ import {
   PROOF_ACC_SEED,
   TOKEN_VAULT_SEED,
 } from "@/poa/constants";
-import { MPL_TOKEN_METADATA_PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   getAssociatedTokenAddress,
