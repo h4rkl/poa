@@ -23,6 +23,7 @@ const LeaderFeature: React.FC = () => {
 
   const { connection } = useConnection();
   const { publicKey } = useWallet();
+  const updateTrigger = useAtomValue(balanceUpdateTriggerAtom)
 
   useEffect(() => {
     const fetchTopHolders = async () => {
@@ -102,7 +103,7 @@ const LeaderFeature: React.FC = () => {
     };
 
     fetchTopHolders();
-  }, [publicKey, connection, useAtomValue(balanceUpdateTriggerAtom)]);
+  }, [publicKey, connection, updateTrigger]);
 
   if (loading) {
     return <div className="text-center text-lg">Loading...</div>;
