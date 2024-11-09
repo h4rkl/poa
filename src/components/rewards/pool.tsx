@@ -39,7 +39,7 @@ const RewardsPool: React.FC = () => {
       </div>
       <div className="mt-4 flex justify-center">
         <Tweet
-          text={`Proof of the $CLICK reward pool currently at ${balance.toLocaleString()} SOL - ${
+          text={`Proof of Attention $CLICK reward pool is currently at ${balance.toLocaleString()} SOL - ${
             window.location.href
           } 👀`}
         />
