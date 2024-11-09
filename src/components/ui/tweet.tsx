@@ -24,7 +24,7 @@ const Tweet: React.FC<TweetProps> = ({ text, children }) => {
   return (
     <button
       onClick={handleClick}
-      className="flex items-center text-sm text-gray-400 hover:text-gray-300"
+      className="flex items-center text-sm text-cyan-400 hover:text-cyan-500"
     >
       <TwitterIcon />
       {children || 'Share'}
