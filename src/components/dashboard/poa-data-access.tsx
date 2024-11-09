@@ -122,7 +122,7 @@ export function usePoaProgram() {
       // Add priority fee
       tx.instructions.unshift(
         ComputeBudgetProgram.setComputeUnitPrice({
-          microLamports: 50000,
+          microLamports: 80000,
         })
       );
 
