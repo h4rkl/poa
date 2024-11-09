@@ -87,6 +87,7 @@ frontend:
         - echo "NODE_VERSION=$NODE_VERSION" >> .env.local
         - echo "SOLANA_RPC_ENDPOINT=$SOLANA_RPC_ENDPOINT" >> .env.local
         - echo "NEXT_PUBLIC_SOLANA_RPC=$NEXT_PUBLIC_SOLANA_RPC" >> .env.local
+        - echo "NEXT_PUBLIC_SOLANA_RPC_NAME=$NEXT_PUBLIC_SOLANA_RPC_NAME" >> .env.local
         - echo "POA_SIGNING_AUTHORITY=$POA_SIGNING_AUTHORITY" >> .env.local
         - echo "NEXT_PUBLIC_SIGNING_AUTHORITY=$NEXT_PUBLIC_SIGNING_AUTHORITY" >> .env.local
         - echo "NEXT_PUBLIC_SIGNING_AUTHORITY_ATA=$NEXT_PUBLIC_SIGNING_AUTHORITY_ATA" >> .env.local
