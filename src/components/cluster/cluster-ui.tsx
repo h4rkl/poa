@@ -1,7 +1,6 @@
 'use client'
 
 import { useConnection } from '@solana/wallet-adapter-react'
-import { IconTrash } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
 import { ReactNode, useState } from 'react'
 import { AppModal } from '../ui/ui-layout'
@@ -50,14 +49,14 @@ export function ClusterChecker({ children }: { children: ReactNode }) {
 }
 
 export function ClusterUiSelect() {
-  const { clusters, setCluster, cluster } = useCluster()
+  const { cluster } = useCluster()
   return (
     <div className="dropdown dropdown-end">
       <label tabIndex={0} className="btn btn-primary rounded-btn">
         {cluster.name}
       </label>
       <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
-        {clusters.map((item) => (
+        {/* {clusters.map((item) => (
           <li key={item.name}>
             <button
               className={`btn btn-sm ${item.active ? 'btn-primary' : 'btn-ghost'}`}
@@ -66,14 +65,14 @@ export function ClusterUiSelect() {
               {item.name}
             </button>
           </li>
-        ))}
+        ))} */}
       </ul>
     </div>
   )
 }
 
 export function ClusterUiModal({ hideModal, show }: { hideModal: () => void; show: boolean }) {
-  const { addCluster } = useCluster()
+  // const { addCluster } = useCluster()
   const [name, setName] = useState('')
   const [network, setNetwork] = useState<ClusterNetwork | undefined>()
   const [endpoint, setEndpoint] = useState('')
@@ -87,7 +86,7 @@ export function ClusterUiModal({ hideModal, show }: { hideModal: () => void; sho
         try {
           new Connection(endpoint)
           if (name) {
-            addCluster({ name, network, endpoint })
+            // addCluster({ name, network, endpoint })
             hideModal()
           } else {
             console.log('Invalid cluster name')
@@ -127,50 +126,9 @@ export function ClusterUiModal({ hideModal, show }: { hideModal: () => void; sho
 }
 
 export function ClusterUiTable() {
-  const { clusters, setCluster, deleteCluster } = useCluster()
+  // const { clusters, setCluster, deleteCluster } = useCluster()
   return (
     <div className="overflow-x-auto">
-      <table className="table border-4 border-separate border-base-300">
-        <thead>
-          <tr>
-            <th>Name/ Network / Endpoint</th>
-            <th className="text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {clusters.map((item) => (
-            <tr key={item.name} className={item?.active ? 'bg-base-200' : ''}>
-              <td className="space-y-2">
-                <div className="whitespace-nowrap space-x-2">
-                  <span className="text-xl">
-                    {item?.active ? (
-                      item.name
-                    ) : (
-                      <button title="Select cluster" className="link link-secondary" onClick={() => setCluster(item)}>
-                        {item.name}
-                      </button>
-                    )}
-                  </span>
-                </div>
-                <span className="text-xs">Network: {item.network ?? 'custom'}</span>
-                <div className="whitespace-nowrap text-gray-500 text-xs">{item.endpoint}</div>
-              </td>
-              <td className="space-x-2 whitespace-nowrap text-center">
-                <button
-                  disabled={item?.active}
-                  className="btn btn-xs btn-default btn-outline"
-                  onClick={() => {
-                    if (!window.confirm('Are you sure?')) return
-                    deleteCluster(item)
-                  }}
-                >
-                  <IconTrash size={16} />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   )
 }
