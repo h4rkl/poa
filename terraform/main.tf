@@ -20,8 +20,6 @@ variable "next_public_mint" {}
 variable "next_public_token_pool_vault" {}
 variable "next_public_token_fee_vault" {}
 variable "next_public_cooldown_seconds" {}
-# variable "cloudflare_api_token" {}
-# variable "cloudflare_zone_id" {}
 
 # IAM role for Amplify
 resource "aws_iam_role" "amplify_role" {
@@ -47,28 +45,13 @@ resource "aws_iam_role_policy_attachment" "amplify_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess-Amplify"
 }
 
-# Add custom domain to Amplify app
-resource "aws_amplify_domain_association" "attnlol" {
-  app_id      = aws_amplify_app.explode_btn_app.id
-  domain_name = "attn.lol"
-
-  sub_domain {
-    branch_name = aws_amplify_branch.main.branch_name
-    prefix      = ""
-  }
-
-  sub_domain {
-    branch_name = aws_amplify_branch.main.branch_name
-    prefix      = "www"
-  }
-}
-
 # Amplify app
 resource "aws_amplify_app" "explode_btn_app" {
   name         = "explode-btn-nextjs-app"
   repository   = "https://github.com/h4rkl/poa"
   access_token = var.github_token
   platform     = "WEB_COMPUTE"
+  enable_branch_auto_build = true
 
   iam_service_role_arn = aws_iam_role.amplify_role.arn
 
