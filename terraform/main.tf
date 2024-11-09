@@ -14,7 +14,6 @@ variable "solana_rpc_endpoint" {}
 variable "next_public_solana_rpc" {}
 variable "next_public_solana_rpc_name" {}
 variable "poa_signing_authority" {}
-variable "poa_fees_acc" {}
 variable "next_public_signing_authority" {}
 variable "next_public_signing_authority_ata" {}
 variable "next_public_mint" {}
@@ -60,7 +59,6 @@ resource "aws_amplify_app" "explode_btn_app" {
 
     # Private vars
     POA_SIGNING_AUTHORITY = var.poa_signing_authority
-    POA_FEES_ACC          = var.poa_fees_acc
 
     # Public vars
     NEXT_PUBLIC_SIGNING_AUTHORITY     = var.next_public_signing_authority
@@ -89,8 +87,7 @@ frontend:
         - echo "NODE_VERSION=$NODE_VERSION" >> .env.local
         - echo "SOLANA_RPC_ENDPOINT=$SOLANA_RPC_ENDPOINT" >> .env.local
         - echo "NEXT_PUBLIC_SOLANA_RPC=$NEXT_PUBLIC_SOLANA_RPC" >> .env.local
-        - echo "POA_SIGNING_AUTHORITY=$POA_SIGNING_AUTHORITY" >> .env.local 
-        - echo "POA_FEES_ACC=$POA_FEES_ACC" >> .env.local
+        - echo "POA_SIGNING_AUTHORITY=$POA_SIGNING_AUTHORITY" >> .env.local
         - echo "NEXT_PUBLIC_SIGNING_AUTHORITY=$NEXT_PUBLIC_SIGNING_AUTHORITY" >> .env.local
         - echo "NEXT_PUBLIC_SIGNING_AUTHORITY_ATA=$NEXT_PUBLIC_SIGNING_AUTHORITY_ATA" >> .env.local
         - echo "NEXT_PUBLIC_MINT=$NEXT_PUBLIC_MINT" >> .env.local
