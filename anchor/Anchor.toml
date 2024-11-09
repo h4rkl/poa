@@ -11,7 +11,7 @@ poa = "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV"
 [programs.devnet]
 poa = "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV"
 
-[programs.testnet]
+[programs.mainnet]
 poa = "attniPrPU1JUizLdPwgjXwSB5WGp5FHKziSpZQvwfoV"
 
 [registry]

@@ -1,21 +1,20 @@
 "use client";
 
-import { useAtomValue } from "jotai";
-import { atomWithStorage } from "jotai/utils";
+import { atom, useAtomValue } from "jotai";
 import { createContext, ReactNode, useContext } from "react";
 
 export enum ClusterNetwork {
-  Mainnet = 'mainnet-beta',
-  Testnet = 'testnet',
-  Devnet = 'devnet',
-  Custom = 'custom',
+  Mainnet = "mainnet-beta",
+  Testnet = "testnet",
+  Devnet = "devnet",
+  Custom = "custom",
 }
 export interface Cluster {
   endpoint: string;
   name: string;
 }
 
-const clusterAtom = atomWithStorage<Cluster>("solana-cluster", {
+const clusterAtom = atom<Cluster>({
   name: process.env.NEXT_PUBLIC_SOLANA_RPC_NAME!,
   endpoint: process.env.NEXT_PUBLIC_SOLANA_RPC!,
 });
@@ -52,6 +51,9 @@ function getClusterUrlParam(cluster: Cluster): string {
       break;
     case ClusterNetwork.Testnet:
       suffix = "testnet";
+      break;
+    case ClusterNetwork.Mainnet:
+      suffix = "mainnet-beta";
       break;
     default:
       suffix = `custom&customUrl=${encodeURIComponent(cluster.endpoint)}`;

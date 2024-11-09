@@ -115,7 +115,7 @@ program
             console.log(chalk.blue(`NEXT_PUBLIC_MINT=${mint.toBase58()}`));
             console.log(chalk.blue(`NEXT_PUBLIC_TOKEN_POOL_VAULT=${tokenPoolVault.toBase58()}`));
             console.log(chalk.blue(`NEXT_PUBLIC_TOKEN_FEE_VAULT=${feeVault.toBase58()}`));
-            console.log(chalk.blue(`NEXT_PUBLIC_COOLDOWN_SECONDS=${options.timeoutSec}`));
+            console.log(chalk.blue(`NEXT_PUBLIC_COOLDOWN_SECONDS=${options.timeout}`));
         } catch (error) {
             console.error('Error initializing token pool:', error);
         }
