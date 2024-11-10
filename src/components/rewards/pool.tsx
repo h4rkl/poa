@@ -41,7 +41,7 @@ const RewardsPool: React.FC = () => {
         <Tweet
           text={`Proof of Attention $CLICK reward pool is currently at ${balance.toLocaleString()} SOL - ${
             window.location.href
-          } 👀`}
+          } 👀 #PoA`}
         />
       </div>
     </div>

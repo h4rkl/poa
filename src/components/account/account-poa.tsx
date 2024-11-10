@@ -116,7 +116,7 @@ export const AccountPoa = () => {
               balance
             )} $CLICK so far by Exploding the Button at ${
               window.location.href
-            } 🚀🚀🚀`}
+            } 🚀🚀🚀 #OPOS #PoA`}
           />
         </div>
       </div>
