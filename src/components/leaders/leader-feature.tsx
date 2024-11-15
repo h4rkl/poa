@@ -89,13 +89,6 @@ const LeaderFeature: React.FC = () => {
           }
         }
 
-        // Ensure isUser is set for accounts in topDogs
-        topDogs.forEach((holder) => {
-          if (holder.address === publicKey?.toBase58()) {
-            holder.isUser = true;
-          }
-        });
-
         setTopHolders(topDogs);
         setLoading(false);
       } catch (error) {
