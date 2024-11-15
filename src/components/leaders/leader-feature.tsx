@@ -71,7 +71,7 @@ const LeaderFeature: React.FC = () => {
                 isUser: true,
               };
 
-              // Add user to the list if they're not in top 3
+              // Add user to the list if they're not already
               if (
                 !topDogs.some(
                   (holder) => holder.address === userTokenAccountAddress
@@ -80,12 +80,7 @@ const LeaderFeature: React.FC = () => {
                 topDogs.push(userHolder);
                 topDogs.sort((a, b) => b.balance - a.balance);
                 topDogs = topDogs.slice(0, MAX_TOP_HOLDERS + 1);
-              }
-              if (
-                topDogs.some(
-                  (holder) => holder.address === userTokenAccountAddress
-                )
-              ) {
+              } else {
                 topDogs.find(
                   (holder) => holder.address === userTokenAccountAddress
                 )!.isUser = true;
@@ -93,6 +88,13 @@ const LeaderFeature: React.FC = () => {
             }
           }
         }
+
+        // Ensure isUser is set for accounts in topDogs
+        topDogs.forEach((holder) => {
+          if (holder.address === publicKey?.toBase58()) {
+            holder.isUser = true;
+          }
+        });
 
         setTopHolders(topDogs);
         setLoading(false);
