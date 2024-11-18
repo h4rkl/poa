@@ -118,14 +118,14 @@ const About: React.FC = () => {
         </h2>
         <p className="mt-4">
           At this stage the plan is to wait until all $CLICK has been extracted
-          from the token reward pool (
+          from the token vault (
           {
             <ExplorerLink
-              label={process.env.NEXT_PUBLIC_TOKEN_FEE_VAULT!}
-              path={`account/${process.env.NEXT_PUBLIC_TOKEN_FEE_VAULT!}`}
+              label={process.env.NEXT_PUBLIC_TOKEN_POOL_VAULT!}
+              path={`account/${process.env.NEXT_PUBLIC_TOKEN_POOL_VAULT!}`}
             />
           }
-          ). But this is subject to change depending on the experiments run as
+          ) to end the leaderboard. But this is subject to change depending on the experiments run as
           it may make sense to have an earlier finish date.
         </p>
         <p className="mt-4">
