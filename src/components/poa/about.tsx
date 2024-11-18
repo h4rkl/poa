@@ -118,15 +118,22 @@ const About: React.FC = () => {
         </h2>
         <p className="mt-4">
           At this stage the plan is to wait until all $CLICK has been extracted
-          from the token reward pool ({totalRewardPool}). But this is subject to
-          chnage depending on the experiments run as it may make sense to have
-          an earlier finish date.
+          from the token reward pool (
+          {
+            <ExplorerLink
+              label={process.env.NEXT_PUBLIC_TOKEN_FEE_VAULT!}
+              path={`account/${process.env.NEXT_PUBLIC_TOKEN_FEE_VAULT!}`}
+            />
+          }
+          ). But this is subject to change depending on the experiments run as
+          it may make sense to have an earlier finish date.
         </p>
         <p className="mt-4">
           Whatever the case, everything will be announced on Twitter and the
-          community will be notified of the completion date. A countdown timer
-          will appear on the main site once the final snapshot date for $CLICK
-          holders is announced.
+          community will be notified of the completion date as soon as anything
+          is decided. A countdown timer will appear on the main site once the
+          final snapshot date for $CLICK holders is announced so you will know
+          exactly when the snapshot is going to be taken.
         </p>
       </section>
 
