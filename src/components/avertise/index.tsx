@@ -24,9 +24,11 @@ export const Advertisement: React.FC<AdvertisementProps> = ({
   return (
     <div className="flex items-center justify-center pt-6 md:pt-0 px-1 md:px-0">
       <div className="w-full max-w-xl md:px-4 pt-12">
-        <div className="hidden md:block text-gray-500 text-xs text-left mb-2">Powered by</div>
+        <div className="hidden md:block text-gray-500 text-xs text-left mb-2">
+          Powered by
+        </div>
         <div
-          className={`flex flex-row items-center justify-between md:pl-2 pr-2 py-2 ${bgColor} rounded-lg shadow-md`}
+          className={`flex flex-row ${bgColor} items-center justify-between md:pl-2 pr-2 py-2 rounded-lg shadow-md`}
         >
           <div className="flex flex-row items-center space-y-0 space-x-4">
             <div
@@ -59,3 +61,5 @@ export const Advertisement: React.FC<AdvertisementProps> = ({
     </div>
   );
 };
+
+

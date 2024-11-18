@@ -4,19 +4,23 @@ import styles from "./page.module.css";
 import POAFeature from "@/components/dashboard/poa-feature";
 import { AccountPoa } from "@/components/account/account-poa";
 import { Advertisement } from "@/components/avertise";
+import { ads } from "@/components/avertise/ads";
 
 export default function Page() {
   return (
     <div className={styles.container}>
-      <Advertisement
-        icon={"gibwork.webp"}
-        title={"gibwork"}
-        description={"Find Talent, Find Work on Solana"}
-        url="https://gib.work/"
-        bgColor={"bg-white"}
-        textColor={"text-black"}
-        buttonColor={"bg-violet-500"}
-      />
+      {ads.map((ad, index) => (
+        <Advertisement
+          key={index}
+          icon={ad.icon}
+          title={ad.title}
+          description={ad.description}
+          url={ad.url}
+          bgColor={ad.bgColor}
+          textColor={ad.textColor}
+          buttonColor={ad.buttonColor}
+        />
+      ))}
       <POAFeature />
       <AccountPoa />
       <LeaderFeature />
