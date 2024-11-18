@@ -9,8 +9,6 @@ import RewardsPool from "../rewards/pool";
 
 export default function POAFeature() {
   const { publicKey } = useWallet();
-  const { programId } = usePoaProgram();
-
   return publicKey ? (
     <div>
       <AppHero
