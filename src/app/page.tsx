@@ -9,18 +9,20 @@ import { ads } from "@/components/avertise/ads";
 export default function Page() {
   return (
     <div className={styles.container}>
-      {ads.map((ad, index) => (
-        <Advertisement
-          key={index}
-          icon={ad.icon}
-          title={ad.title}
-          description={ad.description}
-          url={ad.url}
-          bgColor={ad.bgColor}
-          textColor={ad.textColor}
-          buttonColor={ad.buttonColor}
-        />
-      ))}
+      {(() => {
+        const ad = ads[Math.floor(Math.random() * ads.length)];
+        return (
+          <Advertisement
+            icon={ad.icon}
+            title={ad.title}
+            description={ad.description}
+            url={ad.url}
+            bgColor={ad.bgColor}
+            textColor={ad.textColor}
+            buttonColor={ad.buttonColor}
+          />
+        );
+      })()}
       <POAFeature />
       <AccountPoa />
       <LeaderFeature />
