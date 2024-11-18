@@ -6,7 +6,6 @@ import { AppHero } from "../ui/ui-layout";
 import { usePoaProgram } from "./poa-data-access";
 import { POACreate } from "./poa-ui";
 import RewardsPool from "../rewards/pool";
-import { Advertisement } from "../avertise";
 
 export default function POAFeature() {
   const { publicKey } = useWallet();
@@ -14,15 +13,6 @@ export default function POAFeature() {
 
   return publicKey ? (
     <div>
-      <Advertisement
-        icon={"gibwork.webp"}
-        title={"gibwork"}
-        description={"Find Talent, Find Work on Solana"}
-        url="https://gib.work/"
-        bgColor={"bg-white"}
-        textColor={"text-black"}
-        buttonColor={"bg-violet-500"}
-      />
       <AppHero
         title="Push the Button"
         subtitle={
