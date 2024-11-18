@@ -21,6 +21,15 @@ export const Advertisement: React.FC<AdvertisementProps> = ({
   textColor,
   buttonColor,
 }) => {
+  const handleButtonClick = () => {
+    if (typeof window !== "undefined" && (window as any).zaraz) {
+      (window as any).zaraz("track", "advertisement_click", {
+        title,
+        url,
+      });
+    }
+    window.open(url, "_blank");
+  };
   return (
     <div className="flex items-center justify-center pt-6 md:pt-0 px-1 md:px-0">
       <div className="w-full max-w-xl md:px-4 pt-12">
@@ -52,7 +61,7 @@ export const Advertisement: React.FC<AdvertisementProps> = ({
           </div>
           <button
             className={`${buttonColor} text-white px-4 py-2 rounded-lg mt-0 hover:bg-opacity-80 cursor-pointer`}
-            onClick={() => window.open(url, "_blank")}
+            onClick={handleButtonClick}
           >
             Find out more
           </button>
@@ -61,5 +70,3 @@ export const Advertisement: React.FC<AdvertisementProps> = ({
     </div>
   );
 };
-
-
