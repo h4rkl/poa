@@ -27,9 +27,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <script async src="https://cdn.jsdelivr.net/npm/zaraz@1.0.0/index.min.js"></script>
-      </head>
       <body>
         <ReactQueryProvider>
           <ClusterProvider>
