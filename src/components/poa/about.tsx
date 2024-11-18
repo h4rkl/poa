@@ -106,9 +106,27 @@ const About: React.FC = () => {
           to different stores of attention value, using transparent authorities
           and actions to ensure fairness. Each instance starts with all tokens
           held by the contract, preventing pre-mining. Additionally, a cooldown
-          period for token release discourages manipulation, and a
-          single-button interaction in the app validates genuine attention,
-          leveling the playing field between users and bots.
+          period for token release discourages manipulation, and a single-button
+          interaction in the app validates genuine attention, leveling the
+          playing field between users and bots.
+        </p>
+      </section>
+
+      <section className="mb-12">
+        <h2 id="completion" className="text-4xl font-bold mb-6">
+          Competition completion
+        </h2>
+        <p className="mt-4">
+          At this stage the plan is to wait until all $CLICK has been extracted
+          from the token reward pool ({totalRewardPool}). But this is subject to
+          chnage depending on the experiments run as it may make sense to have
+          an earlier finish date.
+        </p>
+        <p className="mt-4">
+          Whatever the case, everything will be announced on Twitter and the
+          community will be notified of the completion date. A countdown timer
+          will appear on the main site once the final snapshot date for $CLICK
+          holders is announced.
         </p>
       </section>
 
