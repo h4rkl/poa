@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { sendGAEvent } from '@next/third-parties/google'
+import { sendGAEvent } from "@next/third-parties/google";
 
 interface AdvertisementProps {
   icon: string;
@@ -23,7 +23,7 @@ export const Advertisement: React.FC<AdvertisementProps> = ({
   buttonColor,
 }) => {
   const handleButtonClick = () => {
-    sendGAEvent({ event: 'advertisement_click', value: title });
+    sendGAEvent({ event: "advertisement_click", value: title });
     window.open(url, "_blank");
   };
   return (
