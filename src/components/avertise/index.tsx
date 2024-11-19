@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import zaraz from "zaraz-ts";
 
 interface AdvertisementProps {
   icon: string;
@@ -23,7 +22,12 @@ export const Advertisement: React.FC<AdvertisementProps> = ({
   buttonColor,
 }) => {
   const handleButtonClick = () => {
-    zaraz.track("advertisement_click", { title, url });
+    if (typeof window !== "undefined" && (window as any).zaraz) {
+      (window as any).zaraz("track", "advertisement_click", {
+        title,
+        url,
+      });
+    }
     window.open(url, "_blank");
   };
   return (
