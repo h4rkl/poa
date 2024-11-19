@@ -23,7 +23,7 @@ const LeaderFeature: React.FC = () => {
 
   const { connection } = useConnection();
   const { publicKey } = useWallet();
-  const updateTrigger = useAtomValue(balanceUpdateTriggerAtom)
+  const updateTrigger = useAtomValue(balanceUpdateTriggerAtom);
 
   useEffect(() => {
     const fetchTopHolders = async () => {
@@ -31,13 +31,15 @@ const LeaderFeature: React.FC = () => {
         const tokenAddress = process.env.NEXT_PUBLIC_MINT!;
         const tokenPublicKey = new PublicKey(tokenAddress);
         const tokenVaultAddress = process.env.NEXT_PUBLIC_TOKEN_POOL_VAULT!;
+        const meteoraPool = "BjvW8XtaDme6RWSrCQvcBmxbN1KkgKSTJsGZRwRJd9fv";
 
         const largestAccounts = await connection.getTokenLargestAccounts(
           tokenPublicKey
         );
 
+        const excludedAddresses = new Set([tokenVaultAddress, meteoraPool]);
         const filteredAccounts = largestAccounts.value.filter(
-          (account) => account.address.toBase58() !== tokenVaultAddress
+          (account) => !excludedAddresses.has(account.address.toBase58())
         );
 
         let topDogs: TokenHolder[] = filteredAccounts
