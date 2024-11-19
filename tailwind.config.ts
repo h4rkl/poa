@@ -11,6 +11,12 @@ const config: Config = {
       fontFamily: {
         exo: ['Exo 2', 'sans-serif'],
       },
+      colors: {
+        'dolos': {
+          500: '#9FB4A2',
+          900: '#3F5743',
+        },
+      },
     },
   },
   plugins: [require('daisyui')],

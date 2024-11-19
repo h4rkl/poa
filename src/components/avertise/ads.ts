@@ -26,4 +26,13 @@ export const ads = [
         textColor: "text-yellow-400",
         buttonColor: "bg-black",
     },
+    {
+        icon: "dolos.jpg",
+        title: "DOLOS",
+        description: "Ancient Villain Reborn",
+        url: "https://x.com/dolos_diary",
+        bgColor: "bg-dolos-500",
+        textColor: "text-dolos-900",
+        buttonColor: "bg-dolos-900",
+    },
 ];
