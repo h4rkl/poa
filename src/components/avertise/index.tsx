@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { sendGAEvent } from '@next/third-parties/google'
 
 interface AdvertisementProps {
   icon: string;
@@ -22,12 +23,7 @@ export const Advertisement: React.FC<AdvertisementProps> = ({
   buttonColor,
 }) => {
   const handleButtonClick = () => {
-    if (typeof window !== "undefined" && (window as any).zaraz) {
-      (window as any).zaraz("track", "advertisement_click", {
-        title,
-        url,
-      });
-    }
+    sendGAEvent({ event: 'advertisement_click', value: title });
     window.open(url, "_blank");
   };
   return (

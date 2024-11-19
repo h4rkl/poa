@@ -3,6 +3,7 @@ import { ClusterProvider } from "@/components/cluster/cluster-data-access";
 import { SolanaProvider } from "@/components/solana/solana-provider";
 import { UiLayout } from "@/components/ui/ui-layout";
 import { ReactQueryProvider } from "./react-query-provider";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export const metadata = {
   title: "PoA",
@@ -27,9 +28,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <script async src="https://cdn.jsdelivr.net/npm/zaraz@1.0.0/index.min.js"></script>
-      </head>
       <body>
         <ReactQueryProvider>
           <ClusterProvider>
@@ -39,6 +37,7 @@ export default function RootLayout({
           </ClusterProvider>
         </ReactQueryProvider>
       </body>
+      <GoogleAnalytics gaId="G-01E7E34YMZ" />
     </html>
   );
 }
