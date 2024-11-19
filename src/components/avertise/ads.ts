@@ -17,4 +17,13 @@ export const ads = [
         textColor: "text-amber-300",
         buttonColor: "bg-red-600",
     },
+    {
+        icon: "buu.jpg",
+        title: "BUU",
+        description: "Little tricks, big trouble",
+        url: "https://buu.monster",
+        bgColor: "bg-cyan-950",
+        textColor: "text-yellow-400",
+        buttonColor: "bg-black",
+    },
 ];
