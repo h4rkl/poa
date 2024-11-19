@@ -23,7 +23,7 @@ export const Advertisement: React.FC<AdvertisementProps> = ({
   buttonColor,
 }) => {
   const handleButtonClick = () => {
-    sendGAEvent({ event: "advertisement_click", value: title });
+    sendGAEvent("event", "advertisement_click", { value: title });
     window.open(url, "_blank");
   };
   return (
