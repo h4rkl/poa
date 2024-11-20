@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { sendGAEvent } from "@next/third-parties/google";
 import { ads } from "./ads";
+import { useAtomValue } from "jotai";
+import { balanceUpdateTriggerAtom } from "@/components/dashboard/poa-ui";
 
 interface AdvertisementProps {
   icon: string;
@@ -16,11 +18,12 @@ interface AdvertisementProps {
 
 export const Advertisement: React.FC = () => {
   const [adverts, setAdverts] = useState<AdvertisementProps[]>([]);
+  const updateTrigger = useAtomValue(balanceUpdateTriggerAtom);
 
   useEffect(() => {
     const randomAd = ads[Math.floor(Math.random() * ads.length)];
     setAdverts([randomAd]);
-  }, []);
+  }, [updateTrigger]);
 
   return (
     <div className="flex items-center justify-center pt-6 md:pt-0 px-1 md:px-0">
