@@ -23,6 +23,7 @@ export const Advertisement: React.FC = () => {
   useEffect(() => {
     const randomAd = ads[Math.floor(Math.random() * ads.length)];
     setAdverts([randomAd]);
+    sendGAEvent("event", "advertisement_impression", { value: randomAd.title });
   }, [updateTrigger]);
 
   return (
