@@ -152,6 +152,53 @@ export function UiLayout({
               </defs>
             </svg>
           </a>
+          <a
+            href="https://birdeye.so/token/7KBaynnEyvEbernyc2CMDMoUh5edF3Sgw8qKELt3jtD?chain=solana&tab=recentTrades"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-base-content hover:text-white"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 266.66666 266.66666"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <clipPath clipPathUnits="userSpaceOnUse" id="clipPath16">
+                  <path d="M 0,200 H 200 V 0 H 0 Z" />
+                </clipPath>
+              </defs>
+              <g transform="matrix(1.3333333,0,0,-1.3333333,0,266.66667)">
+                <g>
+                  <g clipPath="url(#clipPath16)">
+                    <g transform="translate(157.7549,65.4019)">
+                      <path
+                        d="m 0,0 c -1.934,-19.607 -17.792,-35.464 -37.399,-37.375 -26.485,-2.627 -48.528,19.417 -45.925,45.925 1.935,19.607 17.792,35.464 37.399,37.399 C -19.416,48.552 2.627,26.509 0,0 m -11.344,67.06 c -10.309,5.546 -15.451,17.386 -10.842,28.157 l 16.812,39.381 h -42.819 l -95.37,-190.952 c 0,0 40.221,14.242 66.21,0.733 11.964,-6.218 25.338,-10.532 39.978,-9.671 34.461,2.053 61.997,28.658 65.126,63.047 2.77,30.354 -13.723,55.656 -39.095,69.305"
+                        style={{
+                          fill: "currentColor",
+                          fillOpacity: 1,
+                          fillRule: "nonzero",
+                          stroke: "none",
+                        }}
+                      />
+                    </g>
+                    <g transform="translate(135.8936,67.6504)">
+                      <path
+                        d="m 0,0 c -0.919,-9.318 -8.456,-16.854 -17.774,-17.762 -12.587,-1.249 -23.062,9.227 -21.825,21.825 0.919,9.318 8.455,16.854 17.773,17.774 C -9.228,23.074 1.249,12.598 0,0"
+                        style={{
+                          fill: "#ff6d00",
+                          fillOpacity: 1,
+                          fillRule: "nonzero",
+                          stroke: "none",
+                        }}
+                      />
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </a>
         </div>
       </footer>
     </div>
