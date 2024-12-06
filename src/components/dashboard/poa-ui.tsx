@@ -6,7 +6,8 @@ import { useState, useEffect } from "react";
 import { attentionTokenMetadata } from "@/poa/constants";
 import { usePoaProgram } from "./poa-data-access";
 import { useExplosiveButton } from "@/hooks/button-explode";
-import { atom, useSetAtom } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
+import { isLiveAtom } from "../countdown";
 
 export const balanceUpdateTriggerAtom = atom(0);
 
@@ -15,6 +16,7 @@ export function POACreate() {
   const { buttonRef, explode } = useExplosiveButton();
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
   const setBalanceUpdateTrigger = useSetAtom(balanceUpdateTriggerAtom);
+  const isLive = useAtomValue(isLiveAtom);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -27,6 +29,8 @@ export function POACreate() {
   }, [cooldownRemaining]);
 
   const handleClick = async () => {
+    if (!isLive) return;
+
     try {
       // First run the mutation
       await attentionInteract.mutateAsync({
@@ -45,7 +49,7 @@ export function POACreate() {
     }
   };
 
-  const isDisabled = attentionInteract.isPending || cooldownRemaining > 0;
+  const isDisabled = attentionInteract.isPending || cooldownRemaining > 0 || !isLive;
 
   return (
     <div className="flex w-full min-h-[200px] items-center justify-center">
@@ -56,11 +60,13 @@ export function POACreate() {
           onClick={handleClick}
           disabled={isDisabled}
         >
-          {isDisabled
-            ? cooldownRemaining > 0
-              ? `Recharging: ${cooldownRemaining}s`
-              : "Igniting..."
-            : "Go Boom"}
+          {!isLive
+            ? "Campaign Ended"
+            : isDisabled
+              ? cooldownRemaining > 0
+                ? `Recharging: ${cooldownRemaining}s`
+                : "Igniting..."
+              : "Go Boom"}
         </button>
       </div>
     </div>
