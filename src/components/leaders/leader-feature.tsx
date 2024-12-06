@@ -108,7 +108,7 @@ const LeaderFeature: React.FC = () => {
 
   return (
     <>
-      <div className="leaderboard max-w-2xl mt-6 px-4 mx-auto py-6 shadow-md rounded-lg border border-gray-600">
+      <div className="leaderboard max-w-2xl mt-6 px-4 mx-auto py-6 shadow-md rounded-lg border border-gray-600 bg-black/20 backdrop-blur-sm">
         <h2 className="text-2xl font-semibold text-center mb-4">Leaderboard</h2>
         <ul className="max-h-[20em] overflow-y-auto">
           {topHolders.map((holder, index) => (

@@ -84,7 +84,7 @@ export const AccountPoa = () => {
   }
 
   return (
-    <div className="rounded-lg p-6 mt-2 max-w-sm mx-auto border border-gray-600">
+    <div className="rounded-lg p-6 mt-2 max-w-sm mx-auto border border-gray-600 bg-black/20 backdrop-blur-sm">
       <h2 className="text-2xl font-bold mb-2 text-center">You have</h2>
       <div className="flex items-center gap-2 justify-center">
         <p className="text-gray-500 text-sm break-all">
