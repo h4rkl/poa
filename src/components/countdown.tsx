@@ -5,7 +5,7 @@ import { atom, useAtom } from 'jotai';
 
 export const endDate = new Date('2024-12-12T00:00:00Z');
 export const isLiveAtom = atom<boolean>(new Date() < endDate);
-const endDateAtom = atom<Date>(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+const endDateAtom = atom<Date>(endDate);
 
 export const Countdown = () => {
   const [timeLeft, setTimeLeft] = useState({
