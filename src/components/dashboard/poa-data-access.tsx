@@ -32,6 +32,8 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { load } from "@fingerprintjs/botd";
+import { useAtomValue } from "jotai";
+import { isLiveAtom } from "../countdown";
 
 export function usePoaProgram() {
   const { connection } = useConnection();
@@ -40,6 +42,7 @@ export function usePoaProgram() {
   const transactionToast = useTransactionToast();
   const provider = useAnchorProvider();
   const program = new anchor.Program(IDL as Poa, provider);
+  const isLive = useAtomValue(isLiveAtom);
 
   const mint = new PublicKey(process.env.NEXT_PUBLIC_MINT!);
   const poolOwnerAta = new PublicKey(
@@ -81,6 +84,9 @@ export function usePoaProgram() {
       const { bot } = botd.detect();
       if (bot) {
         throw new Error("Unexpected error n69420");
+      }
+      if (!isLive) {
+        throw new Error("Campaign has ended");
       }
       if (
         !rewardVaultQuery.data ||
