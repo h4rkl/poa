@@ -85,78 +85,76 @@ export function usePoaProgram() {
       if (bot) {
         throw new Error("Unexpected error n69420");
       }
-      if (!isLive) {
-        throw new Error("Campaign has ended");
-      }
-      if (
-        !rewardVaultQuery.data ||
-        !proofAccount ||
-        !userAccount ||
-        !signTransaction
-      ) {
-        throw new Error("Required data not available");
-      }
+      throw new Error("Campaign has ended");
+      // if (
+      //   !rewardVaultQuery.data ||
+      //   !proofAccount ||
+      //   !userAccount ||
+      //   !signTransaction
+      // ) {
+      //   throw new Error("Required data not available");
+      // }
 
-      const tx = new Transaction();
-      tx.add(
-        await program.methods
-          .attentionInteract({
-            tokenPoolName: args.tokenPoolName,
-          })
-          .accountsStrict({
-            tokenPoolAuthority: process.env.NEXT_PUBLIC_SIGNING_AUTHORITY!,
-            attentionAuthority: userAccount,
-            proofAccount,
-            tokenMint: mint,
-            tokenPoolAcc,
-            tokenPoolVault,
-            feeVault,
-            rewardVault: rewardVaultQuery.data,
-            poaFees,
-            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-            tokenProgram: TOKEN_PROGRAM_ID,
-            systemProgram: SystemProgram.programId,
-            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
-          })
-          .instruction()
-      );
+      // const tx = new Transaction();
+      // tx.add(
+      //   await program.methods
+      //     .attentionInteract({
+      //       tokenPoolName: args.tokenPoolName,
+      //     })
+      //     .accountsStrict({
+      //       tokenPoolAuthority: process.env.NEXT_PUBLIC_SIGNING_AUTHORITY!,
+      //       attentionAuthority: userAccount,
+      //       proofAccount,
+      //       tokenMint: mint,
+      //       tokenPoolAcc,
+      //       tokenPoolVault,
+      //       feeVault,
+      //       rewardVault: rewardVaultQuery.data,
+      //       poaFees,
+      //       associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      //       tokenProgram: TOKEN_PROGRAM_ID,
+      //       systemProgram: SystemProgram.programId,
+      //       clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+      //     })
+      //     .instruction()
+      // );
 
-      const { blockhash } = await connection.getLatestBlockhash();
-      tx.recentBlockhash = blockhash;
-      tx.feePayer = userAccount;
+      // const { blockhash } = await connection.getLatestBlockhash();
+      // tx.recentBlockhash = blockhash;
+      // tx.feePayer = userAccount;
 
-      // Add priority fee
-      tx.instructions.unshift(
-        ComputeBudgetProgram.setComputeUnitPrice({
-          microLamports: 80000,
-        })
-      );
+      // // Add priority fee
+      // tx.instructions.unshift(
+      //   ComputeBudgetProgram.setComputeUnitPrice({
+      //     microLamports: 80000,
+      //   })
+      // );
 
-      // Partially sign the transaction
-      const partiallySignedTx = await signTransaction(tx);
+      // // Partially sign the transaction
+      // const partiallySignedTx = await signTransaction(tx);
 
-      // Serialize the partially signed transaction
-      const serializedTx = partiallySignedTx
-        .serialize({
-          requireAllSignatures: false,
-        })
-        .toString("base64");
+      // // Serialize the partially signed transaction
+      // const serializedTx = partiallySignedTx
+      //   .serialize({
+      //     requireAllSignatures: false,
+      //   })
+      //   .toString("base64");
 
-      const response = await fetch("/api/attention-interact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ transaction: serializedTx }),
-      });
+      // const response = await fetch("/api/attention-interact", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ transaction: serializedTx }),
+      // });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to finalize transaction");
-      }
+      // if (!response.ok) {
+      //   const errorData = await response.json();
+      //   throw new Error(errorData.message || "Failed to finalize transaction");
+      // }
 
-      const { signature } = await response.json();
-      return signature;
+      // const { signature } = await response.json();
+      // return signature;
     },
     onSuccess: (signature) => {
       transactionToast(signature);
