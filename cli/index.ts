@@ -253,6 +253,59 @@ program
         }
     })
 
+program
+    .command('withdraw-fees')
+    .description('Withdraw fees from the fee vault to the pool owner')
+    .requiredOption('--keypair <path>', 'Path to pool owner keypair file')
+    .requiredOption('--connection <url>', 'The Solana RPC connection URL')
+    .requiredOption('--name <string>', 'Token pool name')
+    .requiredOption('--mint <string>', 'Mint address')
+    .requiredOption('--amount <number>', 'Amount to withdraw in SOL')
+    .action(async (options) => {
+        const { anchorProgram } = setupAnchor(options.connection, options.keypair);
+        try {
+            const poolOwner = Keypair.fromSecretKey(
+                Uint8Array.from(JSON.parse(fs.readFileSync(options.keypair, 'utf-8')))
+            );
+
+            const mint = new PublicKey(options.mint);
+
+            const [tokenPoolAcc] = PublicKey.findProgramAddressSync(
+                [CONFIG_SEED, mint.toBuffer(), Buffer.from(options.name)],
+                POA_PROGRAM_ID
+            );
+
+            const [feeVault] = PublicKey.findProgramAddressSync(
+                [FEE_VAULT_SEED, tokenPoolAcc.toBuffer()],
+                POA_PROGRAM_ID
+            );
+
+            const withdrawAmount = new anchor.BN(toLamports(options.amount));
+
+            const signature = await anchorProgram.methods
+                .feeVaultWithdrawFunds({
+                    tokenPoolName: options.name,
+                    amount: withdrawAmount,
+                })
+                .accountsStrict({
+                    authority: poolOwner.publicKey,
+                    mint,
+                    tokenPoolAcc,
+                    feeVault,
+                    systemProgram: SystemProgram.programId,
+                })
+                .signers([poolOwner])
+                .rpc();
+
+            console.log(chalk.green('Fees withdrawn successfully!'));
+            console.log(chalk.blue('Transaction hash:'), chalk.yellow(signature));
+            console.log(chalk.blue('Amount withdrawn:'), chalk.yellow(`${options.amount} SOL`));
+
+        } catch (error) {
+            console.error('Error withdrawing fees:', error);
+        }
+    });
+
 program.parse();
 
 function setupAnchor(url: string, keypairPath: string) {

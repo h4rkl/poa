@@ -15,3 +15,9 @@ arloader upload '/Users/bowie/SitesC/poa/public/metadata.json' --ar-keypair-path
 pnpm cmdr create_token --keypair /Users/bowie/SitesC/poa/.archive/signrMdZBa1kLBMSi3Bwv4c6xT6GuThtwW4sVNJKSRv.json --description "A token for attention" --connection "https://api.devnet.solana.com" --amount 100000 --decimals 5 --image ../public/attn.png --name "Click" --symbol "CLICK" --metadataUri "https://arweave.net/l2pbSXx3CuCWSKjyx7kJsnDgVdhf8jitUCnAzMJfr_c"
 
 pnpm cmdr init --keypair /Users/bowie/SitesC/poa/.archive/signrMdZBa1kLBMSi3Bwv4c6xT6GuThtwW4sVNJKSRv.json --connection "https://api.devnet.solana.com" --pool-fee 0.001 --timeout 7 --supply 100000 --reward 1 --decimals 5 --name Click --mint GJEgHchP5i56FEG6q5cEPyWw9ehArTGXfGnC17556Mcq
+
+pnpm cmdr withdraw-fees --keypair /Users/bowie/SitesC/poa/.archive/signrMdZBa1kLBMSi3Bwv4c6xT6GuThtwW4sVNJKSRv.json --connection "https://api.devnet.solana.com" --name Click --mint GJEgHchP5i56FEG6q5cEPyWw9ehArTGXfGnC17556Mcq --amount 0.00916928
+
+pnpm cmdr withdraw-fees --keypair ~/.config/solana/id.json --connection "https://api.mainnet-beta.solana.com" --name Click --mint 7KBaynnEyvEbernyc2CMDMoUh5edF3Sgw8qKELt3jtD --amount 26.23217028
+
+pnpm cmdr withdraw-fees --keypair /Users/bowie/SitesC/poa/.archive/signrMdZBa1kLBMSi3Bwv4c6xT6GuThtwW4sVNJKSRv.json --connection "https://api.mainnet-beta.solana.com" --name Click --mint 7KBaynnEyvEbernyc2CMDMoUh5edF3Sgw8qKELt3jtD --amount 26.23217028
